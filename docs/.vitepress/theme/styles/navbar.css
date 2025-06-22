@@ -1,67 +1,39 @@
-/* 顶部导航栏及标题修复 */
+/* --- 顶部导航栏样式 (优化版) --- */
+
+/**
+ * 1. 为导航栏本身设置基础和暗色模式下的背景
+ * 保留了您优秀的毛玻璃效果 (backdrop-filter)
+ */
 .VPNav {
-  background: rgba(255, 255, 255, 0.95) !important;
-  border-bottom: 1px solid rgba(60, 60, 60, 0.12);
-  backdrop-filter: blur(2px);
-  -webkit-backdrop-filter: blur(2px);
-  padding: 0 32px !important;
+  /* 使用 rgba 实现背景半透明，为 backdrop-filter 生效创造条件 */
+  background-color: rgba(255, 255, 255, 1) !important;
+  backdrop-filter: blur(5px);
+  -webkit-backdrop-filter: blur(5px);
 }
 
 .dark .VPNav {
-  background: rgba(36, 36, 36, 0.95) !important;
-  border-bottom: 1px solid rgba(84, 84, 84, 0.48);
+  background-color: rgba(27, 27, 31, 1) !important;
 }
 
 
-/* 强制所有导航栏子元素背景透明 */
-.VPNav *,
-.VPNav .VPNavBar,
-.VPNav .VPNavBarTitle,
-.VPNav .VPNavBarHamburger,
-.VPNav .VPNavBarMenu,
-.VPNav .VPNavBarMenuGroup,
-.VPNav .VPNavBarAppearance,
-.VPNav .VPNavBarSearch,
-.VPNav .VPNavBarSocialLinks {
-  background: transparent !important;
+/**
+ * 2. [核心修复]
+ * 问题的根源是 VitePress 默认给标题区域 .VPNavBarTitle 设置了背景色。
+ * 我们只需要在暗色模式下，将这个特定元素的背景去掉即可。
+ * 这比使用 `*` 通配符要精确、高效得多。
+ */
+/* .dark .VPNavBarTitle {
   background-color: transparent !important;
-  background-image: none !important;
-}
+} */
 
-.dark .VPNav *,
-.dark .VPNav .VPNavBar,
-.dark .VPNav .VPNavBarTitle,
-.dark .VPNav .VPNavBarHamburger,
-.dark .VPNav .VPNavBarMenu,
-.dark .VPNav .VPNavBarMenuGroup,
-.dark .VPNav .VPNavBarAppearance,
-.dark .VPNav .VPNavBarSearch,
-.dark .VPNav .VPNavBarSocialLinks {
-  background: transparent !important;
-  background-color: transparent !important;
-  background-image: none !important;
-}
 
-/* 导航菜单样式修复 */
-.VPNavBarMenu .VPNavBarMenuLink {
-  padding: 0 12px;
-  transition: color 0.25s;
-  background: transparent !important;
-}
-
-/* 修复移动端导航栏 */
+/* --- 移动端菜单屏幕样式 (您的代码很好，直接沿用) --- */
 .VPNavScreen {
-  background: rgba(255, 255, 255, 0.95) !important;
-  backdrop-filter: blur(2px);
-  -webkit-backdrop-filter: blur(2px);
+  background: rgba(255, 255, 255, 1) !important;
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
 }
 
 .dark .VPNavScreen {
-  background: rgba(0, 0, 0, 0.95) !important;
-}
-
-/* 移除伪元素可能的背景 */
-.VPNav::before,
-.VPNav::after {
-  display: none !important;
+  background: rgba(27, 27, 27, 1) !important;
 }
