@@ -1,4 +1,4 @@
-# Unity-GUI
+# Unity - GUI
 
 ## 1.1 GUI是什么
 全程即时模式游戏交互界面IMGUI，是一个代码驱动的UI系统。
@@ -363,7 +363,7 @@ GUI.SelectionGrid(rect, _toolbarIndex, _toolbarInfos, 3);
         GUI.skin = null;
 	}
     ```
-## Lesson 11 GUILayout
+## 11 GUILayout
 - `GUILayout` 是一个公共类。用 `GUILayout` 创建的UI组件会自动设置好UI布局。
     - 主要用于进行编辑器开发，不适合用于制作游戏UI。
     ``` c#
@@ -399,3 +399,20 @@ GUI.SelectionGrid(rect, _toolbarIndex, _toolbarInfos, 3);
     GUILayout.Button("按钮1", GUILayout.Width(100), GUILayout.Height(50));
     ```
 
+## 实践小项目
+搭建一个简单的，所见即所得的，可以自适应分辨率的UI系统。最终封装以下控件：
+- 按钮
+- 文本框
+- 单选框
+- 多选框
+- 输入框
+- 拖动条
+- 图片
+
+### 前置知识
+
+#### 如何让脚本在编辑模式下运行
+特性 `[ExecuteAlways]` ：在类名前加上这个特性，可以让类在编辑模式下自动执行生命周期函数。
+
+#### 九宫格布局概念
+![alt text](image.png)
