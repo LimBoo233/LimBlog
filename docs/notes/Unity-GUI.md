@@ -264,3 +264,138 @@ GUI.SelectionGrid(rect, _toolbarIndex, _toolbarInfos, 3);
 		GUI.EndScrollView();
 	}
     ```
+
+## 9 窗口
+- 窗口
+    - 第一个参数 `id` 是窗口的唯一标识符。
+    - 委托函数 `WindowFunction(int id)` 用于绘制窗口内容。
+    ```c#
+    public Rect posRect;
+	
+	private void OnGUI()
+	{
+		GUI.Window(1, posRect, DrawWindow, "测试窗口1");
+		GUI.Window(2, posRect, DrawWindow, "测试窗口2");
+	}
+
+	private void DrawWindow(int id)
+	{
+		switch (id)
+		{
+			case 1:
+				GUI.Label(new Rect(posRect.x, posRect.y, posRect.width, posRect.height), "<UNK>");
+				break;
+			case 2:
+				GUI.Label(new  Rect(posRect.x, posRect.y, posRect.width, posRect.height), "<P>");
+				break;
+		}
+	}
+    ```
+- 模态窗口
+    - 可以让其他控件不可用。
+    - 可以理解为一个弹出窗口，用户必须先关闭它才能继续与其他控件交互。
+    ```c#
+    GUI.ModalWindow(3, posRect, DrawModalWindow, "模态窗口");
+    ```
+- 拖动窗口
+    - 可以通过鼠标拖动来移动窗口位置。
+    - 在 `DrawWindow` 函数中调用 `GUI.DragWindow()` 来启用拖动功能。
+        - 可以传入一个 `Rect` 参数来限制拖动区域。
+    ```c#
+    public Rect posRect;
+	
+	private void OnGUI()
+	{
+        // 位置赋值只是前提
+		posRect = GUI.Window(1, posRect, DrawWindow, "拖动窗口");
+	}
+
+	private void DrawWindow(int id)
+	{
+		if (id == 1)
+		{
+			GUI.DragWindow();
+		}
+	}
+    ```
+
+## 10 自定义皮肤 - GUISkin
+- 全局颜色
+    ```c#
+    private void OnGUI()
+    {
+        // 设置全局颜色，影响背景和文本颜色
+        GUI.color = Color.red; 
+        GUI.Label(new Rect(10, 10, 100, 20), "红色文字", guiStyle);
+        
+        // 恢复默认颜色
+        GUI.color = Color.white; 
+        GUI.Label(new Rect(10, 40, 100, 20), "白色文字");
+
+        // 文本着色颜色 
+        // 会和全局颜色相乘。如果想单独设置文本颜色，就不建议设置全局颜色
+        GUI.contentColor = Color.green;
+        GUI.Button(new Rect(10, 70, 100, 20), "绿色按钮");
+
+        // 背景元素着色
+        // 会和全局颜色相乘
+        GUI.backgroundColor = Color.blue;
+        GUI.Box(new Rect(10, 100, 100, 20), "蓝色框");
+    }
+    ```
+- 整体皮肤样式
+    - 可以在 Project 窗口右键创建一个 GUISkin 资源。
+    - 可以帮助我们设置整体的样式，相对于设置当个控件的 style 更加方便。
+    ```c#
+    public GUISkin guiSkin;
+
+	private void OnGUI()
+	{
+        // 设置全局皮肤
+        GUI.skin = guiSkin;
+
+		GUI.skin = guiSkin;
+
+        // 如果设置了GUIStyle，会覆盖GUISkin中的样式
+		GUI.Button(new Rect(0, 0, 100, 100), "测试按钮");
+
+        // 恢复默认皮肤
+        GUI.skin = null;
+	}
+    ```
+## Lesson 11 GUILayout
+- `GUILayout` 是一个公共类。用 `GUILayout` 创建的UI组件会自动设置好UI布局。
+    - 主要用于进行编辑器开发，不适合用于制作游戏UI。
+    ``` c#
+    GUILayout.Button("按钮1");
+    GUILayout.Button("按钮2");
+    GUILayout.Button("按钮3");
+    ```
+    ```c#
+    // GUI.BeginGroup(new Rect(10, 10, 200, 200));
+    GUILayout.BeginArea(new Rect(10, 10, 200, 200));
+
+    GUILayout.BeginHorizontal();
+
+    GUILayout.Button("按钮1");
+    GUILayout.Button("按钮2");
+    GUILayout.Button("按钮3");
+
+    GUILayout.EndHorizontal();
+
+    // GUI.EndGroup();
+    GUILayout.EndArea();
+    ```
+- GUILayoutOption 布局选项
+    - `GUILayout.Width(float width)`：设置宽度。
+    - `GUILayout.Height(float height)`：设置高度。
+    - `GUILayout.MinWidth(float minWidth)`：最小宽度。
+    - `GUILayout.MaxWidth(float maxWidth)`：最大宽度。
+    - `GUILayout.MinHeight(float minHeight)`：最小高度。
+    - `GUILayout.MaxHeight(float maxHeight)`：最大高度。
+    - `GUILayout.ExpandWidth(bool expand)`：是否自动扩展宽度以液态补齐。
+    - `GUILayout.ExpandHeight(bool expand)`：是否自动扩展高度以液态补齐。
+    ```c#
+    GUILayout.Button("按钮1", GUILayout.Width(100), GUILayout.Height(50));
+    ```
+
