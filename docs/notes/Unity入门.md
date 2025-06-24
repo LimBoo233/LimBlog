@@ -517,7 +517,7 @@ Cursor.lockState = CursorLockMode.Confined;
 Cursor.SetCursor(texture2D, Vector2.zero, CursorMode.Auto);
 ```
 
-### Lesson 24 随机数
+## Lesson 24 随机数
 1. 随机数
     - Unity的随机数，不是C#自己的随机数
     - int左闭右开，而float的重载是左闭右闭
