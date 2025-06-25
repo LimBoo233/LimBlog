@@ -600,7 +600,7 @@ public class CustomGUIRoot : MonoBehaviour
     {
         if (!Application.isPlaying)
         {
-            // 仅在编辑模式下获取不断子组件，以节省性能
+            // 仅在编辑模式下不断获取子组件，以节省性能
             _customGUIControls = GetComponentsInChildren<CustomGUIControl>();
         }
 

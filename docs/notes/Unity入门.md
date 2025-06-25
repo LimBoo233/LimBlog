@@ -53,6 +53,8 @@ Time.frameCount;
 Vector3 position = transform.position;
 // 相对父对象
 Vector3 localPosition = transform.localPosition;
+// 距离
+float distance = Vector3.Distance(transform.position, target.position);
 ```
 
 ### 2. 朝向
