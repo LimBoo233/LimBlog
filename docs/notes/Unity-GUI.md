@@ -411,8 +411,236 @@ GUI.SelectionGrid(rect, _toolbarIndex, _toolbarInfos, 3);
 
 ### 前置知识
 
-#### 如何让脚本在编辑模式下运行
+#### 1. 如何让脚本在编辑模式下运行
 特性 `[ExecuteAlways]` ：在类名前加上这个特性，可以让类在编辑模式下自动执行生命周期函数。
 
-#### 九宫格布局概念
-![alt text](image.png)
+#### 2. 九宫格布局概念
+![九宫格布局讲解](./images/Unity学习/九宫格布局讲解.png)
+
+### 实际设计
+#### 位置信息类
+```c#
+/// <summary>
+/// 表示对齐方式
+/// </summary>
+public enum AlignmentType
+{
+	UpLeft,   
+	Up,       
+	UpRight,  
+	Left,     
+	Center,   
+	Right,    
+	DownLeft, 
+	Down,     
+	DownRight 
+}
+
+/// <summary>
+/// 用于表示并计算位置信息
+/// </summary>
+[System.Serializable]
+public class CustomGUIPos
+{
+	// 屏幕对齐方式
+	[SerializeField] private AlignmentType screenAlignment = AlignmentType.UpLeft;
+	
+	// 组件原点对齐方式
+	[SerializeField] private AlignmentType componentOriginAlignment = AlignmentType.UpLeft; 
+	
+	// 位置偏移量
+	[SerializeField] private Vector2 offset = Vector2.zero;   
+	
+	[SerializeField] private float width;     
+	[SerializeField] private float height;    
+	
+	// 实际位置矩形
+	private Rect _realPosition;    
+	
+	// 组件原点位置
+	private Vector2 _originPosition;   
+
+	/// <summary>
+	/// 根据组件原点对齐方式计算原点位置
+	/// </summary>
+	/// <returns>原点坐标</returns>
+	private Vector2 CalculateOriginPosition()
+	{
+		return componentOriginAlignment switch
+		{
+			AlignmentType.UpLeft => Vector2.zero,
+			AlignmentType.Up => new Vector2(width / 2, 0),
+			AlignmentType.UpRight => new Vector2(width, 0),
+			AlignmentType.Left => new Vector2(0, height / 2),
+			AlignmentType.Center => new Vector2(width / 2, height / 2),
+			AlignmentType.Right => new Vector2(width, height / 2),
+			AlignmentType.DownLeft => new Vector2(0, height),
+			AlignmentType.Down => new Vector2(width / 2, height),
+			AlignmentType.DownRight => new Vector2(width, height),
+			_ => Vector2.zero
+		};
+	}
+
+	/// <summary>
+	/// 根据屏幕对齐方式计算实际位置
+	/// </summary>
+	private void CalculateRealPosition()
+	{
+		switch (screenAlignment)
+		{
+			case AlignmentType.UpLeft:    
+				_realPosition.x = -_originPosition.x + offset.x;
+				_realPosition.y = -_originPosition.y + offset.y;
+				break;
+			case AlignmentType.Up:       
+				_realPosition.x = Screen.width / 2f - _originPosition.x + offset.x;
+				_realPosition.y = -_originPosition.y + offset.y;
+				break;
+			case AlignmentType.UpRight:   
+				_realPosition.x = Screen.width - _originPosition.x - offset.x;
+				_realPosition.y = -_originPosition.y + offset.y;
+				break;
+			case AlignmentType.Left:      
+				_realPosition.x = -_originPosition.x + offset.x;
+				_realPosition.y = Screen.height / 2f - _originPosition.y + offset.y;
+				break;
+			case AlignmentType.Center:   
+				_realPosition.x = Screen.width / 2f - _originPosition.x + offset.x;
+				_realPosition.y = Screen.height / 2f -_originPosition.y + offset.y;
+				break;
+			case AlignmentType.Right:  
+				_realPosition.x = Screen.width - _originPosition.x - offset.x;
+				_realPosition.y = Screen.height / 2f - _originPosition.y + offset.y;
+				break;
+			case AlignmentType.DownLeft:  
+				_realPosition.x = -_originPosition.x + offset.x;
+				_realPosition.y = Screen.height - _originPosition.y - offset.y;
+				break;
+			case AlignmentType.Down:     
+				_realPosition.x = Screen.width / 2f - _originPosition.x + offset.x;
+				_realPosition.y = Screen.height - _originPosition.y - offset.y;
+				break;
+			case AlignmentType.DownRight: 
+				_realPosition.x = Screen.width - _originPosition.x - offset.x;
+				_realPosition.y = Screen.height - _originPosition.y - offset.y;
+				break;
+		}
+	}
+	
+	/// <summary>
+	/// 获取计算后的实际位置矩形
+	/// </summary>
+	public Rect RealPosition
+	{
+		get
+		{
+			_originPosition = CalculateOriginPosition();
+			CalculateRealPosition();
+			_realPosition.width = width;
+			_realPosition.height = height;
+			return _realPosition;
+		}
+	}
+	
+}
+```
+#### 控件基类
+```c#
+public class CustomGUIControl : MonoBehaviour
+{
+	// 位置信息
+	[SerializeField] private CustomGUIPos customGUIPos;
+	
+	// 组件内容
+	[SerializeField] private GUIContent guiContent;
+	
+	// 自定义样式是否启用
+	[SerializeField] private bool useCustomStyle;
+	
+	// 自定义样式
+	[SerializeField] private GUIStyle guiStyle;
+
+	public void DrawUI()
+	{
+		if (useCustomStyle)
+		{
+			DrawCustomGUI();
+		}
+		else
+		{
+			DrawNormGUI();
+		}
+	}
+
+	protected virtual void DrawNormGUI()
+	{
+		// 绘制标准GUI
+	}
+
+	protected virtual void DrawCustomGUI()
+	{
+		// 在这里实现自定义GUI绘制逻辑
+	}
+}
+```
+
+#### 绘制所有控件的Root类
+```c#
+[ExecuteAlways]
+public class CustomGUIRoot : MonoBehaviour
+{
+    private CustomGUIControl[] _customGUIControls;
+    
+    private void Start()
+    {
+        _customGUIControls = GetComponentsInChildren<CustomGUIControl>();
+    }
+
+    private void OnGUI()
+    {
+        if (!Application.isPlaying)
+        {
+            // 仅在编辑模式下获取不断子组件，以节省性能
+            _customGUIControls = GetComponentsInChildren<CustomGUIControl>();
+        }
+
+        foreach (var control in _customGUIControls)
+        {
+            control.DrawUI();
+        }
+    }
+}
+```
+
+#### 控件示例 - Button
+```c#
+public class CustomGUIButton : CustomGUIControl
+{
+	public event Action Click;
+	
+	protected virtual void OnClick()
+	{
+		Click?.Invoke();
+	}
+	
+	protected override void DrawNormGUI()
+	{
+		if (GUI.Button(customGUIPos.RealPosition, guiContent))
+		{
+			OnClick();
+		}
+	}
+
+	protected override void DrawCustomGUI()
+	{
+		if (GUI.Button(customGUIPos.RealPosition, guiContent, guiStyle));
+		{
+			OnClick();
+		}
+	}
+}
+
+```
+
+
+# 结束！

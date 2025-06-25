@@ -137,6 +137,11 @@ transform1.SetAsLastSibling();
 transform1.SetSiblingIndex(2);
 ```
 
+### 5. 直接获取子对象的组件
+```c#
+Component[] components = GetComponentsInChildren<Component>();
+```
+
 ## Lesson 10 坐标转化
 世界坐标系转化为本地坐标系: 
 - 可以帮我们判断一个相对位置。
