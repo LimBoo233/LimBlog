@@ -585,7 +585,7 @@ public class CustomGUIControl : MonoBehaviour
 ```
 
 #### 绘制所有控件的Root类
-```c#
+```c# {1}
 [ExecuteAlways]
 public class CustomGUIRoot : MonoBehaviour
 {
@@ -613,7 +613,7 @@ public class CustomGUIRoot : MonoBehaviour
 ```
 
 #### 控件示例 - Button
-```c#
+```c#:line-numbers {1}
 public class CustomGUIButton : CustomGUIControl
 {
 	public event Action Click;

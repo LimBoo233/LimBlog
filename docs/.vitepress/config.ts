@@ -5,6 +5,9 @@ export default defineConfig({
     title: "LimBoo233的笔记空间", // 你的网站标题
     description: "保留自己的智慧", // 你的网站描述
 
+    // 设置默认为暗色主题
+    appearance: 'dark',
+
     // -- 主题配置 --
     themeConfig: {
         // 顶部导航栏

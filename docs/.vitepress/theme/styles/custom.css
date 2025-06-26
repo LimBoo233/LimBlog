@@ -1,0 +1,101 @@
+/* ============================================
+   VitePress 自定义主题样式文件
+   ============================================ */
+
+/* ============================================
+   1. 全局 CSS 变量定义
+   ============================================ */
+
+/* 默认主题变量 - VitePress 经典绿色 */
+:root {
+  /* 品牌色系 */
+  --vp-c-brand-1: #3eaf7c;               /* 主要品牌色，用于链接、标题高亮等 */
+  --vp-c-brand-2: #42b883;               /* 浅一点的品牌色，用于悬停效果 */
+  --vp-c-brand-3: #42d392;               /* 更浅的品牌色，用于更亮的悬停或激活状态 */
+  --vp-c-brand-soft: rgba(62, 175, 124, 0.14); /* 非常柔和的背景色，用于按钮、代码块高亮等 */
+}
+
+/* ============================================
+   2. 海洋主题 (Ocean Theme) - 基于暗色主题
+   ============================================ */
+
+html.theme-ocean {
+  /* 品牌色 - 海洋蓝色调 */
+  --vp-c-brand-1: #67e8f9;               /* 浅青色 - 主要品牌色 */
+  --vp-c-brand-2: #22d3ee;               /* 青色 - 悬停效果 */
+  --vp-c-brand-3: #06b6d4;               /* 深青色 - 激活状态 */
+  --vp-c-brand-soft: rgba(103, 232, 249, 0.14); /* 柔和的背景色 */
+  
+  /* 背景色 - 深海色调 */
+  --vp-c-bg: #0f172a;                    /* 非常深的蓝黑色 - 主背景 */
+  --vp-c-bg-alt: #1e293b;                /* 深蓝灰色 - 替代背景 */
+  --vp-c-bg-soft: #334155;               /* 蓝灰色 - 柔和背景 */
+  --vp-c-bg-mute: #475569;               /* 更亮的蓝灰色 - 静音背景 */
+  
+  /* 边框色 */
+  --vp-c-border: #475569;                /* 边框色 */
+  --vp-c-divider: #334155;               /* 分割线色 */
+  --vp-c-gutter: #1e293b;                /* 装订线色 */
+  
+  /* 文字色 - 海洋风格 */
+  --vp-c-text-1: #f1f5f9;                /* 主要文字 - 非常浅的蓝白色 */
+  --vp-c-text-2: #cbd5e1;                /* 次要文字 - 浅蓝灰色 */
+  --vp-c-text-3: #94a3b8;                /* 第三级文字 - 中等蓝灰色 */
+  
+  /* 组件背景色 */
+  --vp-sidebar-bg-color: rgba(15, 23, 42, 0.95); /* 侧边栏背景 */
+  --vp-nav-bg-color: rgba(15, 23, 42, 0.95);     /* 导航栏背景 */
+  
+  /* 代码块样式 */
+  --vp-code-bg: #1e293b;                 /* 代码块背景 */
+  --vp-code-color: #e2e8f0;              /* 代码文字色 */
+  
+  /* 警告框等组件色彩 */
+  --vp-c-tip: #06b6d4;                   /* 提示色 */
+  --vp-c-warning: #eab308;               /* 警告色 */
+  --vp-c-danger: #ef4444;                /* 危险色 */
+  
+  /* 链接颜色 */
+  --vp-c-text-code: #67e8f9;             /* 行内代码颜色 */
+  
+  /* 确保所有文字在深色背景下清晰可读 */
+  color-scheme: dark;
+}
+
+/* ============================================
+   3. 海洋主题组件样式
+   ============================================ */
+
+/* 3.1 导航栏样式 */
+html.theme-ocean .VPNavBar {
+  background-color: var(--vp-nav-bg-color) !important;
+  backdrop-filter: blur(10px);
+  border-bottom: 1px solid var(--vp-c-divider);
+}
+
+/* 3.2 侧边栏样式 */
+html.theme-ocean .VPSidebar {
+  background-color: var(--vp-sidebar-bg-color) !important;
+  backdrop-filter: blur(10px);
+}
+
+/* 3.3 文档容器样式 */
+html.theme-ocean .VPDoc {
+  background-color: rgba(15, 23, 42, 0.6) !important;
+  border-radius: 8px;
+  padding: 24px;
+  margin: 16px;
+}
+
+/* 3.4 引用块样式 */
+html.theme-ocean .vp-doc blockquote {
+  background-color: rgba(103, 232, 249, 0.1);
+  border-left: 4px solid var(--vp-c-brand-1);
+}
+
+/* ============================================
+   4. 通用样式 (适用于所有主题)
+   ============================================ */
+
+/* 标题样式已移动到 headings.css 文件中 */
+/* 代码块和分割线样式已移动到 content.css 文件中 */

@@ -2,38 +2,46 @@
 
 /**
  * 1. 为导航栏本身设置基础和暗色模式下的背景
- * 保留了您优秀的毛玻璃效果 (backdrop-filter)
+ * 确保导航栏有不透明的背景，不受 background.css 影响
  */
 .VPNav {
-  /* 使用 rgba 实现背景半透明，为 backdrop-filter 生效创造条件 */
-  background-color: rgba(255, 255, 255, 1) !important;
-  backdrop-filter: blur(5px);
-  -webkit-backdrop-filter: blur(5px);
+  /* 使用不透明背景确保导航栏清晰可见 */
+  background-color: rgba(255, 255, 255, 0.95) !important;
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+  z-index: 1000; /* 确保导航栏在最顶层 */
 }
 
 .dark .VPNav {
-  background-color: rgba(27, 27, 31, 1) !important;
+  background-color: rgba(27, 27, 31, 0.95) !important;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
 }
 
-
 /**
- * 2. [核心修复]
- * 问题的根源是 VitePress 默认给标题区域 .VPNavBarTitle 设置了背景色。
- * 我们只需要在暗色模式下，将这个特定元素的背景去掉即可。
- * 这比使用 `*` 通配符要精确、高效得多。
+ * 2. 确保导航栏内部元素有正确的背景
  */
-/* .dark .VPNavBarTitle {
+.VPNavBar {
   background-color: transparent !important;
-} */
+}
 
+.VPNavBarTitle {
+  background-color: transparent !important;
+}
 
-/* --- 移动端菜单屏幕样式 (您的代码很好，直接沿用) --- */
+/* 导航栏菜单按钮 */
+.VPNavBarMenuGroup {
+  background-color: transparent !important;
+}
+
+/* --- 移动端菜单屏幕样式 --- */
 .VPNavScreen {
-  background: rgba(255, 255, 255, 1) !important;
+  background: rgba(255, 255, 255, 0.95) !important;
   backdrop-filter: blur(8px);
   -webkit-backdrop-filter: blur(8px);
+  z-index: 1001;
 }
 
 .dark .VPNavScreen {
-  background: rgba(27, 27, 27, 1) !important;
+  background: rgba(27, 27, 27, 0.95) !important;
 }
