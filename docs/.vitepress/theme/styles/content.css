@@ -1,4 +1,76 @@
 /* ============================================
+   0. 滚动条美化
+   ============================================ */
+
+/* 0.1 全局滚动条样式 */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--vp-c-bg-soft);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--vp-c-brand-1);
+  border-radius: 4px;
+  transition: background-color 0.2s ease;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--vp-c-brand-2);
+}
+
+::-webkit-scrollbar-corner {
+  background: var(--vp-c-bg-soft);
+}
+
+/* 0.2 代码块内滚动条美化 */
+.vp-doc div[class*="language-"] pre::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+.vp-doc div[class*="language-"] pre::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 3px;
+}
+
+.vp-doc div[class*="language-"] pre::-webkit-scrollbar-thumb {
+  background: var(--vp-c-brand-1);
+  border-radius: 3px;
+  transition: all 0.2s ease;
+}
+
+.vp-doc div[class*="language-"] pre::-webkit-scrollbar-thumb:hover {
+  background: var(--vp-c-brand-2);
+}
+
+/* 0.3 深色模式下的滚动条 */
+.dark ::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.dark .vp-doc div[class*="language-"] pre::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+/* 0.4 移动端滚动条优化 */
+@media (max-width: 768px) {
+  ::-webkit-scrollbar {
+    width: 4px;
+    height: 4px;
+  }
+  
+  .vp-doc div[class*="language-"] pre::-webkit-scrollbar {
+    width: 3px;
+    height: 3px;
+  }
+}
+
+/* ============================================
    内容样式美化文件 - 分割线等
    ============================================ */
 
