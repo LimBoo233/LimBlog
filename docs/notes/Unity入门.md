@@ -1,5 +1,95 @@
 # Unity入门
 
+## 游戏对象
+
+在 Unity 中，场景里的所有东西都是`GameObject`，或者附着在`GameObject`上。摄像机、灯光、玩家角色、敌人、UI 元素……它们本质上都是`GameObject`。而 `GameObject`本身只是一个“容器”，它的功能由附加在它上面的各种组件 (Components) 来定义，比如 `Transform` (位置、旋转、缩放)、`Rigidbody` (物理)、`Mesh Renderer` (渲染模型) 或者你自己编写的 C# 脚本。
+
+### 创建游戏对象
+调用`Instantiate`方法来创建一个游戏对象实例：
+```c#
+GameObject gameObject = Instantiate(prefab);
+```
+可以通过传入位置和旋转来指定实例化的位置（最常用）：
+```c#
+GameObject gameObject = Instantiate(prefab, position, rotation);
+```
+通过`Instantiate`方法创建的对象会自动添加到场景中。如果需要为其设置父对象，可以使用`Instantiate`的重载方法：
+```c#
+GameObject gameObject = Instantiate(prefab, parentTransform);
+```
+
+### 查找游戏对象
+当你想在代码中控制一个场景中已经存在的对象时，你就需要先“找到”它。
+
+可以通过名字来查找一个激活状态的`GameObject`：
+```c#
+void Start()
+{
+    // 查找场景中名为 "PlayerCharacter" 的游戏对象
+    player = GameObject.Find("PlayerCharacter");
+}
+```
+
+`GameObject.Find()`的效率非常低，因为它会遍历整个场景的层级结构。应避免在`Update()`这样的每帧调用的函数中使用它。
+
+通过标签 (Tag) 来查找。这比按名字查找效率更高，也更灵活。你可以在 Unity 编辑器中为游戏对象设置 Tag。
+```c#
+// 查找单个带 "Enemy" 标签的对象
+GameObject firstEnemy = GameObject.FindWithTag("Enemy");
+
+// 查找所有带 "Enemy" 标签的对象，返回一个数组
+GameObject[] allEnemies = GameObject.FindGameObjectsWithTag("Enemy");
+```
+:::info
+最佳实践：当你需要频繁查找某一类对象（如玩家、敌人）时，优先使用 Tag。对于只需要在游戏开始时获取一次引用的对象，可以在脚本中创建一个 public 变量，然后从编辑器中手动拖拽赋值，这是效率最高且最安全的方式。
+:::
+
+### 修改和交互
+`SetActive(bool value)`可以激活或禁用一个`GameObject`。被禁用的对象及其所有子对象都将从场景中“消失”，它们的脚本（如 Update）也不会再执行:
+```c#
+void ToggleMenu()
+{
+    // 如果菜单是激活的，就禁用它；反之亦然。
+    bool isActive = menuPanel.activeSelf;
+    menuPanel.SetActive(!isActive);
+}
+```
+
+`GetComponent<T>()`（极其重要）获取附加在 GameObject 上的指定类型的组件。这是你与 GameObject 功能交互的核心。
+```c#
+Rigidbody rb = this.gameObject.GetComponent<Rigidbody>();
+```
+
+为了避免`GetComponent`返回 null 导致的错误，可以使用更新、更安全的`TryGetComponent`方法：
+```c#
+if (this.gameObject.TryGetComponent<Rigidbody>(out Rigidbody rb))
+{
+    rb.AddForce(Vector3.up * 10f, ForceMode.Impulse);
+}
+```
+
+`AddComponent<T>()`可以在运行时动态地给一个`GameObject`添加一个新组件：
+```c#
+Rigidbody rb = target.AddComponent<Rigidbody>();
+```
+
+### 销毁物体
+当不再需要一个对象时（例如，子弹击中目标、敌人死亡），你应该销毁它以释放内存和计算资源。
+
+`Destroy()`并不会真的“立即”执行，它会将对象标记为“待销毁”，并在当前帧的末尾统一清理。
+```c#
+Destroy(gameObject);
+```
+
+该方法还可以接受第二个参数，表示延迟多少秒后再销毁。
+```c#
+Destroy(gameObject, 2f);
+```
+
+::: tip
+你也可以用`Destroy()`来销毁一个组件，而不是整个`GameObject`。例如`Destroy(GetComponent<Rigidbody>())`。
+:::
+
 ## Lesson 5 时间
 
 ### 1. 时间缩放比例
@@ -549,3 +639,4 @@ Func<int, int> ac3 = i => i + 1;
 // Unity
 UnityAction uac = () => print("234");
 ```
+

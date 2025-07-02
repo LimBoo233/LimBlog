@@ -9,7 +9,7 @@ hero:
 
   actions:
     - theme: brand
-      text: 开始阅读
+      text: 开始
       link: /notes/introduction
     - theme: alt
       text: 关于我

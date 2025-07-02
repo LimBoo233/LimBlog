@@ -5,11 +5,13 @@
   height: 1.2em;
   background-size: contain;
   vertical-align: -0.2em;
-  margin-right: 0.5em;
+  margin-right: 8px;
 }
+
 .i-github {
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='currentColor'%3E%3Cpath d='M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.91 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z'/%3E%3C/svg%3E");
 }
+
 .i-mail {
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='currentColor'%3E%3Cpath d='M22 6c0-1.1-.9-2-2-2H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6zm-2 0l-8 5-8-5h16zm0 12H4V8l8 5 8-5v10z'/%3E%3C/svg%3E");
 }
@@ -17,12 +19,12 @@
 .about-page {
   max-width: 720px;
   margin: 0 auto;
-  padding: 2rem 1.5rem;
+  padding: 32px 24px;
   text-align: center;
 }
 
 .hero-section {
-  margin-bottom: 3rem;
+  margin-bottom: 64px;
 }
 
 .avatar {
@@ -31,21 +33,21 @@
   margin-right: auto;
   width: 120px;
   height: 120px;
-  border-radius: 50%;
-  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
-  margin-bottom: 1.5rem;
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  border-radius: var(--radius-full);
+  box-shadow: var(--shadow-lg);
+  margin-bottom: 24px;
+  transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .avatar:hover {
   transform: scale(1.05) rotate(3deg);
-  box-shadow: 0 20px 35px -10px rgba(0, 0, 0, 0.2), 0 8px 15px -4px rgba(0, 0, 0, 0.1);
+  box-shadow: var(--shadow-xl);
 }
 
 .name {
-  font-size: 2.5rem;
+  font-size: 32px;
   font-weight: 700;
-  margin-bottom: 0.5rem;
+  margin-bottom: 8px;
   background: -webkit-linear-gradient(315deg, var(--vp-c-brand-1), #7284eb);
   -webkit-background-clip: text;
   background-clip: text;
@@ -54,32 +56,32 @@
 }
 
 .tagline {
-  font-size: 1.2rem;
+  font-size: 20px;
   color: var(--vp-c-text-2);
   margin: 0;
 }
 
 .info-card {
   background-color: var(--vp-c-bg-soft);
-  padding: 1.5rem 2rem;
-  border-radius: 12px;
+  padding: 24px 32px;
+  border-radius: var(--radius-lg);
   border: 1px solid var(--vp-c-divider);
   text-align: left;
-  margin-bottom: 2rem;
-  transition: transform 0.3s, box-shadow 0.3s;
+  margin-bottom: 32px;
+  transition: var(--transition-smooth);
 }
 
 .info-card:hover {
   transform: translateY(-5px);
-  box-shadow: 0 8px 20px rgba(0,0,0,0.08);
+  box-shadow: var(--shadow-md);
 }
 
 .card-title {
-  font-size: 1.5rem;
+  font-size: var(--font-size-2xl);
   font-weight: 600;
-  margin: 0 0 1rem;
+  margin: 0 0 16px;
   border-bottom: 1px solid var(--vp-c-divider);
-  padding-bottom: 0.75rem;
+  padding-bottom: 8px;
 }
 
 .features {
@@ -91,8 +93,8 @@
 .features li {
   display: flex;
   align-items: center;
-  font-size: 1rem;
-  margin-bottom: 0.75rem;
+  font-size: var(--font-size-base);
+  margin-bottom: var(--space-sm);
   line-height: 1.6;
 }
 
@@ -103,34 +105,33 @@
 .contact-links {
   display: flex;
   flex-wrap: wrap;
-  gap: 1rem;
+  gap: 16px;
 }
 
 .contact-link {
   display: inline-flex;
-  align-items: center;
-  gap: 0.5rem;
-  padding: 0.6rem 1.2rem;
-  border-radius: 8px;
+  align-items: center;    gap: 8px;
+  padding: var(--space-sm) var(--space-md);
+  border-radius: var(--radius-md);
   background-color: var(--vp-c-bg-mute);
   font-weight: 500;
   color: var(--vp-c-text-2);
   text-decoration: none !important;
-  transition: all 0.2s ease-in-out;
+  transition: var(--transition-base);
 }
 
 .contact-link:hover {
   background-color: var(--vp-c-brand-soft);
   color: var(--vp-c-brand-1);
   transform: translateY(-2px);
-  box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+  box-shadow: var(--shadow-sm);
 }
 
 .quote {
   text-align: center;
-  margin: 4rem auto;
-  padding: 1rem;
-  font-size: 1.1rem;
+  margin: var(--space-3xl) auto;
+  padding: var(--space-md);
+  font-size: var(--font-size-lg);
   color: var(--vp-c-text-3);
   border: none;
   font-style: italic;
@@ -140,8 +141,8 @@
 .page-footer {
   text-align: center;
   color: var(--vp-c-text-3);
-  font-size: 0.9em;
-  margin-top: 3rem;
-  padding-top: 2rem;
+  font-size: var(--font-size-sm);
+  margin-top: var(--space-3xl);
+  padding-top: var(--space-xl);
   border-top: 1px solid var(--vp-c-divider);
 }

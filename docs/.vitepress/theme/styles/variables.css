@@ -1,0 +1,80 @@
+/* ============================================
+   全局 CSS 变量定义文件
+   ============================================ */
+
+/* ============================================
+   基础设计系统变量
+   ============================================ */
+:root {
+  /* 字体系统 */
+  /* 使用默认的字体 */
+  
+  /* 字体大小 */
+  --font-size-xs: 0.75rem;    /* 12px */
+  --font-size-sm: 0.875rem;   /* 14px */
+  --font-size-base: 1rem;     /* 16px */
+  --font-size-lg: 1.125rem;   /* 18px */
+  --font-size-xl: 1.25rem;    /* 20px */
+  --font-size-2xl: 1.5rem;    /* 24px */
+  --font-size-3xl: 2rem;      /* 32px */
+  
+  /* 边框半径 */
+  --radius-sm: 4px;
+  --radius-md: 8px;
+  --radius-lg: 12px;
+  --radius-full: 50%;
+  
+  /* 阴影系统 */
+  --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+  --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+  
+  /* 动画变量 */
+  --transition-fast: 0.15s ease;
+  --transition-base: 0.2s ease;
+  --transition-smooth: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-slow: 0.5s ease;
+  
+  /* Z-index 层级 */
+  --z-dropdown: 1000;
+  --z-sticky: 1020;
+  --z-fixed: 1030;
+  --z-modal: 1040;
+  --z-popover: 1050;
+  --z-tooltip: 1060;
+  
+  /* 滚动条变量 */
+  --scrollbar-width-desktop: 8px;
+  --scrollbar-width-mobile: 4px;
+  --scrollbar-width-code-desktop: 6px;
+  --scrollbar-width-code-mobile: 3px;
+}
+
+/* ============================================
+   默认主题变量 - VitePress 经典绿色
+   ============================================ */
+:root {
+  /* 品牌色系 */
+  --vp-c-brand-1: #3eaf7c;
+  --vp-c-brand-2: #42b883;
+  --vp-c-brand-3: #42d392;
+  --vp-c-brand-soft: rgba(62, 175, 124, 0.14);
+  
+  /* 代码块颜色 */
+  --code-bg-light: #f6f8fa;
+  --code-bg-dark: #1e1e1e;
+  --code-tabs-light: #eaeef2;
+}
+
+/* ============================================
+   响应式断点变量
+   ============================================ */
+:root {
+  --breakpoint-xs: 480px;
+  --breakpoint-sm: 640px;
+  --breakpoint-md: 768px;
+  --breakpoint-lg: 1024px;
+  --breakpoint-xl: 1280px;
+  --breakpoint-2xl: 1536px;
+}

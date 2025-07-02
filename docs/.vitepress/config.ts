@@ -5,8 +5,14 @@ export default defineConfig({
     title: "LimBoo233的笔记空间", // 你的网站标题
     description: "保留自己的智慧", // 你的网站描述
 
-    // 设置默认为暗色主题
+    // 设置默认为暗色主题，保留主题切换器
     appearance: 'dark',
+
+    // Markdown 配置
+    markdown: {
+        // 启用代码行号
+        lineNumbers: false,
+    },
 
     // -- 主题配置 --
     themeConfig: {

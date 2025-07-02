@@ -1,7 +1,18 @@
-/* 引入子样式文件 */
+/* ============================================
+   VitePress 主题样式入口文件
+   ============================================ */
+
+/* 1. 引入变量定义 (最优先) */
+@import './styles/variables.css';
+
+/* 2. 引入基础样式 */
+@import './styles/base.css';
+
+/* 3. 引入背景样式 */
 @import './styles/background.css';
-@import './styles/custom.css';
+
+/* 4. 引入组件样式 */
+@import './styles/navbar.css';
 @import './styles/headings.css';
 @import './styles/content.css';
 @import './styles/about.css';
-@import './styles/navbar.css';

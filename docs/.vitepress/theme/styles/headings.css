@@ -129,7 +129,7 @@
   line-height: 1.4;
   margin: 2rem 0 1rem 0;
   position: relative;
-  color: var(--vp-c-text-2);
+  color: var(--vp-c-text-1);
   transition: all 0.3s ease;
 }
 
@@ -151,7 +151,7 @@
 }
 
 .vp-doc h4:hover {
-  color: var(--vp-c-text-1);
+  color: var(--vp-c-text-2);
   transform: translateX(2px);
 }
 
@@ -209,84 +209,7 @@
 }
 
 /* ============================================
-   3. 海洋主题标题特殊效果
-   ============================================ */
-
-/* 3.1 海洋主题一级标题 */
-html.theme-ocean .VPDoc h1 {
-  background: linear-gradient(135deg, 
-    var(--vp-c-brand-1) 0%, 
-    var(--vp-c-brand-2) 25%, 
-    var(--vp-c-brand-3) 50%, 
-    var(--vp-c-brand-1) 100%
-  );
-  background-size: 200% 200%;
-  background-clip: text;
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  
-  /* 海洋风格发光效果 */
-  filter: drop-shadow(0 0 10px rgba(103, 232, 249, 0.4));
-  text-shadow: 0 0 20px rgba(103, 232, 249, 0.3);
-}
-
-html.theme-ocean .VPDoc h1::after {
-  background: linear-gradient(90deg, 
-    var(--vp-c-brand-1), 
-    var(--vp-c-brand-2), 
-    var(--vp-c-brand-3)
-  );
-  box-shadow: 0 0 10px rgba(103, 232, 249, 0.5);
-}
-
-/* 3.2 海洋主题二级标题 */
-html.theme-ocean .VPDoc h2 {
-  color: var(--vp-c-brand-1);
-  text-shadow: 0 0 8px rgba(103, 232, 249, 0.3);
-}
-
-html.theme-ocean .VPDoc h2::before {
-  color: var(--vp-c-brand-1);
-  text-shadow: 0 0 6px rgba(103, 232, 249, 0.5);
-}
-
-html.theme-ocean .VPDoc h2:hover {
-  text-shadow: 0 0 12px rgba(103, 232, 249, 0.5);
-}
-
-/* 3.3 海洋主题三级标题 */
-html.theme-ocean .vp-doc h3 {
-  border-left-color: var(--vp-c-brand-1);
-  color: var(--vp-c-text-1);
-}
-
-html.theme-ocean .vp-doc h3::before {
-  background: linear-gradient(180deg, 
-    var(--vp-c-brand-1), 
-    var(--vp-c-brand-2), 
-    var(--vp-c-brand-3)
-  );
-  box-shadow: 0 0 8px rgba(103, 232, 249, 0.4);
-}
-
-html.theme-ocean .vp-doc h3:hover {
-  color: var(--vp-c-brand-1);
-  text-shadow: 0 0 6px rgba(103, 232, 249, 0.3);
-}
-
-/* 3.4 海洋主题四级标题 */
-html.theme-ocean .vp-doc h4::before {
-  color: var(--vp-c-brand-1);
-  text-shadow: 0 0 4px rgba(103, 232, 249, 0.5);
-}
-
-html.theme-ocean .vp-doc h4:hover {
-  color: var(--vp-c-brand-1);
-  text-shadow: 0 0 4px rgba(103, 232, 249, 0.2);
-}
-
-/* ============================================
-   4. 响应式设计
+   3. 响应式设计
    ============================================ */
 
 @media (max-width: 768px) {

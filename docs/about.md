@@ -39,7 +39,7 @@ sidebar: false
   </blockquote>
 
   <div class="page-footer">
-    -- 真的没有啦~ &gt; &lt ' -- 
+    -- 真的没有啦 &gt; &lt -- 
   </div>
 
 </div>

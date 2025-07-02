@@ -128,7 +128,7 @@ Debug.DrawRay(a, transform.forward, Color.red);
     }
     ```
 
-    如何计算两个向量之间的夹角?
+    **如何计算两个向量之间的夹角?**
 
     首先，我们知道点积的几何定义公式是：
     `a ⋅ b = ∣a∣ ⋅ ∣b∣ ⋅ cos(θ)`
@@ -255,11 +255,115 @@ Debug.DrawRay(a, transform.forward, Color.red);
     3. 最后绕世界Z轴旋转（翻滚, Roll）。
     - *当中间的旋转轴（X轴）旋转了 ±90 度时，万向节死锁就发生了。*
 
-::: tip **为什么“静态欧拉角”为何也无法幸免？**
-
-
+::: details **为什么“静态欧拉角”为何也无法幸免？**
 假设你把一个静态摄像机的位置设置为欧拉角 (Pitch=90°, Yaw=40°, Roll=50°)。
 
 表面上看：摄像机固定不动，似乎没问题。
-潜在的问题：这个姿态本身就处于万向节死锁中。如果你想在这个姿态的基础上，进行一个微小的“偏航”调整（比如想让它向左看一点点），你会发现你无法通过简单地修改 Yaw 值来实现。因为在这个状态下，改变 
+潜在的问题：这个姿态本身就处于万向节死锁中。如果你想在这个姿态的基础上，进行一个微小的“偏航”调整（比如想让它向左看一点点），你会发现你无法通过简单地修改 Yaw 值来实现。在这个状态下，改变 Yaw 值会导致 Pitch 值的变化，从而使摄像机失去控制。
 :::
+
+
+#### 解决方案——四元数
+四元数是一种数学概念，它扩展了我们熟知的复数，主要用于在三维空间中表示旋转和方向。
+
+你可以将一个单位四元数（长度为1的四元数，用于表示纯旋转）想象成一个“旋转指令”。
+- 这个指令包含一个旋转轴 (x,y,z)。
+- 这个指令还包含一个旋转角度 θ。
+
+四元数 q = w + xi + yj + zk 将这两者巧妙地编码在一起：
+- w = cos( θ/ 2 ) 
+- x = sin( θ/ 2 ) * axis.x
+- y = sin( θ/ 2 ) * axis.y
+- z = sin( θ/ 2 ) * axis.z
+> warning 四元数的具体原理较为复杂，感兴趣可以查阅相关资料。此处仅介绍其在 Unity 中的使用。
+
+```c#
+// 传统方法：q = w + xi + yj + zk
+Quaternion q = new Quaternion(Mathf.Sin(θ / 2), 0, 0, Mathf.Cos(θ / 2));
+
+// 角度 - 轴
+Quaternion q = Quaternion.AngleAxis(θ * Mathf.Rad2Deg, axis);
+```
+
+**与欧拉角的相互转化**
+```c#
+// 欧拉角转四元数
+Quaternion q = Quaternion.Euler(eulerAngles);
+
+// 四元数转欧拉角
+Vector3 euler = q.eulerAngles;
+```
+
+**四元数的旋转**
+
+四元数的旋转非常简单，只需要将四元数与向量相乘即可：
+```c#
+transform.rotation *= Quaternion.AngleAxis(angle, Vector3.up);
+```
+这里的 `Vector3.up` 表示的是世界坐标系。
+
+#### 单位四元数
+
+单位四元数 (Unit Quaternion) 就是一个专门用来表示纯粹旋转（即不拉伸、不缩放）的四元数。
+
+- 在数学里，“单位”这个词通常意味着“长度为1”。
+    - 单位向量 (Unit Vector) 是一个长度为1的向量，它只表示方向，不表示大小。
+    - 同样，单位四元数 就是一个“长度”为1的四元数。
+
+    例如，“不进行任何旋转”这个状态，可以用单位四元数 q = 1 + 0i + 0j + 0k 来表示。
+
+- 从“功能”上来理解：
+    这是最关键的一点。为什么我们关心它的长度是不是1？
+    - 单位四元数 = 纯旋转
+    - 非单位四元数 = 旋转 + 缩放
+
+    在游戏开发、动画和机器人学中，我们绝大多数时候只想旋转一个物体，而不想在旋转的同时改变它的大小。因此，我们使用的几乎所有代表旋转的四元数，都是单位四元数。
+
+:::tip
+实际上，四元数的计算后长度缩放最后会被抵消，也就是实际上并不会导致缩放。但在实际应用（比如游戏引擎编程）中，为了计算效率，大家常常使用更简单的公式来执行旋转。
+
+在 Unity 里，当你试图将一个非单位四元数赋值给 transform.rotation 属性时，Unity 引擎在后台会自动将您提供的四元数进行“归一化”处理，也就是强制将它的长度变为1，然后再应用给物体。
+:::
+
+获取单位四元数：
+```c#
+Quaternion unitQuaternion = Quaternion.identity; 
+```
+
+#### 四元数插值运算
+如果Vector3，四元数的插值运算可以使用 `Quaternion.Lerp` 或 `Quaternion.Slerp`。
+
+在四元数中，Lerp 和 Slerp 只有一些细微的差别。但由于算法不同，**Slerp 的效果会更好一些**。在官方的API当中，也推荐使用 Slerp。
+```c#
+transform.rotation = Quaternion.Slerp(start, end, t); 
+```
+
+#### 面向目标
+`Quaternion.LookRotation` 可以创建一个旋转，使得 forward 矢量指向 `target.position - transform.position` 的方向。
+```c#
+Quaternion q = Quaternion.LookRotation(target.position - transform.position);
+transform.rotation = q;
+```
+
+#### 四元数的乘法
+
+通常不需要手动去记或计算四元数的乘法的复杂的公式，了解其存在即可。在编程中，这都是由库函数完成的。
+
+**四元数相乘**
+- 两个四元数相乘，等同于将它们所代表的两个旋转进行叠加。
+```c#
+// 绕Y轴旋转30度
+Quaternion q1 = Quaternion.AngleAxis(30, Vector3.up); 
+// 应用这个旋转
+transform.rotation *= q1; 
+```
+
+**四元数乘向量**
+- 四元数乘以向量，等同于将向量进行旋转。
+```c#
+Vector3 rotatedVector = q * originalVector;
+```
+:::warning
+四元数相乘和四元数乘向量的顺序不可变。
+:::
+
