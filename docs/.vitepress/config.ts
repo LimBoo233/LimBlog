@@ -41,7 +41,15 @@ export default defineConfig({
                         ]
                     }
                 ]
-            }
+            },
+
+            { 
+                text: 'CSharp基础', 
+                items: [
+                    { text: '异步编程', link: '/notes/CSharp基础/异步编程' },
+                ]
+            },
+
         ],
 
     }

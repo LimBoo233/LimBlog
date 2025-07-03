@@ -367,3 +367,66 @@ Vector3 rotatedVector = q * originalVector;
 四元数相乘和四元数乘向量的顺序不可变。
 :::
 
+## 延迟函数
+延迟函数是一种编程工具，它能让你的代码不立即执行，而是等待一个指定的时间（比如几秒钟）之后再运行。
+
+### `Invoke` 和 `InvokeRepeating`
+
+这是 Unity 内置的最简单直接的延迟方法。它通过函数的名字（一个字符串）来调用一个无参数的函数。
+```c#
+void Start()
+{
+    Invoke("Explode", 3.0f);
+}
+
+void Explode()
+{
+    Debug.Log("轰！");
+}
+```
+
+`InvokeRepeating("FunctionName", time, repeatRate)` 则可以用来重复调用一个函数，包含参数：
+- `FunctionName` ：要调用的函数名
+- `time` ：第一次调用前的延迟时间（秒）。
+- `repeatRate` ：之后每次调用的时间间隔。
+
+::: warning
+`Invoke()` 和 `InvokeRepeating()`都只能调用相同脚本的函数。
+:::
+
+如果想要取消延迟调用，可以使用` CancelInvoke()` 方法：
+```c#
+void CancelTheExplosion()
+{
+    CancelInvoke("Explode");
+}
+```
+只要取消了指定的延迟调用，无论之前设定了多少次 `Invoke()` 和 `InvokeRepeating()` ，都会被取消。
+
+如果取消了没有设置的延迟调用，Unity 会忽略这个操作，不会报错。
+
+::: tip
+虽然不常用，但是可以通过 `IsInvoking()` 和` IsInvoking("FunctionName")` 来检查是否有延迟调用。
+```c#
+if (IsInvoking()) {}
+```
+:::
+
+**注意，脚本依附对象失活或脚本自身失活，延迟函数依旧会继续执行。**
+
+如果想要让一个脚本在激活的时候执行延迟函数，在失活的时候取消延迟函数，可以利用生命周期函数 `OnEnable()` 和 `OnDisable()` :
+```c#
+void OnEnable()
+{
+    // 开启重复执行的延迟函数
+}
+
+void OnDisable()
+{
+    // 取消重复执行的延迟函数
+}
+```
+
+### 多线程
+
+Unity 支持多线程，但新线程无法访问 Unity 相关对象的内容。在 Unity 中新建的线程需要手动关闭，否则会在编辑器模式中，线程仍会继续执行。
