@@ -9,6 +9,13 @@
   /* 字体系统 */
   /* 使用默认的字体 */
   
+  /* 代码字体 */
+  --vp-font-family-mono: 'JetBrains Mono', 'Fira Code','Consolas', 'Monaco', 'Courier New', monospace;
+
+   /* 代码字体大小和行高 */
+  --vp-code-font-size: 14px; 
+  --vp-code-line-height: 1.7; 
+
   /* 字体大小 */
   --font-size-xs: 0.75rem;    /* 12px */
   --font-size-sm: 0.875rem;   /* 14px */

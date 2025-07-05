@@ -22,9 +22,10 @@ export default defineConfig({
             { text: '引导', link: '/notes/introduction' } 
         ],
 
+        // markdown 右侧目录信息
         outline: {
-            level: 'deep',
-            label: '本页目录' 
+            level: [2, 3],
+            label: '页面导航'
         },
 
         // 侧边栏
@@ -46,6 +47,7 @@ export default defineConfig({
             { 
                 text: 'CSharp基础', 
                 items: [
+                    { text: '多线程', link: '/notes/CSharp基础/多线程' },
                     { text: '异步编程', link: '/notes/CSharp基础/异步编程' },
                 ]
             },
