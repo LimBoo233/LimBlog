@@ -419,7 +419,7 @@ GUI.SelectionGrid(rect, _toolbarIndex, _toolbarInfos, 3);
 
 ### 实际设计
 #### 位置信息类
-```c#:line-numbers {1}
+```c#:line-numbers 
 /// <summary>
 /// 表示对齐方式
 /// </summary>
@@ -545,7 +545,7 @@ public class CustomGUIPos
 }
 ```
 #### 控件基类
-```c#:line-numbers {1}
+```c#:line-numbers 
 public class CustomGUIControl : MonoBehaviour
 {
 	// 位置信息
@@ -585,7 +585,7 @@ public class CustomGUIControl : MonoBehaviour
 ```
 
 #### 绘制所有控件的Root类
-```c#:line-numbers {1}
+```c#:line-numbers 
 [ExecuteAlways]
 public class CustomGUIRoot : MonoBehaviour
 {
@@ -613,7 +613,7 @@ public class CustomGUIRoot : MonoBehaviour
 ```
 
 #### 控件示例 - Button
-```c#:line-numbers {1}
+```c#:line-numbers 
 public class CustomGUIButton : CustomGUIControl
 {
 	public event Action Click;
