@@ -151,7 +151,7 @@
 }
 
 .vp-doc h4:hover {
-  color: var(--vp-c-text-2);
+  color: var(--vp-c-text-1);
   transform: translateX(2px);
 }
 
