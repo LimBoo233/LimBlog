@@ -1273,8 +1273,11 @@ int layerMask = 1 << LayerMask.NameToLayer("LayerName1") |
 
 #### `Physics.OverlapBoxNonAlloc`
 与 `OverlapBox` 类似，但它不会分配新的数组，而是将结果存储到提供的数组中。在需要检测是有碰撞再执行对应逻辑时，这种方式更简洁。
+
+每次手动创建数组并传入，虽然不够优雅，但可以避免频繁的内存分配和垃圾回收，也算是一种取舍：
 ```c#
-Collider[] colliders;
+// 只检测10个碰撞体
+Collider[] colliders = new Collider[10];
 if (Physics.OverlapBoxNonAlloc(Vector3.zero, Vector3.one, colliders) > 0)
 {
     // 有碰撞体在盒子内
