@@ -52,6 +52,9 @@ export default defineConfig({
                 ]
             },
 
+
+            {text: `Markdown快速指南`, link: '/notes/MyMarkdown/Markdown快速指南'},
+
         ],
 
     }

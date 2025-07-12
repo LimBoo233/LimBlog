@@ -40,8 +40,9 @@ pnpm-debug.log*
 # VitePress 自动生成的文件
 /.vitepress/cache
 /.vitepress/dist
-/.vitepress/deps  # <-- 确保这一行存在
+docs/.vitepress/cache/deps
 
 # 构建输出
 /build
 /dist
+
