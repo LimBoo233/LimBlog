@@ -1224,6 +1224,8 @@ lineRenderer.generateLightingData = true;
 
 ## 范围检测
 
+此处主要讲解瞬时的范围检测。
+
 适用场景：
 1. 释放一个范围性技能（AOE），对范围内的所有敌人造成伤害。
 2. AI进行周期性索敌，而不是每时每刻都检测。
@@ -1235,7 +1237,7 @@ lineRenderer.generateLightingData = true;
 
 #### `Physics.OverlapBox`
 
-用于检测一个**盒状（长方体）** 区域内存在哪些碰撞体（Collider）。
+用于检测一个盒状（长方体） 区域内存在哪些碰撞体（Collider）。
 
 函数完整的定义方式：
 ```c#
@@ -1281,5 +1283,64 @@ Collider[] colliders = new Collider[10];
 if (Physics.OverlapBoxNonAlloc(Vector3.zero, Vector3.one, colliders) > 0)
 {
     // 有碰撞体在盒子内
+}
+```
+
+#### `Physics.OverlapSphere`
+类似于 `OverlapBox`，但用于检测一个球形区域内的碰撞体。
+
+函数完整的定义方式：
+```c#
+public static Collider[] OverlapSphere(
+    Vector3 position, 
+    float radius, 
+    int layerMask, 
+    QueryTriggerInteraction queryTriggerInteraction
+);
+```
+
+#### `Physics.OverlapSphereNonAlloc`
+类似于 `Physics.OverlapBoxNonAlloc`。
+
+```c#
+Collider[] colliders = new Collider[10];
+if (Physics.OverlapSphereNonAlloc(Vector3.zero, 1f, colliders) > 0)
+{
+    // 有碰撞体在球形区域内
+}
+```
+
+#### `Physics.OverlapCapsule`
+
+用于检测并返回一个胶囊体形状区域内的所有碰撞体。
+
+```c#
+public static Collider[] OverlapCapsule(
+    Vector3 point0, 
+    Vector3 point1, 
+    float radius, 
+    int layerMask, 
+    QueryTriggerInteraction queryTriggerInteraction
+);
+```
+
+1. `point0`
+    - 类型: `Vector3`
+    - 含义: 胶囊体第一个端点半球的球心坐标。
+2. `point1`
+    - 类型: `Vector3`
+    - 含义: 胶囊体第二个端点半球的球心坐标。
+    - 关键：`point0` 和 `point1` 之间的直线构成了胶囊体中间圆柱部分的轴线。
+3. `radius`
+    - 类型: `float`
+    - 含义: 胶囊体的半径。这个半径同时作用于两个半球形的端点和中间的圆柱部分。
+
+#### `Physics.OverlapCapsuleNonAlloc`
+代码示例：
+```c#
+Collider[] colliders = new Collider[10];
+if (Physics.OverlapCapsuleNonAlloc(point0, point1, radius, colliders) > 0)
+{
+    // 有碰撞体在胶囊体区域内
 }
 ```

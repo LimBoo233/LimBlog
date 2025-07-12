@@ -1,5 +1,9 @@
 # Markdown快速指南
 
+推荐材料:
+1. [Markdown 基本语法](https://markdown.com.cn/basic-syntax/)
+2. [VitePress 文档](https://vitepress.dev/zh/)
+
 ```markdown
 # Markdown 新手教程
 
@@ -7,13 +11,13 @@ Markdown 是一种轻量级的标记语言，用于格式化纯文本。它简�
 
 ## 1. 标题
 
-```markdown
 # 一级标题
 ## 二级标题
 ### 三级标题
 #### 四级标题
 ##### 五级标题
 ###### 六级标题
+
 ```
 
 ## 段落与换行
