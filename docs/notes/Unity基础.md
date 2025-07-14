@@ -1344,3 +1344,62 @@ if (Physics.OverlapCapsuleNonAlloc(point0, point1, radius, colliders) > 0)
     // 有碰撞体在胶囊体区域内
 }
 ```
+
+## 射线检测
+
+一个点（原点）沿着一个特定方向发射出一条无限长或有限长的“激光”（射线）。射线检测就是判断这条射线是否碰到了场景中的某个带有碰撞体（Collider）的物体。
+
+在 Unity 中，这个功能主要由 `Physics` 类来处理。
+
+通过实例化 `Ray` 类来声明一个射线：
+```c#
+Ray ray = new Ray(Vector3 origin, Vector3 direction);
+```
+
+可以从屏幕发射一条射线，摄像机的视口方向为射线的方向：
+```c#
+Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+```
+
+单纯的射线声明没有实际意义，只有结合射线检测方法才能判断射线是否击中了物体。
+
+通过 `Physics.Raycast` 可以得知射线是否击中了任何物体，方法参数与范围检测类似：
+```c#
+bool isHit = Physics.Raycast(
+    Vector3 origin, 
+    Vector3 direction, 
+    out RaycastHit hitInfo, 
+    float maxDistance,
+    int layerMask,
+    QueryTriggerInteraction queryTriggerInteraction
+);
+```
+
+可以将 `Ray` 作为参数传入：
+
+```c#
+bool isHit = Physics.Raycast(ray, out RaycastHit hitInfo, float.MaxValue);
+```
+::: info
+`RaycastHit` 对象包含了很多有用的信息，最常用的有：
+- `hitInfo.point`：射线与物体碰撞点的世界坐标。
+- `hitInfo.distance`：从射线起点到碰撞点的距离。
+- `hitInfo.collider`：被击中物体的碰撞体（Collider）。
+- `hitInfo.normal`：碰撞点所在表面的法线向量（垂直于表面的方向）。
+- `hitInfo.transform`：被击中物体的 Transform 组件，你可以通过它来获取物体的位置、旋转、缩放，或者访问它挂载的其他脚本。
+:::
+
+可以通过 `Physics.RaycastAll` 来获取所有被射线击中的物体信息：
+
+```c#
+RaycastHit[] hits = Physics.RaycastAll(ray);
+```
+
+此外，与范围检测类似的是，射线检测多个物体也有 `Physics.RaycastNonAlloc` 版本：
+```c#
+RaycastHit[] hits = new RaycastHit[10];
+if (Physics.RaycastNonAlloc(ray, hits) > 0)
+{
+}
+```
+
