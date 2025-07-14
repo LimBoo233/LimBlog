@@ -1,63 +1,130 @@
 # 数据持久化之-Json
 
+JSON 的全称是 JavaScript Object Notation (JavaScript 对象表示法)。它使用一种人类易于阅读和编写，同时机器也易于解析和生成的格式，来组织和交换数据。
+
 JSON 是现代应用开发中的主流和首选。它轻量、易读，并且与 Web 技术（尤其是 JavaScript）完美契合。
 
 ## Json 配置规则
 
-- `{}`：对象
-- `[]`：数组
-- `:`：键值对对应关系
-- `,`：数据分割
-- `""`：键名或字符串 
+JSON 的结构非常简单，建立在两种结构之上：
+1. 对象 (Object)：一个无序的 “键/值” (key/value) 对集合。
+2. 数组 (Array)：一个有序的值列表。
 
-- 数据结构定义
+对象用来组织多个“键/值”对。用花括号 `{}` 包裹。多个“键/值”对之间用逗号 `,` 分隔。
+
+例如：
+```json
+{
+  "name": "Zelda",
+  "level": 95,
+  "isPlayable": true,
+  "hometown": "Hyrule Castle"
+}
+```
+
+数组用来存放一个值的有序列表，用方括号 `[]` 包裹。多个值之间用逗号 `,` 分隔。
+
+例如：
+```json
+[
+  "Master Sword",
+  "Hylian Shield",
+  "Ocarina of Time",
+  "Fairy Bottle"
+]
+```
+
+JSON 支持的数据类型可以是以下几种类型：
+1. 字符串 (String)：用双引号 `""` 包裹的文本，如 "Hello, World!"。
+2. 数字 (Number)：整数或浮点数，如 `101` 或 `3.14`。
+3. 布尔值 (Boolean)：`true` 或 `false` 。
+4. 数组 (Array)：用 `[]` 包裹的有序列表。
+5. 对象 (Object)：用 `{}` 包裹的“键/值”对集合。
+6. `null`：表示空值。
+
+| 符号   | 含义             |
+|--------|------------------|
+| `{}`   | 对象             |
+| `[]`   | 数组             |
+| `:`    | 键值对对应关系   |
+| `,`    | 数据分割         |
+| `""`   | 键名或字符串     |
+
+JSON 的强大之处在于可以将对象和数组组合起来，形成复杂的数据结构。
+例如：
+```json
+{
+  "name": "Alice",
+  "age": 20,
+  "address": {
+    "city": "Shanghai",
+    "zip": "200000"
+  },
+  "friends": [
+    { "name": "Bob", "age": 21 },
+    { "name": "Carol", "age": 19 }
+  ]
+}
+```
+
+::: details 序列化示例
+在 C# 和 Unity 中，将 JSON 文本转换成程序可以使用的对象的过程称为反序列化 (Deserialization)，反之则称为序列化 (Serialization)。
+
+**输入**
 ```c#
-public class Test
+class Test
 {
-    public string name;
-    public int age;
-    public bool sex;
-    public List<int> ids;
-    public List<Person> students;
-    public Home home;
-    public Person son;
+    string name;
+    int age;
+    bool sex;
+    List<int> ids;
+    List<Person> students;
+    Home home;
+    Person son;
 }
 
-public class Person
+class Person
 {
-    public string name;
-    public int age;
-    public bool sex;
+    string name;
+    int age;
+    bool sex;
 }
 
-public class Home
+class Home
 {
-    public string address;
-    public string street;
-}
-```
-
- 
-
-``` json
-//大括号包裹的代表一个类对象
-{
-	//逗号是分割成员变量的间隔符
-	//冒号是键值对对应关系
-	"name":"Test",
-	"age":10,
-	"sex":true,
-	"testF":1.5,
-	//中括号代表数组
-	"ids":[1,2,3,4],
-	"students":[{"name":"P1","age":10,"sex":false},
-				{"name":"P2","age":10,"sex":true}],
-	"home":{"address":"abc","street":"1233"},
-	"son":null,
-	//键会变成双引号
-	"dic":{"1":"123","2":"234"}
+    string address;
+    string street;
 }
 ```
+**输出**
+
+```json
+// 一个 Json 对象
+{
+  "name": "Test",
+  "age": 10,
+  "sex": true,
+  "testF": 1.5,
+  "ids": [1, 2, 3, 4],
+  "students": [
+    { "name": "P1", "age": 10, "sex": false },
+    { "name": "P2", "age": 10, "sex": true }
+  ],
+  "home": {
+    "address": "abc",
+    "street": "1233"
+  },
+  "son": null,
+  // 键会变成双引号
+  "dic": {
+    "1": "123",
+    "2": "234"
+  }
+}
+```
+:::
+
+
 
 ## Jsonutility
 - JsonUtlity 是Unity自带的用于解析Json的公共类
@@ -79,57 +146,56 @@ public class Home
 - `JsonUtility.ToJson()`
 - 数据类型定义
 ```c#  
-        public class Person
-        {
-            public string name;
-            public int age;
-            public bool sex;
-            public int[] ids;
-            public float testF;
-            public double testD;
-            public List<int> ids2;
-            public Dictionary<int, string> dic;
-            public Dictionary<string, string> dic2;
-            public Student s1;
-            public List<Student> s2s;
-            [SerializeField]
-            private int privateI = 1;
-            [SerializeField]
-            protected int protectedI = 2;
-        }
+public class Person
+{
+    public string name;
+    public int age;
+    public bool sex;
+    public int[] ids;
+    public float testF;
+    public double testD;
+    public List<int> ids2;
+    public Dictionary<int, string> dic;
+    public Dictionary<string, string> dic2;
+    public Student s1;
+    public List<Student> s2s;
+    [SerializeField]
+    private int privateI = 1;
+    [SerializeField]
+    protected int protectedI = 2;
+}
 
-        [System.Serializable]
-        public class Student
-        {
-            public int age;
-            public string name;
+[System.Serializable]
+public class Student
+{
+    public int age;
+    public string name;
 
-            public Student(int age, string name)
-            {
-                this.age = age;
-                this.name = name;
-            }
-        }
-   
+    public Student(int age, string name)
+    {
+        this.age = age;
+        this.name = name;
+    }
+}
 ```
 - 方法:
     ``` c#
-       Person p = new Person();
-       p.name = "TestName";
-       p.age = 20;
-       p.sex = false;
-       p.testF = 3.14f;
-       p.testD = 2.17;
-       p.ids = new int[] { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 };
-       p.ids2 = new List<int>{ 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 };
-       p.dic = new Dictionary<int, string>{{1,"123"},{2,"456"},{3,"789"}};
-       p.dic2 = new Dictionary<string, string>{{"1","123"},{"2","456"}};
-       p.s1 = null; //new Student(1, "TestStudentName");
-       p.s2s = new List<Student>(){new Student(2, "TestStudentName2"), 
-                                  new Student(3, "TestStudentName3")}
-       //序列化
-       string jsonStr =  JsonUtility.ToJson(p);
-       File.WriteAllText(Application.persistentDataPath+"/Person.json", jsonStr);
+    Person p = new Person();
+    p.name = "TestName";
+    p.age = 20;
+    p.sex = false;
+    p.testF = 3.14f;
+    p.testD = 2.17;
+    p.ids = new int[] { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 };
+    p.ids2 = new List<int>{ 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 };
+    p.dic = new Dictionary<int, string>{{1,"123"},{2,"456"},{3,"789"}};
+    p.dic2 = new Dictionary<string, string>{{"1","123"},{"2","456"}};
+    p.s1 = null; //new Student(1, "TestStudentName");
+    p.s2s = new List<Student>(){new Student(2, "TestStudentName2"), 
+                                new Student(3, "TestStudentName3")}
+    //序列化
+    string jsonStr =  JsonUtility.ToJson(p);
+    File.WriteAllText(Application.persistentDataPath+"/Person.json", jsonStr);
     ```
 ::: tip 
 float序列化时看起来会有一些误差
@@ -146,11 +212,11 @@ JsonUtility存储null对象时不会使null 而是默认值的数据
 - 反序列化：反序列化是序列化的逆过程，它将序列化的数据格式还原成内存中的对象或数据结构。
 - `JsonUtility.FormJson(字符串)`
     ```c#
-            //读取文件中的Json字符串
-           jsonStr =  File.ReadAllText(Application.persistentDataPath+"/Person.json");
-           //使用Json字符串内容 转换成类对象
-           Person p2 =  JsonUtility.FromJson(jsonStr,typeof(Person)) as Person;
-           Person p3 =  JsonUtility.FromJson<Person>(jsonStr);
+    //读取文件中的Json字符串
+    jsonStr =  File.ReadAllText(Application.persistentDataPath+"/Person.json");
+    //使用Json字符串内容 转换成类对象
+    Person p2 =  JsonUtility.FromJson(jsonStr,typeof(Person)) as Person;
+    Person p3 =  JsonUtility.FromJson<Person>(jsonStr);
     ```
 
 ::: tip
