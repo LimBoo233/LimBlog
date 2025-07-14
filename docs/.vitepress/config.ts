@@ -36,11 +36,11 @@ export default defineConfig({
                     {
                         text: '唐老师课程',
                         items: [
-                            { text: 'Unity入门', link: '/notes/Unity入门' },
-                            { text: 'Unity-GUI', link: '/notes/Unity-GUI' },
-                            { text: 'Unity基础', link: '/notes/Unity基础' },
-                            { text: '数据持久化之-Json', link: '/notes/数据持久化-Json' },
-                            { text: 'Untiy-UGUI', link: '/notes/Unity-UGUI' }
+                            { text: 'Unity入门', link: '/notes/Unity/Unity入门' },
+                            { text: 'Unity-GUI', link: '/notes/Unity/Unity-GUI' },
+                            { text: 'Unity基础', link: '/notes/Unity/Unity基础' },
+                            { text: '数据持久化之-Json', link: '/notes/Unity/数据持久化-Json' },
+                            { text: 'Untiy-UGUI', link: '/notes/Unity/Unity-UGUI' }
                         ]
                     }
                 ]

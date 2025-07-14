@@ -1,37 +1,44 @@
 # 数据持久化之-Json
 
-## Json 配置规则
+JSON 是现代应用开发中的主流和首选。它轻量、易读，并且与 Web 技术（尤其是 JavaScript）完美契合。
 
-- 数据结构定义
-```c#
-    public class Test
-    {
-        public string name;
-        public int age;
-        public bool sex;
-        public List<int> ids;
-        public List<Person> students;
-        public Home home;
-        publiic Son son;
-    }
-    public class Person
-    {
-        public string name;
-        public int age;
-        public bool sex;
-    }
-    public class Home
-    {
-        public string address;
-        public string street;
-    }
-```
+## Json 配置规则
 
 - `{}`：对象
 - `[]`：数组
 - `:`：键值对对应关系
 - `,`：数据分割
-- `""`：键名或字符串  
+- `""`：键名或字符串 
+
+- 数据结构定义
+```c#
+public class Test
+{
+    public string name;
+    public int age;
+    public bool sex;
+    public List<int> ids;
+    public List<Person> students;
+    public Home home;
+    public Person son;
+}
+
+public class Person
+{
+    public string name;
+    public int age;
+    public bool sex;
+}
+
+public class Home
+{
+    public string address;
+    public string street;
+}
+```
+
+ 
+
 ``` json
 //大括号包裹的代表一个类对象
 {
@@ -55,17 +62,17 @@
 ## Jsonutility
 - JsonUtlity 是Unity自带的用于解析Json的公共类
 1.  存储字符串到指定路径文件中
-- `File.WriteAllText`
-    ``` c#  
+    - `File.WriteAllText`
+        ``` c#  
         //参数1:填写的是存储的路径
         //参数2：存储的字符串内容
         File.WriteAllText(Application.persistentDataPath+"/Test.json","存储的Json文件");
-    ```
+        ```
 2. 在指定路径文件中读取字符串
-- `File.ReadAllText`
-    ``` c#  
+    - `File.ReadAllText`
+        ``` c#  
         string str =  File.ReadAllText(Application.persistentDataPath+"/Test.json");
-    ```
+        ```
 
 ### 使用JsonUtlity进行序列化
 - 序列化：是将数据结构或对象转换成一种可存储或可传输格式的过程。在序列化后，数据可以被写入文件、发送到网络或存储在数据库中，以便在需要时可以再次还原成原始的数据结构或对象。
@@ -200,22 +207,22 @@ public class Person2
 - 方法
 - `JsonMapper.Tojson()`
 ```c#
-        Person2 p = new Person2();
-        p.name = "TestName";
-        p.age = 20;
-        p.sex = false;
-        p.testF = 3.14f;
-        p.testD = 2.17;
-        p.ids = new int[] { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 };
-        p.ids2 = new List<int>{ 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 };
-        //p.dic = new Dictionary<int, string>{{1,"123"},{2,"456"},{3,"789"}};
-        p.dic2 = new Dictionary<string, string>{{"1","123"},{"2","456"}};
-        p.s1 = null; //new Student(1, "TestStudentName");
-        p.s2s = new List<Student2>(){new Student2(2, "TestStudentName2"), 
-                                    new Student2(3, "TestStudentName3")};
-        string jsonStr =  JsonMapper.ToJson(p);
-        print(Application.persistentDataPath);//json文件保存的路径
-        File.WriteAllText(Application.persistentDataPath+"/Test2.json", jsonStr);
+Person2 p = new Person2();
+p.name = "TestName";
+p.age = 20;
+p.sex = false;
+p.testF = 3.14f;
+p.testD = 2.17;
+p.ids = new int[] { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 };
+p.ids2 = new List<int>{ 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 };
+//p.dic = new Dictionary<int, string>{{1,"123"},{2,"456"},{3,"789"}};
+p.dic2 = new Dictionary<string, string>{{"1","123"},{"2","456"}};
+p.s1 = null; //new Student(1, "TestStudentName");
+p.s2s = new List<Student2>(){new Student2(2, "TestStudentName2"), 
+                            new Student2(3, "TestStudentName3")};
+string jsonStr =  JsonMapper.ToJson(p);
+print(Application.persistentDataPath);//json文件保存的路径
+File.WriteAllText(Application.persistentDataPath+"/Test2.json", jsonStr);
 ```
 ::: tip
 相对JsonUtlity不需要加特性
@@ -231,12 +238,12 @@ public class Person2
 ### 使用LitJson反序列化
 - JsonMapper.Tobject()
 ```c#
-        //反序列化
-        jsonStr =  File.ReadAllText(Application.persistentDataPath+"/Test2.json");
-        JsonData data = JsonMapper.ToObject(jsonStr);
-        print(data["name"]);//索引器访问
-        print(data["age"]);
-        Person2 p2 =  JsonMapper.ToObject<Person2>(jsonStr);//通过泛型转换
+//反序列化
+jsonStr =  File.ReadAllText(Application.persistentDataPath+"/Test2.json");
+JsonData data = JsonMapper.ToObject(jsonStr);
+print(data["name"]);//索引器访问
+print(data["age"]);
+Person2 p2 =  JsonMapper.ToObject<Person2>(jsonStr);//通过泛型转换
 ```
 ::: tip
 类结构需要无参构造函数 否则反序列化时会报错
