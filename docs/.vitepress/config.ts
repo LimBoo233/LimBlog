@@ -5,6 +5,14 @@ export default defineConfig({
     title: "LimBoo233的笔记空间", // 你的网站标题
     description: "保留自己的智慧", // 你的网站描述
 
+    head: [
+    // 第一个参数是标签名，第二个是该标签的属性
+    // rel: 'icon' 表示这是一个 favicon
+    // href: '/favicon.ico' 指向 public 文件夹下的 favicon.ico 文件
+        // ['link', { rel: 'icon', href: '/images/favicon.PNG' }]
+        ['link', { rel: 'icon', href: '/images/favicon2.PNG' }]
+    ],
+
     // 设置默认为暗色主题，保留主题切换器
     appearance: 'dark',
 

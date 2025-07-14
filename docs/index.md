@@ -14,10 +14,12 @@ hero:
     - theme: alt
       text: 关于我
       link: /about
+  
 
   image:
     src: /images/logo.png
     alt: logo
+
 
 ---
 
