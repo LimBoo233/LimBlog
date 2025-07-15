@@ -4,7 +4,7 @@ JSON 的全称是 JavaScript Object Notation (JavaScript 对象表示法)。它�
 
 JSON 是现代应用开发中的主流和首选。它轻量、易读，并且与 Web 技术（尤其是 JavaScript）完美契合。
 
-**本篇聚焦于 JSON 的基本语法和在 Unity 中的较为基础的使用方法。**
+**本篇聚焦于 JSON 的基本语法和在 Unity 中的较为基础的使用方法。对于复杂的需求，请考虑使用 `Newtonsoft.Json` 或 `System.Text.Json`。**
 
 ## Json 配置规则
 
