@@ -57,7 +57,7 @@ export default defineConfig({
             { 
                 text: 'CSharp', 
                 items: [
-                    { text: 'Newtonsoft.Json', link: '/notes/CSharp/Newtonsoft.Json' },
+                    { text: 'Newtonsoft Json', link: '/notes/CSharp/Newtonsoft Json' },
                     { text: '多线程', link: '/notes/CSharp/多线程' },
                     { text: '异步编程', link: '/notes/CSharp/异步编程' },
                 ]
