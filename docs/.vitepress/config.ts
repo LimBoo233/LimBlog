@@ -55,10 +55,11 @@ export default defineConfig({
             },
 
             { 
-                text: 'CSharp基础', 
+                text: 'CSharp', 
                 items: [
-                    { text: '多线程', link: '/notes/CSharp基础/多线程' },
-                    { text: '异步编程', link: '/notes/CSharp基础/异步编程' },
+                    { text: 'Newtonsoft.Json', link: '/notes/CSharp/Newtonsoft.Json' },
+                    { text: '多线程', link: '/notes/CSharp/多线程' },
+                    { text: '异步编程', link: '/notes/CSharp/异步编程' },
                 ]
             },
 

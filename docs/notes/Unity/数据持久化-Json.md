@@ -4,6 +4,8 @@ JSON 的全称是 JavaScript Object Notation (JavaScript 对象表示法)。它�
 
 JSON 是现代应用开发中的主流和首选。它轻量、易读，并且与 Web 技术（尤其是 JavaScript）完美契合。
 
+**本篇聚焦于 JSON 的基本语法和在 Unity 中的较为基础的使用方法。**
+
 ## Json 配置规则
 
 JSON 的结构非常简单，建立在两种结构之上：
@@ -132,6 +134,8 @@ class Home
 ::: danger
 ⚠️ 安全第一：绝对不要在任何在线工具上上传包含个人隐私、公司机密或任何敏感信息的文件。对于这类数据，请务必使用本地脚本（如 Python 或 C#）进行处理。
 :::
+
+
 
 ## `JsonUtility`
 `JsonUtility` 是 Unity 自带的用于解析 Json 的公共类，是解析 Json 工作中最基础、最简单的工具。
@@ -304,10 +308,28 @@ Person p3 =  JsonUtility.FromJson(jsonStr,typeof(Person)) as Person;
 :::
 
 
-## Litjson
-- Litjson 是第三方库，用于处理json的序列化和反序列化
-- 因此在使用时 需要获取Litjson
-- 数据结构定义
+## `Litjson`
+`Litjson` 是第三方库，用于处理json的序列化和反序列化。
+
+::: warning
+今天不推荐在新项目中使用 `LitJson`，主要有以下三个核心原因：
+
+1. 缺乏维护 👨‍🔧
+
+这是最关键的一点。`LitJson` 项目基本已经停止更新，这意味着不会有 bug 修复、安全更新或新功能，使用它相当于将你的项目置于一个潜在的技术风险之上。
+
+2. 存在更优选择 ✅
+
+过去它流行的原因是 `Newtonsoft.Json` 在 Unity 中安装和使用比较麻烦。但现在，通过 Unity 包管理器可以一键安装 `Newtonsoft.Json`，它已成为功能更全、性能更优、社区支持更好的事实标准。
+
+3. 功能差距 GAP
+
+与现代标准库相比，`LitJson` 在很多重要功能上有所欠缺，比如完善的多态（继承）支持、详细的错误报告、高级的属性定制等，这些对于开发复杂的项目至关重要。
+:::
+
+在使用时，需要先获取 `LitJson`。
+
+定义类 `Person2`，然后使用 `LitJson` 进行序列化和反序列化。
 ``` c#
 public class Student2
 {
@@ -348,9 +370,12 @@ public class Person2
     protected int protectedI = 2;
 }
 ```
+
 ### 使用LitJson序列化
-- 方法
-- `JsonMapper.Tojson()`
+
+通过使用 `JsonMapper.ToJson()` 进行序列化 ↓
+
+数据初始化：
 ```c#
 Person2 p = new Person2();
 p.name = "TestName";
@@ -360,42 +385,48 @@ p.testF = 3.14f;
 p.testD = 2.17;
 p.ids = new int[] { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 };
 p.ids2 = new List<int>{ 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 };
-//p.dic = new Dictionary<int, string>{{1,"123"},{2,"456"},{3,"789"}};
+// p.dic = new Dictionary<int, string>{{1,"123"},{2,"456"},{3,"789"}};
 p.dic2 = new Dictionary<string, string>{{"1","123"},{"2","456"}};
-p.s1 = null; //new Student(1, "TestStudentName");
+// new Student(1, "TestStudentName");
+p.s1 = null; 
 p.s2s = new List<Student2>(){new Student2(2, "TestStudentName2"), 
                             new Student2(3, "TestStudentName3")};
+
+```
+
+使用 `JsonMapper.ToJson()` 进行序列化：
+```c#
 string jsonStr =  JsonMapper.ToJson(p);
-print(Application.persistentDataPath);//json文件保存的路径
+// json 文件保存的路径
+print(Application.persistentDataPath);
 File.WriteAllText(Application.persistentDataPath+"/Test2.json", jsonStr);
 ```
 ::: tip
-相对JsonUtlity不需要加特性
-
-不能序列化私有变量
-
-支持字典类型
-
-需要引用LitJson命名空间
-
-能够准确的保存null类型
+- 相对 `JsonUtility` 不需要加特性;
+- 不能序列化私有变量;
+- 支持字典类型;
+- 需要引用 `LitJson` 命名空间;
+- 能够准确的保存 `null` 类型。
 :::
+
 ### 使用LitJson反序列化
-- JsonMapper.Tobject()
+
+使用 `JsonMapper.ToObject()` 进行反序列化：
+
 ```c#
-//反序列化
+// 反序列化
 jsonStr =  File.ReadAllText(Application.persistentDataPath+"/Test2.json");
 JsonData data = JsonMapper.ToObject(jsonStr);
-print(data["name"]);//索引器访问
+print(data["name"]);
 print(data["age"]);
-Person2 p2 =  JsonMapper.ToObject<Person2>(jsonStr);//通过泛型转换
+
+// 泛型方法
+Person2 p2 =  JsonMapper.ToObject<Person2>(jsonStr);
 ```
+
 ::: tip
-类结构需要无参构造函数 否则反序列化时会报错
-
-字典虽然支持 但只支持字符串
-
-LitJson可以直接读取数据集合
-
-文本编码格式需要使用UTF-8
+- 类结构需要无参构造函数 否则反序列化时会报错;
+- 字典虽然支持 但只支持字符串;
+- `LitJson` 可以直接读取数据集合;
+- 文本编码格式需要使用 UTF-8。
 :::
