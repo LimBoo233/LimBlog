@@ -6,8 +6,6 @@ description: 猴子也能看懂的 Newtonsoft.Json 使用指南，涵盖基本�
 
 # `Newtonsoft.Json`
 
-<update />
-
 `Newtonsoft.Json` 是目前 Unity 社区乃至整个 .NET 世界中，使用最广泛、功能最强大的 JSON 库，是绝大多数情况下的首选推荐。
 
 官方文档：[Json.NET](https://www.newtonsoft.com/json)

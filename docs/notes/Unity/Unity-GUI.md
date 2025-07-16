@@ -1,7 +1,5 @@
 # Unity - GUI
 
-<update />
-
 ## 1.1 GUI是什么
 全程即时模式游戏交互界面IMGUI，是一个代码驱动的UI系统。
 
