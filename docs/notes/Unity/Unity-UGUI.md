@@ -283,4 +283,179 @@ public class L10 : MonoBehaviour
     - `None`:无任何过渡直接显示隐藏
     - `Fade`:淡入淡出
 - `Graphic`: 用于表示选中状态的图片
-- `Group`:
+- `Group`: 将ToggleGroup组件拖上去后，即可分组
+3. 代码控制
+```c#
+        Toggle tog =this.GetComponent<Toggle>();
+        tog.isOn = true;
+        print(tog.isOn);
+        
+        ToggleGroup togGroup = this.GetComponent<ToggleGroup>();
+        
+        //遍历当前选中的toggle
+        foreach (Toggle item in togGroup.ActiveToggles())
+        {
+            print(item.name + " : " + item.isOn);
+        }
+```
+
+### InputField——文本输入控件
+:::warning
+现在使用的也是InputField(TMP),只在文本组件上有区别
+:::
+1. 是什么？
+- 是UGUI中用于处理玩家文本输入相关交互的关键组件
+- 默认创建的InputField由三个对象组成
+- 父对象——INputField组件依附对象 以及同时在其上挂载了一个Image作为背景图
+- 子对象——文本显示组件（必备）、默认显示文本组件（必备）
+2. 相关参数
+- `TextComponent`：用于关联显示输入内容的文本组件
+- `Text`：输入框的起始默认值
+- `Character Limit`：可以输入字符长度的最大值
+- `Content Type`：输入的字符类型限制
+- `Line Type`：行类型，定义文本格式
+- `Placeholder`：关联用于显示初始内容文本控件
+- `Caret Blink Rate`：光标闪烁速率
+- `Caret Width`：光标宽度
+- `Custom Caret Color`：自定义光标颜色
+- `Selection Color`：批量选中的背景颜色
+- `Hide Mobile Input`：隐藏移动设备屏幕上键盘（仅适用于iOS）
+- `Read Only`：只读，不可修改
+3. 代码控制相关
+```c#
+TMP_InputField input = this.GetComponent<TMP_InputField>();
+print(input.text);
+input.text = "2233";
+```
+
+4. 监听事件
+```c#
+    public void ChangeValue(string str)
+    {
+        print("改变的输入内容"+str);
+    }
+
+    public void EndInput(string str)
+    {
+        print("结束时输入的内容"+str);
+    }
+```
+:::tip
+新版有4个监听事件，前两个是一样的
+代码添加与上文一致
+:::
+
+### Slider——滑动条控件
+1. 是什么？
+- 是UGUI中用于处理滑动条相关交互的关键组件
+- 默认创建的Slider由4组对象组成
+- 父对象——Slider组件依附的对象
+- 子对象——背景图、进度图、滑动块三组对象
+2. 相关参数
+- `Fill Rect`：进度条填充图形（显示当前值的填充区域）
+- `Handle Rect`：滑动块图形（用户拖拽的控制柄）
+- `Direction`：滑动条数值增加的方向
+- `Left To Right`（从左到右）
+- `Right To Left`（从右到左）
+- `Bottom To Top`（从下到上）
+- `Top To Bottom`（从上到下）
+- `Min Value` 和 `Max Value`：滑动条的最小值和最大值
+- `Whole Numbers`：是否限制为整数值（如1、2、3而非1.5）
+- `Value`：滑动条当前数值
+- `OnValueChanged`：值变化时触发的事件列表（可绑定函数）
+3. 代码控制
+```c#
+Slider s = this.GetComponent<Slider>();
+        print(s.value);
+```
+4. 监听事件
+```c#
+s.onValueChanged.AddListener((v) =>
+{
+    print("代码添加的监听"+v);
+});
+```
+
+### ScrollBar——滚动条
+1. 是什么？
+- 是UGUI中用于处理滚动条相关交互的关键组件
+- 默认创建的ScrollBar由2组对象组成
+- 父对象——ScrollBar组件依附的独享
+- 子对象——滚动块对象
+:::tip
+一般情况下我们不会单独使用滚动条
+
+都是配合ScrollView滚动条视图来使用的
+:::
+2. 相关参数
+- `Handle Rect`：用于关联滑动条的滚动块（滑块）图形对象
+- `Direction`定义滑动条数值增加的方向：
+- `Left To Right`：从左到右（默认）
+    - `Right To Left`：从右到左
+    - `Bottom To Top`：从下到上
+    - `Top To Bottom`：从上到下
+- `Value`滚动条的初始位置值（取值范围0~1）同时表示滚动块在滑动条中的比例大小（0~1）
+- `Number Of Steps`设置允许的滚动位置数量（离散间隔数）
+例如设置为5时，滑块只能停在0、0.25、0.5、0.75、1这5个位置
+
+- `OnValueChanged`值改变时触发的事件列表，可通过拖拽方式绑定响应函数
+3. 代码控制
+```c#
+Scrollbar scrollbar = this.GetComponent<Scrollbar>();
+print(scrollbar.value);
+print(scrollbar.size);
+```
+4. 监听事件
+```c#
+scrollbar.onValueChanged.AddListener((v) =>
+{
+    print(v);
+});
+```
+
+### ScrollView——滚动视图
+1. ScrollRect是什么
+- 是UGUI中用于处理滚动视图相关交互的关键组件
+- 默认创建的ScrollRect由4组对象组成
+- 父对象——ScrollRect组件依附的对象 还有一个Image组件 作为背景图
+- 子对象
+    - `Viewport`控制滚动视图可视范围和内容显示
+    - `Scrollbar Horizontal`：水平滚动条
+    - `Scrollvar Vertical`:垂直滚动条
+2. 相关参数
+- `Content`：控制滚动视图显示内容的父对象，它的尺寸决定滚动视图能拖多远
+- `Horizontal`：启用水平滚动（勾选框）
+- `Vertical`：启用垂直滚动（勾选框）
+- `Movement Type`：滚动视图元素的运动类型，控制拖动时的反馈效果
+- `Elastic`：回弹效果，当拖动到边缘后会弹回边界（常用选项）
+- `Elasticity`：回弹系数，控制回弹效果强度，值越大回弹越慢
+- `Inertia`：移动惯性，开启后松开鼠标会有滑动惯性（勾选框）
+- `Deceleration Rate`：减速率（0~1），0表示没有惯性，1表示不会停止
+- `Scroll Sensitivity`：控制鼠标滚轮和触摸板的滚动事件敏感性
+- `Viewport`：关联滚动视图内容视口对象
+- `Horizontal Scrollbar`：关联水平滚动条对象
+- `Vertical Scrollbar`：关联垂直滚动条对象
+- `Visibility`：滚动条显示模式，包括：Permanent（一直显示）、Auto Hide（自动隐藏）、Auto Hide And Expand Viewport（自动隐藏并扩展视口）
+- `Spacing`：滚动条和视口之间的间隔空间大小
+- `OnValueChanged`：滚动视图位置改变时执行的事件列表
+- `Unrestricted`：不受限制的滚动模式（一般不使用）
+- `Clamped`：夹紧效果，始终限制在滚动范围内，没有回弹效果
+- `Permanent`：滚动条一直显示的模式
+- `Auto Hide`：滚动条自动隐藏的模式
+- `Auto Hide And Expand Viewport`：自动隐藏滚动条并且自动扩展内容视口的模式
+3. 代码控制
+```c#
+ScrollRect sr = this.GetComponent<ScrollRect>();
+//改变内容的大小 具体可以拖动多少 都是根据它的尺寸来的
+//sr.content.sizeDelta = new Vector2(200, 200);
+
+sr.normalizedPosition = new Vector2(0, 0.5f);
+```
+4. 监听控制（了解即可）
+```c#
+sr.onValueChanged.AddListener(ChangeValue);
+public void ChangeValue(Vector2 value)
+    {
+        print(value);
+    }
+```
