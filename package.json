@@ -8,7 +8,6 @@
     "serve": "vitepress serve docs"
   },
   "devDependencies": {
-    "sass-embedded": "^1.89.2",
     "vitepress": "^1.6.3",
     "vitepress-plugin-group-icons": "^1.6.1",
     "vue": "3.4.0"

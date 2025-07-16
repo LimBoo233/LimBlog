@@ -1,7 +1,5 @@
-// 1. 从 vitepress/theme 中导入默认主题
 import DefaultTheme from 'vitepress/theme'
 import { h } from 'vue'
-
 import 'virtual:group-icons.css'
 
 

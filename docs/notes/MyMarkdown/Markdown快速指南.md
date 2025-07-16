@@ -32,7 +32,21 @@ Markdown 是一种轻量级的标记语言，用于格式化纯文本。它简�
 `行内代码`
 ```
 
-:::code-group
-```js [example.js]
-console.log("Hello, world!");
+::: code-group
+```sh [pnpm]
+pnpm -v
 ```
+
+```java [Java.java]
+public class HelloWorld {
+    public static void main(String[] args) {
+        System.out.println("Hello, World!");
+    }
+}
+```
+
+```csharp [C#.cs]
+Console.WriteLine("Hello, World!");
+```
+
+:::

@@ -11,10 +11,6 @@ export default defineConfig({
         ['link', { rel: 'icon', href: '/images/favicon2.PNG' }]
     ],
 
-    // 设置默认为暗色主题，保留主题切换器
-    appearance: 'dark',
-
-    // Markdown 配置
     markdown: {
         config(md) {
         md.use(groupIconMdPlugin)
@@ -22,9 +18,21 @@ export default defineConfig({
     },
     vite: {
         plugins: [
-        groupIconVitePlugin()
+            groupIconVitePlugin({
+                customIcon: {
+                    cs: 'https://raw.githubusercontent.com/vscode-icons/vscode-icons/master/icons/file_type_csharp.svg',
+                    java: `https://raw.githubusercontent.com/vscode-icons/vscode-icons/master/icons/file_type_java.svg`,
+                    powershell: `https://raw.githubusercontent.com/vscode-icons/vscode-icons/master/icons/file_type_powershell.svg`,
+                    json: `catppuccin:json`,
+                    markdown: `catppuccin:markdown`,
+                    py: `catppuccin:python`,
+                    lua: `https://raw.githubusercontent.com/vscode-icons/vscode-icons/master/icons/file_type_lua.svg`
+                    // https://icon-sets.iconify.design/
+        }
+            })
         ],
     },
+
 
     // -- 主题配置 --
     themeConfig: {
@@ -71,6 +79,10 @@ export default defineConfig({
             {text: `Markdown快速指南`, link: '/notes/MyMarkdown/Markdown快速指南'},
 
         ],
+
+        search: {
+            provider: 'local'
+        }
 
     }
 })
