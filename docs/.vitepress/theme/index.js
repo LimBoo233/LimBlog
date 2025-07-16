@@ -2,6 +2,9 @@
 import DefaultTheme from 'vitepress/theme'
 import { h } from 'vue'
 
+import 'virtual:group-icons.css'
+
+
 // 2. 导入我们的自定义 CSS 文件
 import './style.css'
 
@@ -20,5 +23,7 @@ export default {
   enhanceApp({ app }) {
     // 注册全局组件
     app.component('BackgroundToggle', BackgroundToggle)
-  }
+  },
+
+
 }

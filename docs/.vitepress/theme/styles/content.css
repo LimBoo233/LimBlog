@@ -97,28 +97,8 @@ html {
    3. 代码块样式
    ============================================ */
 
-/* 代码块字体设置 */
-.vp-doc div[class*='language-'] code,
-.vp-doc div[class*='language-'] pre,
-.vp-doc div[class*='language-'] pre code,
-.vp-doc :not(pre) > code {
-  font-family: var(--vp-font-family-mono);
- 
-}
+/* 现已转移 */
 
-/* 针对代码块内的 `<code>` 标签 */
-div[class*="language-"] code {
-  font-size: var(--vp-code-font-size) !important;
-  line-height: var(--vp-code-line-height) !important;
-}
-
-/* 针对代码块的行号 */
-div[class*="language-"] .line-numbers {
-  font-size: var(--vp-code-font-size) !important;
-  line-height: var(--vp-code-line-height) !important;
-  /* 如果还有对不齐的问题，可以微调这里的 padding-top */
-  /* padding-top: 1px; */
-}
 
 /* ============================================
    4. 分割线美化

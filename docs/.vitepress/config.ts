@@ -1,4 +1,6 @@
 import { defineConfig } from 'vitepress'
+import { groupIconMdPlugin, groupIconVitePlugin } from 'vitepress-plugin-group-icons'
+
 
 // https://vitepress.vuejs.org/config/app-configs
 export default defineConfig({
@@ -6,10 +8,6 @@ export default defineConfig({
     description: "保留自己的智慧", // 你的网站描述
 
     head: [
-    // 第一个参数是标签名，第二个是该标签的属性
-    // rel: 'icon' 表示这是一个 favicon
-    // href: '/favicon.ico' 指向 public 文件夹下的 favicon.ico 文件
-        // ['link', { rel: 'icon', href: '/images/favicon.PNG' }]
         ['link', { rel: 'icon', href: '/images/favicon2.PNG' }]
     ],
 
@@ -18,8 +16,14 @@ export default defineConfig({
 
     // Markdown 配置
     markdown: {
-        // 启用代码行号
-        lineNumbers: false,
+        config(md) {
+        md.use(groupIconMdPlugin)
+        },
+    },
+    vite: {
+        plugins: [
+        groupIconVitePlugin()
+        ],
     },
 
     // -- 主题配置 --
