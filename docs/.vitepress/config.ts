@@ -34,6 +34,7 @@ export default defineConfig({
     lastUpdated: true, // 启用最后更新时间
 
     markdown: {
+        lineNumbers: true, // 显示行号
         config: (md) => {
         // This is your existing plugin for code group icons
         md.use(groupIconMdPlugin);
