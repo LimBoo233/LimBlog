@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://lim-blog-rho.vercel.app/sitemap.xml

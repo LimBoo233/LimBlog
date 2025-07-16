@@ -6,9 +6,29 @@ import { groupIconMdPlugin, groupIconVitePlugin } from 'vitepress-plugin-group-i
 export default defineConfig({
     title: "LimBoo233的笔记空间", // 你的网站标题
     description: "保留自己的智慧", // 你的网站描述
-
+    lang: 'zh-CN', // 设置语言
+    
     head: [
-        ['link', { rel: 'icon', href: '/images/favicon2.PNG' }]
+        ['link', { rel: 'icon', href: '/images/favicon2.PNG' }],
+        
+        // SEO 优化标签
+        ['meta', { name: 'keywords', content: 'Unity, C#, 编程, 游戏开发, 笔记, 学习, LimBoo233' }],
+        ['meta', { name: 'author', content: 'LimBoo233' }],
+        ['meta', { name: 'robots', content: 'index, follow' }],
+    
+        // 结构化数据
+        ['script', { type: 'application/ld+json' }, JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "WebSite",
+            "name": "LimBoo233的笔记空间",
+            "description": "保留自己的智慧 - Unity、C#、游戏开发学习笔记",
+            "url": "https://lim-blog-rho.vercel.app",
+            "author": {
+                "@type": "Person",
+                "name": "LimBoo233"
+            },
+            "inLanguage": "zh-CN"
+        })],
     ],
 
     markdown: {
@@ -80,9 +100,14 @@ export default defineConfig({
 
         ],
 
+        // 本地搜索功能
         search: {
             provider: 'local'
-        }
+        },
+        
+    },
 
+    sitemap: {
+        hostname: 'https://lim-blog-rho.vercel.app'
     }
 })
