@@ -54,7 +54,7 @@ export default defineConfig({
                 text: 'Unity学习', 
                 items: [
                     {
-                        text: '唐老师课程',
+                        text: 'Unity主要内容',
                         items: [
                             { text: 'Unity入门', link: '/notes/Unity/Unity入门' },
                             { text: 'Unity-GUI', link: '/notes/Unity/Unity-GUI' },
