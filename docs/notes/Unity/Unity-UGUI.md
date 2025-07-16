@@ -1,5 +1,7 @@
 # Unity-UGUI
 
+<update />
+
 ## 六大基础组件
 1. Canvas对象上依附的：
     - `Canvas`:主要用于渲染UI控件

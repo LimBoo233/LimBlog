@@ -1,5 +1,7 @@
 # 数据持久化之-Json
 
+<update />
+
 JSON 的全称是 JavaScript Object Notation (JavaScript 对象表示法)。它使用一种人类易于阅读和编写，同时机器也易于解析和生成的格式，来组织和交换数据。
 
 JSON 是现代应用开发中的主流和首选。它轻量、易读，并且与 Web 技术（尤其是 JavaScript）完美契合。

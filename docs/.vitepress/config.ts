@@ -31,9 +31,26 @@ export default defineConfig({
         })],
     ],
 
+    lastUpdated: true, // 启用最后更新时间
+
     markdown: {
-        config(md) {
-        md.use(groupIconMdPlugin)
+        config: (md) => {
+        // This is your existing plugin for code group icons
+        md.use(groupIconMdPlugin);
+
+        // 👇 Now, add the new rule for headings right here
+        md.renderer.rules.heading_close = (tokens, idx, options, env, slf) => {
+            // First, get the default rendered HTML (e.g., "</h1>")
+            let htmlResult = slf.renderToken(tokens, idx, options);
+            
+            // Then, if it's an h1 tag, append your component
+            if (tokens[idx].tag === 'h1') {
+            htmlResult += `<ArticleMetadata />`;
+            }
+            
+            // Finally, return the combined HTML
+            return htmlResult;
+        };
         },
     },
     vite: {

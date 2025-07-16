@@ -1,5 +1,7 @@
 # Unity入门
 
+<update />
+
 ## 游戏对象
 
 在 Unity 中，场景里的所有东西都是`GameObject`，或者附着在`GameObject`上。摄像机、灯光、玩家角色、敌人、UI 元素……它们本质上都是`GameObject`。而 `GameObject`本身只是一个“容器”，它的功能由附加在它上面的各种组件 (Components) 来定义，比如 `Transform` (位置、旋转、缩放)、`Rigidbody` (物理)、`Mesh Renderer` (渲染模型) 或者你自己编写的 C# 脚本。

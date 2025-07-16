@@ -1,9 +1,9 @@
 import DefaultTheme from 'vitepress/theme'
 import './style.css'
 import { h } from 'vue'
-// 导入背景切换组件
-import BackgroundToggle from './components/BackgroundToggle.vue'
 
+import BackgroundToggle from './components/BackgroundToggle.vue'
+import ArticleMetadata from "./components/ArticleMetadata.vue"
 import GiscusComments from './components/GiscusComments.vue';
 
 // 插件
@@ -22,7 +22,9 @@ export default {
   },
   enhanceApp({ app }) {
     // 注册全局组件
-    app.component('BackgroundToggle', BackgroundToggle)
+    app.component('BackgroundToggle', BackgroundToggle),
+    app.component('ArticleMetadata' , ArticleMetadata)
+  
   },
 
 }
