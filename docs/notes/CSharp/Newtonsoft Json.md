@@ -601,7 +601,7 @@ Console.WriteLine(finalJson);
 
 当反序列化时，`Newtonsoft.Json` 会首先检查 JSON 对象中是否存在 `$type` 字段。如果存在，它就会根据这个字段记录的类型信息来创建正确的子类实例，而不是基类实例。
 
-对于简单的场景，可以通过 `TypeNameHandling` 属性来启用这个功能。`TypeNameHandling` 是一个枚举，有几个常用的值：
+对于简单的场景，可以通过设置 `JsonSerializerSettings` 里的 `TypeNameHandling` 属性来启用这个功能。`TypeNameHandling` 是一个枚举，有几个常用的值：
 - `TypeNameHandling.None`: (默认值) 不写入任何类型信息。这就是为什么默认情况下多态会失败。
 - `TypeNameHandling.Objects`: (最常用的选项) 为 JSON 对象 (`{...}`) 写入 `$type` 字段。对于简单的值（如字符串、数字）则不写。这是一个很好的平衡。
 - `TypeNameHandling.Auto`: 更加智能。只有当对象的实际类型与其声明的类型不一致时，才会写入 `$type`。例如，一个 `GameItem` 类型的变量，如果它实际装着一个 `Weapon` 对象，`$type` 就会被写入。这也是一个非常好的选择。
@@ -642,7 +642,7 @@ public class Program
         JsonSerializerSettings settings = new JsonSerializerSettings
         {
             // 开启多态处理
-            TypeNameHandling = TypeNameHandling.Objects, 
+            TypeNameHandling = TypeNameHandling.Objects, // [!code highlight]
             
             // 格式化输出
             Formatting = Formatting.Indented
