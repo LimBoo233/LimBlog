@@ -140,22 +140,35 @@ Standalone Input Module组件参数(一般不会修改)：
 - `ForceModule Active`：是否强制模块处于激活状态。
 
 ### RectTransform
-1. 用来干什么
-- 继承于`Transform` 是专门用于处理UI元素位置大小相关的组件
-- `Transform`组件只处理位置、角度、缩放
-- `RectTransform`在此基础上加入了矩形相关，将UI元素当做矩形来处理
-加入了中心点、锚点、长宽等属性
-- 其目的是更加方便的控制其他笑以及分辨率自适应中的位置适应
-2. 组件参数
-- `Pivot`:轴心(中心)点，取值范围0~1
+
+`RectTransform` 继承自 `Transform`，所以它也包含 `Position` (位置)、`Rotation` (旋转) 和 `Scale` (缩放) 这些基本属性。但它的强大之处在于增加了专门为 2D 矩形界面设计的几个关键概念，用来控制 尺寸 (Size) 和 自适应布局 (Responsive Layout)。
+
+最核心的两个概念就是 `Pivot` (轴心) 和 `Anchors` (锚点)。
+
+**组件参数：**
+- `Pivot`:轴心（中心）点，取值范围0~1。
 - `Anchors`(相对父矩形锚点)
-    - Min是矩形锚点范围X和Y的最小值,
-    - Max是矩形锚点范围X和Y的最大值,
-    - 取值范围都是0~1
-- `Pos(X,Y,Z)`:轴心点(中心点)相对锚点的位置
-- `Width/Height`:矩形的宽高
-- `Left/Top/Right/Bottom`:矩形边缘相对于锚点的位置;当锚点分离时会出现这些内容
-- `Rotation`:围绕轴心点旋转的角度
+    - Min 是矩形锚点范围 X 和 Y 的最小值；
+    - Max 是矩形锚点范围 X 和 Y 的最大值；
+    - 取值范围都是0~1。
+    :::info 
+    锚点的两种状态:
+    1. 锚点合并 (Anchors Together)
+
+        当四个锚点值相同时，UI 元素会试图维持其轴心与锚点之间的固定偏移量。同时，它会保持一个固定的宽度 (Width) 和高度 (Height)。
+    
+    2. 锚点分离 (Anchors Apart / "Stretching)
+
+        当四个锚点分离时，UI 元素会试图维持其四条边与四个锚点之间的固定边距 (Margin)。这四条边距在 Inspector 中显示为 `Left`, `Right`, `Top`, `Bottom`，替换原本的 `X`, `Y`, `Width`, `Height` 属性。该模式常用于背景图。
+    :::
+- `Pos(X,Y,Z)`：轴心点（中心点）相对锚点的位置。
+- `Width / Height`：矩形的宽高。
+- `Left / Top / Right / Bottom`：矩形边缘相对于锚点的位置；当锚点分离时会出现这些内容。
+- `Rotation`：围绕轴心点旋转的角度。
+
+在 Inspector 窗口第二行参数的右侧，有两个按钮，分别代表 `Blueprintt Mode` (蓝图模式) 和 `Raw Edit Mode` (原始编辑模式)。这两个模式的区别在于：
+1. 开启蓝图模式后，编辑和旋转不会影响矩形，只会影响显示内容。
+2. 开启原始编辑模式后，改变轴心和锚点值不会改变矩形位置。
 
 ## 三大基础控件
 
