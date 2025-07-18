@@ -7,6 +7,7 @@ export default defineConfig({
     title: "LimBoo233的笔记空间", // 你的网站标题
     description: "保留自己的智慧", // 你的网站描述
     lang: 'zh-CN', // 设置语言
+   
     
     head: [
         ['link', { rel: 'icon', href: '/images/favicon2.PNG' }],
@@ -58,13 +59,13 @@ export default defineConfig({
         plugins: [
             groupIconVitePlugin({
                 customIcon: {
-                    cs: 'https://raw.githubusercontent.com/vscode-icons/vscode-icons/master/icons/file_type_csharp.svg',
-                    java: `https://raw.githubusercontent.com/vscode-icons/vscode-icons/master/icons/file_type_java.svg`,
-                    powershell: `https://raw.githubusercontent.com/vscode-icons/vscode-icons/master/icons/file_type_powershell.svg`,
+                    cs: 'vscode-icons:file-type-csharp',
+                    java: 'vscode-icons:file-type-java',
+                    powershell: `vscode-icons:file-type-powershell`,
                     json: `catppuccin:json`,
                     markdown: `catppuccin:markdown`,
                     py: `catppuccin:python`,
-                    lua: `https://raw.githubusercontent.com/vscode-icons/vscode-icons/master/icons/file_type_lua.svg`
+                    lua: `vscode-icons:file-type-lua`,
                     // https://icon-sets.iconify.design/
         }
             })
@@ -74,6 +75,9 @@ export default defineConfig({
 
     // -- 主题配置 --
     themeConfig: {
+        // logo
+        logo: '/images/favicon.PNG',
+
         // 顶部导航栏
         nav: [
             { text: '首页', link: '/' },

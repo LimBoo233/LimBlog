@@ -1,7 +1,7 @@
 # Unity - GUI
 
 ## 1.1 GUI是什么
-全程即时模式游戏交互界面IMGUI，是一个代码驱动的UI系统。
+全程即时模式游戏交互界面 IMGUI，是一个代码驱动的 UI 系统。
 
 ## 1.2 GUI的主要作用
 1. 程序员的调试工具。
@@ -11,7 +11,7 @@
 **注意：不用它为玩家制作UI功能。**
 
 ## 1.3 GUI的使用
-在继承MonoBehaviour的脚本中的特殊函数里。
+在继承 `MonoBehaviour` 的脚本中的特殊函数里。
 1. `OnGUI()`：每帧调用一次，相当于是专门用于绘制绘制GUI的函数。
 2. 一般只在其中执行GUI相关界面绘制和操作逻辑。
 3. 该函数在 `OnDisable()` 之前和 `LateUpdate()` 之后调用。
@@ -419,7 +419,7 @@ GUI.SelectionGrid(rect, _toolbarIndex, _toolbarInfos, 3);
 
 ### 实际设计
 #### 位置信息类
-```c#:line-numbers 
+```c#:line-numbers [CustomGUIPos.cs]
 /// <summary>
 /// 表示对齐方式
 /// </summary>
@@ -545,7 +545,7 @@ public class CustomGUIPos
 }
 ```
 #### 控件基类
-```c#:line-numbers 
+```c# [CustomGUIControl.cs]
 public class CustomGUIControl : MonoBehaviour
 {
 	// 位置信息
@@ -585,7 +585,7 @@ public class CustomGUIControl : MonoBehaviour
 ```
 
 #### 绘制所有控件的Root类
-```c#:line-numbers 
+```c# [CustomGUIRoot.cs]
 [ExecuteAlways]
 public class CustomGUIRoot : MonoBehaviour
 {
@@ -613,7 +613,7 @@ public class CustomGUIRoot : MonoBehaviour
 ```
 
 #### 控件示例 - Button
-```c#:line-numbers 
+```c#:line-numbers [CustomGUIButton.cs]
 public class CustomGUIButton : CustomGUIControl
 {
 	public event Action Click;
@@ -641,6 +641,6 @@ public class CustomGUIButton : CustomGUIControl
 }
 
 ```
-
+:::
 
 # 结束！

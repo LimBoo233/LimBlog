@@ -1,113 +1,143 @@
 # Unity-UGUI
 
+UGUI (Unity GUI) 是 Unity 引擎中用于创建用户界面 (UI) 的官方系统。它在 Unity 4.6 版本中被引入，取代了老旧且效率不高的 IMGUI (Immediate Mode GUI)，成为了制作游戏 UI 的主流方案。
+
 ## 六大基础组件
-1. Canvas对象上依附的：
-    - `Canvas`:主要用于渲染UI控件
-    - `Canvas Scaler`:画布分辨率自适应组件，主要用于分辨绿自适应
-    - `Graphic Raycaster`:射线事件交互组件，主要用于控制射线响应相关 
-    - `RectTransform`:UI对象位置锚点控制组件，主要用于控制位置和其对应方式
-2. EventSystem对象上依附的
-    - `EventSystem`:玩家输入事件相应系统
-    - `Standalone Input Moudle`:独立输入模块组件,用于监听玩家操作
-### Canvas-渲染模式的控制
-1. Canvas组件用来干什么
-    - Canvas是UGUI中所有UI元素能够被显示的根本
-    - 主要负责渲染自己的所有UI子对象
-2. 场景中可以有多个Canvas对象 
+
+1. `Canvas` 对象上依附的：
+    - `Canvas`：主要用于渲染UI控件
+    - `Canvas Scaler`：画布分辨率自适应组件，主要用于分辨率自适应
+    - `Graphic Raycaster`：射线事件交互组件，主要用于控制射线响应相关
+    - `RectTransform`：UI对象位置锚点控制组件，主要用于控制位置和其对应方式
+2. `EventSystem` 对象上依附的
+    - `EventSystem`：玩家输入事件相应系统
+    - `Standalone Input Module`：独立输入模块组件，用于监听玩家操作
+
+### `Canvas`-渲染模式的控制
+
+1. `Canvas` 组件用来干什么
+    - `Canvas` 是 UGUI 中所有 UI 元素能够被显示的根本
+    - 主要负责渲染自己的所有 UI 子对象
+2. 场景中可以有多个 `Canvas` 对象
     - 可以分别管理不同画布的渲染方式，分辨率自适应方式等等参数
-    - 如果没有特殊需求，一般一个场景上一个Canvas对象即可
-### Canvas组件的三种渲染方式 
-- `Screen Space - Overlay`:屏幕空间，覆盖模式，UI始终在前
-    - `Pixel Perfect`: 是否开启无锯齿精确渲染模式(性能换效果)
-    - `Sort Order`:排序层编号（用于控制多个Canvas时的渲染先后顺序）
+    - 如果没有特殊需求，一般一个场景上一个 `Canvas` 对象即可
+    
+### `Canvas` 组件的三种渲染方式
+1. `Screen Space - Overlay`：屏幕空间，覆盖模式，UI 始终在前
+    - `Pixel Perfect`：是否开启无锯齿精确渲染模式（性能换效果）
+    - `Sort Order`:排序层编号（用于控制多个 `Canvas` 时的渲染先后顺序）
     - `Target Dislay`:目标设备(在哪个显示设备上显示)
     - `Additional Shader Channels`:其他着色器通道，决定着色器可以读取那些数据
-- `Screen Space - Camera`:屏幕空间，摄像机模式，3D物体可以显示在UI之前
-    - `Render Camer`：用于渲染UI的摄像机（如果不设置效果将类似与覆盖模式，不建议设置成主摄像机）
-        - 分离主摄像机与UI摄像机,让UI摄像机只渲染自己的图层
-    - `Plane Distance`:UI平面在摄像机前方的距离，类似整体Z轴的感觉
+2. `Screen Space - Camera`:屏幕空间，摄像机模式，3D 物体可以显示在 UI 之前
+    - `Render Camera`：用于渲染 UI 的摄像机（如果不设置效果将类似与覆盖模式；不建议设置成主摄像机，因为会难以控制 UI 与物体的渲染顺序）
+        > 通过分离主摄像机与专门的 UI 摄像机，设置让 UI 摄像机只渲染自己的图层（`depth only`），实现 UI 在 3D 物体前显示的效果
+    - `Plane Distance`:UI 平面在摄像机前方的距离，类似整体 Z 轴的感觉
     - `Sorting Layer`:所在排序层
     - `Order in Layer`:排序层的序号
-- `World Space`:世界空间，3D模式
-    - `Event Camera`:用于处理UI事件的摄像机(如果不设置不能正常注册UI事件)
+3. `World Space`:世界空间，3D 模式
+    - `Event Camera`:用于处理 UI 事件的摄像机(如果不设置不能正常注册 UI 事件)
 
-### CanvasScaler——必备知识
-1. 用来干什么
-- 画布缩放控制器，在不同分辨率下UI控件大小自适应
-- 但并不负责位置，位置由`RectTransform`来控制
-2. 学前准备
-- 画布大小和缩放系数
-    - 选中Canvas对象后，在RectTransform组件中可以看到宽高和缩放
-    - 宽高 * 缩放系数= 屏幕分辨率
-3. CanvasScaler的三种适配模式
-- `Constant Pixel Size`:无论屏幕大小如何，UI始终保持相同像素大小
-- `Scale With Screen Size`：根据屏幕尺寸进行缩放，随着屏幕尺寸大小缩放
-- `Constant Physical Size`：无论屏幕大小和分辨率如何，UI元素始终保持相同物理大小
+### `CanvasScaler` 简单介绍
 
-### CanvasScaler——恒定像素模式
-- `Scale Factor`: 缩放系数 按此系数缩放画布中的所有UI元素
-- `Reference Pixels` Per Unit: 单位参考像素，多少像素对应Unity中的一个单位
-图片设置中的Pixels Per Unit设置，会和该参数一起参与计算
-- 恒定像素模式计算公式: 
-`UI原始尺寸 = 图片大小（像素）/(Pixels Per Unit/Reference Pixels PerUnit`
+`CanvasScaler`（画布缩放器）是 Unity UI 系统中的一个核心组件，它的主要作用是控制 `Canvas`（画布）上所有 UI 元素的整体缩放和尺寸，以适应不同的屏幕分辨率和尺寸。画布缩放器并不负责位置，位置由 `RectTransform` 来控制。
 
-### CanvasScaler——缩放模式
-- `Reference Resolution`:参考分辨率
-- `Screen Match Mode`:屏幕匹配模式，当前屏幕分辨率宽高比不适应参考分辨率时，
-用于分辨率大小自适应的匹配模式
+在 Game 窗口中的 Stats 中能观到当前的分辨率，该分辨率会参与到自适应的计算。同时，在 `Canvas` 对象上 `RectTransform` 组件中也能看到宽高和缩放。
 
-    - `Expand`: 水平或垂直拓展画布区域，会根据宽高比的变化大小来放大缩小画布，可能有黑边
-        - 拓展匹配，将Canvas Size进行宽或高扩大，让他高于参考分辨率
-        - 计算公式：缩放系数 = Mathf.Min(屏幕宽/参考分辨率宽, 屏幕高/参考分辨率高)
-        - 画布尺寸 = 屏幕尺寸/缩放系数
-    - `Shrink`: 水平或垂直裁剪画布区域，会根据宽高比的变化来放大缩小画布，可能会裁剪
-        - 收缩匹配，将Canvas Size进行宽或高收缩，让他低于参考分辨率
-        - 计算公式：缩放系数 = Mathf.Max(屏幕宽/参考分辨率宽, 屏幕高/参考分辨率高)
-        - 画布尺寸 = 屏幕尺寸/缩放系数
-    - `Match Width Or Height`:以宽高或者二者的平均值作为参考来缩放画布区域
-        - 宽高匹配：以宽高或者二者的某种平均值作为参考来缩放画布
-        - Match：确定用于计算的宽高匹配值
+::: info
+屏幕分辨率 = 宽高 * 缩放系数
+:::
 
-### CanvasScaler——恒定物理模式(一般不会使用)
-- `DPI`：图像每英寸长度内的像素点数
-- `Physical Unit`：物理单位，使用的物理单位种类
-- `Fallback Screen DPI`：备用DPI，当找不到设备DPI时，使用此值
-- `Default Sprite DPI`：默认图片DPI
-- 计算公式：新单位参考像素 = 单位参考像素 *Physical Unit/Default Sprite DPI
+`CanvasScaler` 有三种适配模式：
+1. `Constant Pixel Size`（极少用）：无论屏幕大小如何，UI始终保持相同像素大小。
+2. `Scale With Screen Size`（最常用）：根据屏幕尺寸进行缩放，随着屏幕尺寸大小缩放。
+3. `Constant Physical Size`（极少用）：类似于第一种模式。无论屏幕大小和分辨率如何，UI元素始终保持相同物理大小。
 
-### Graphic Raycater——图形射线投射器组件
-1. 用来干什么？
-- 意思是图形射线投射器
-- 用于检测UI输入事件的射线发射器
-- 主要负责通过射线检测玩家和UI元素的交互，判断是否点击到了UI元素
-2. 相关参数
-- `Ignore Reversed Graphics`:是否忽略反转图形 
-- `Blocking Objects`: 射线被哪些类型的碰撞器阻挡（在覆盖渲染模式下无效）
-- `Blocking Mask`: 射线被哪些层级的碰撞器阻挡（在覆盖渲染模式下无效）
+接下来会一一介绍这三种模式。
 
-### EventSystem和Standalone Input Module
-1. EventSystem组件用来干什么
-- 它是用于管理玩家的输入事件并分发给各UI控件
-- 它是实践逻辑处理模块
-- 所有的UI事件都通过EventSystem组件中轮询检测并做相应的执行
-- 它类似一个中转站，和许多模块一起共同协作
-2. EventSystem组件参数
-- `First Selected`：首先选择的游戏对象，可以设置游戏一开始的默认选择
-- `Send Navigation Events`：是否允许导航事件（移动 按下 取消）
-- `Drag Threshold`：拖曳操作的阈值（移动多少像素算拖曳）
-3. Standalone Input Module组件用来干什么
-- 独立输入模块
-- 主要针对处理鼠标、键盘、控制器、触屏的输入
-- 输入的事件通过EventSystem进行分发
-- 他依赖于EventSystem组件，他们俩缺一不可
-4. Standalone Input Module组件参数(一般不会修改)
-- `Horizontal Axis`:水平轴按钮对应的热键名(该名字对应Input管理器)
-- `Vertical Axis`:垂直轴按钮对应的热键名(该名字对应Input管理器)
-- `Submit Button`:提交(确定)按钮对应的热建名(该名字对应Input管理器)
-- `Cancel Button`:取消按钮对应的热建名(该名字对应Input管理器)
-- `Input Actions Per Second`:每秒允许键盘/控制器输入的数量
-- `Repeat Delay`:每秒输入操作重复率生效前的延迟时间
-- `ForceModule Active`:是否强制模块处于激活状态
+### CanvasScaler-恒定像素模式
+
+`Constant Pixel Size` 模式的参数：
+- `Scale Factor`：缩放系数，会按此系数缩放画布中的所有UI元素。
+- `Reference Pixels Per Unit`：单位参考像素，多少像素对应 Unity 中的一个单位（默认100像素为1单位）。在图片 Inspect 窗口中的 `Pixels Per Unit` 设置会和该参数一起参与计算。
+
+::: info 恒定像素模式计算公式
+UI原始尺寸 = 图片大小（像素）/ (Pixels Per Unit / Reference Pixels Per Unit)
+:::
+
+### CanvasScaler-缩放模式
+`Scale With Screen Size` 模式的参数：
+- `Reference Resolution`：参考分辨率。需要填写你希望参考的屏幕分辨率大小。例如，开发 pc端游戏时，可填入常用的 1920x1080；开发移动端游戏时，可填入常用的 1080x1920。
+- `Screen Match Mode`：屏幕匹配模式，当前屏幕分辨率宽高比不适应参考分辨率时，
+用于分辨率大小自适应的匹配模式。 
+    - `Match Width Or Height`（最常用）:以宽高或者二者的平均值作为参考来缩放画布区域。
+        - `Match`：以二者的某种平均值作为参考来缩放画布。
+            1. 当 Match = 0 时，强制 UI 的缩放只参考屏幕宽度的变化；
+            2. 当 Match = 1 时，强制 UI 的缩放只参考屏幕高度的变化；
+            3. **当 Match = 0.5 时，这是最常用，也通常是效果最好的设置。** 它会在“匹配宽度”和“匹配高度”之间取得一个平衡。它试图找到一个中间点，让你的 UI 在各种不同的宽高比下都能合理地显示。
+    - `Expand`: 水平或垂直拓展画布区域，会根据宽高比的变化大小来放大缩小画布。可以完全的展示参考分辨率下创建的所有内容，但可能会展示出未设置的区域，如屏幕上或下出空白区域。
+        - 拓展匹配，将Canvas Size进行宽或高扩大，让他高于参考分辨率。
+        - 缩放系数 = Mathf.Min(屏幕宽 / 参考分辨率宽, 屏幕高 / 参考分辨率高)
+        - 画布尺寸 = 屏幕尺寸 / 放系数
+    - `Shrink`: 水平或垂直裁剪画布区域，会根据宽高比的变化来放大缩小画布。可以完整占据整个屏幕，但会导致会对UI的裁剪。
+        - 收缩匹配，将Canvas Size进行宽或高收缩，让他低于参考分辨率。
+        - 缩放系数 = Mathf.Max(屏幕宽 / 参考分辨率宽, 屏幕高 / 参考分辨率高)
+        - 画布尺寸 = 屏幕尺寸 / 缩放系数
+    
+
+### CanvasScaler-恒定物理模式
+`Constant Physical Size` 模式的参数：
+- `DPI`：图像每英寸长度内的像素点数。
+- `Physical Unit`：物理单位，使用的物理单位种类。
+- `Fallback Screen DPI`：备用DPI，当找不到设备DPI时，使用此值。
+- `Default Sprite DPI`：默认图片DPI。
+
+计算公式：新单位参考像素 = 单位参考像素 * Physical Unit / Default Sprite DPI
+
+### CanvasScaler-World
+
+当 Canvas 的渲染模式（Render Mode）设置为 `World Space` 时，`Canvas Scaler` 组件的模式就会被强制锁定为 `World` 模式。
+
+这个 `World` 模式和我们之前讨论的 `Scale With Screen Size` 等模式在目标上完全不同。它不负责缩放 UI 的大小，而是负责控制 UI 在 3D 世界中的渲染质量或像素密度。
+
+`Canvas Scaler` 此时有一个关键属性：`Dynamic Pixels Per Unit` (每单位动态像素数)，这个设置决定了UI “贴图”的分辨率。
+
+### Graphic Raycaster-图形射线投射器组件
+
+Graphic Raycaster 是图形射线投射器，用于检测UI输入事件的射线发射器，主要负责通过射线检测玩家和UI元素的交互，判断是否点击到了UI元素
+
+相关参数：
+- `Ignore Reversed Graphics`:是否忽略反转图形。
+- `Blocking Objects`: 射线被哪些类型的碰撞器阻挡（在覆盖渲染模式下无效）。
+- `Blocking Mask`: 射线被哪些层级的碰撞器阻挡（在覆盖渲染模式下无效）。
+
+### EventSystem 
+
+EventSystem 是整个 Unity UI 交互的中枢。它是一个独立的游戏对象，负责处理来自玩家的所有输入（鼠标、触摸、手柄、键盘），并将这些输入转化为具体的事件，再派发给正确的游戏对象（主要是 UI 元素）。
+
+一个标准的 `EventSystem` 对象通常由以下几个组件构成：
+1. `Event System`：这是核心组件，负责管理整个事件的派发逻辑和协同其他组件工作。
+
+2. `Standalone Input Module` (独立输入模块)：这是默认的输入模块，专门用于处理来自PC平台（Windows, Mac, Linux）的鼠标、键盘和手柄输入。
+> 在移动端项目中，这个组件会被 Touch Input Module 的功能所扩展（尽管现在 Standalone Input Module 已经整合了触摸功能）。
+
+3. `Base Input Module`：这是一个基类，Standalone Input Module 就是从它继承而来的。如果你想创建自定义的输入方式（比如语音控制、手势识别），你就需要编写一个继承自 Base Input Module 的新脚本。
+
+EventSystem 组件用于管理玩家的输入事件并分发给各UI控件，它是实践逻辑处理模块，所有的UI事件都通过 EventSystem 组件中轮询检测并做相应的执行，它类似一个中转站，和许多模块一起共同协作。EventSystem 组件有三个参数：
+- `First Selected`：首先选择的游戏对象，可以设置游戏一开始的默认选择。
+- `Send Navigation Events`：是否允许导航事件（通过键盘等设备进行移动、按下、取消）。
+- `Drag Threshold`：拖曳操作的阈值（移动多少像素算拖曳）。
+
+
+`Standalone Input Module` 是连接传统硬件输入与事件系统之间的一座关键“桥梁”。它的主要工作就是监听来自玩家电脑的输入设备——主要是鼠标、键盘和手柄——然后将这些原始的硬件信号（比如“鼠标左键被按下了”或“键盘W键被按下了”）翻译成 EventSystem 能理解的、更高级的逻辑事件（比如 `PointerClick` 点击、`Submit` 提交、`Maps` 导航等）。
+
+Standalone Input Module组件参数(一般不会修改)：
+- `Horizontal Axis`：水平轴按钮对应的热键名(该名字对应Input管理器)。
+- `Vertical Axis`：垂直轴按钮对应的热键名(该名字对应Input管理器)。
+- `Submit Button`：提交(确定)按钮对应的热建名(该名字对应Input管理器)。
+- `Cancel Button`：取消按钮对应的热建名(该名字对应Input管理器)。
+- `Input Actions Per Second`：每秒允许键盘/控制器输入的数量。
+- `Repeat Delay`：每秒输入操作重复率生效前的延迟时间。
+- `ForceModule Active`：是否强制模块处于激活状态。
 
 ### RectTransform
 1. 用来干什么

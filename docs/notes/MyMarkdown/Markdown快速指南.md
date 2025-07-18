@@ -4,7 +4,7 @@
 1. [Markdown 基本语法](https://markdown.com.cn/basic-syntax/)
 2. [VitePress 文档](https://vitepress.dev/zh/)
 
-```markdown 
+```markdown [markdown.md]
 # Markdown 新手教程
 
 Markdown 是一种轻量级的标记语言，用于格式化纯文本。它简单易学，广泛应用于文档编写、博客撰写等场景。以下是基础语法指南：
@@ -50,3 +50,24 @@ Console.WriteLine("Hello, World!");
 ```
 
 :::
+
+```json [JSON.json]
+{
+  "name": "example",
+  "version": "1.0.0",
+  "description": "An example JSON file"
+}
+```
+
+
+```lua [Lua.lua]
+print("Hello, World!")
+```
+
+```py [Python.py]
+print("Hello, World!")
+```
+
+```powershell [PowerShell.ps1]
+Write-Host "Hello, World!"
+```
