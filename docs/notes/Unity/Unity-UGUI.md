@@ -489,3 +489,262 @@ public void ChangeValue(Vector2 value)
         print(value);
     }
 ```
+### DropDown——下拉列表
+1. 是什么？
+- 是UGUI中用于处理下拉列表相关交互的关键组件
+- 默认创建的DropDown由4组对象组成
+- 父对象——DropDown组件依附的对象，还有一个Image组件作为背景图
+- 子对象——Label是当前选项描述、Arrow右侧小箭头、Template下拉列表选单
+2. 相关参数
+
+- `Template`：关联下拉列表模板对象
+- `Caption Text`：关联显示当前选项的文本组件
+- `Caption Image`：关联显示当前选项的图片组件
+- `Item Text`：关联选项列表中的文本控件
+- `Item Image`：关联选项列表中的图片控件
+- `Value`：当前选中选项的索引值
+- `Alpha Fade Speed`：下拉列表淡入淡出动画速度
+- `Options`：下拉列表中的选项集合
+3. 代码控制
+```c#
+TMP_Dropdown dropdown = this.gameObject.GetComponent<TMP_Dropdown>();
+print(dropdown.value);
+print(dropdown.options[dropdown.value]);
+
+dropdown.options.Add(new TMP_Dropdown.OptionData("123123"));
+```
+
+### 图集制作
+1. 为什么要打图集
+-  减少DrawCall 提高性能
+2. Untiy打包图集相关
+- Max SpriteAtlas Cache Size (GB)
+功能
+设置运行时 动态图集（Dynamic Atlas） 的最大内存缓存容量（单位：GB）。
+
+动态图集会临时合并零散的小纹理，此值限制其总内存占用。
+
+默认值通常为 1GB，可根据项目需求调整（如移动端建议降低至 0.5GB）。
+
+注意事项
+
+超过容量时，Unity 会自动释放未使用的动态图集。
+
+过高可能导致内存压力，过低可能增加频繁生成的性能开销。
+
+- Mode（图集模式选择）
+Unity 提供 两种版本 的 Sprite Atlas 系统，需根据项目兼容性选择：
+
+Sprite Atlas V1（旧版）
+
+Enabled For Builds：仅构建时生效（编辑器内禁用）。
+
+Always Enabled：编辑器和运行时均启用（兼容老项目）。
+
+Sprite Atlas V2（新版，推荐）
+
+Enabled：默认启用（编辑器+运行时）。
+
+Enabled for Builds：仅构建时生效（编辑器禁用）。
+
+选择建议：新项目优先用 V2（性能更好），旧项目升级可选 V1 - Always Enabled 过渡。
+3. 打图集参数
+:::tip
+详细内容在Unity核心中
+:::
+4. 代码加载
+```c#
+//加载图集
+SpriteAtlas sa = Resources.Load<SpriteAtlas>("MyAtlas");
+
+sa.GetSprite("bk");
+```
+## UGUI——进阶
+
+### UI事件监听接口
+1. 事件监听接口用来解决什么问题
+目前所有的控件都只提供了常用的事件监听列表，如果想做一些类似长按，双击，拖拽等功能
+是无法制作的，或者想让Image和Text，RawImage三大基础控件能够响应玩家输入也是无法制作的
+，而事件接口就是用来处理类似问题的，让所有控件都能够添加更多的事件监听来处理对应的逻辑。
+2. 有哪些事件接口
+- 常用事件接口
+
+`IPointerEnterHandler - OnPointerEnter`
+当指针（鼠标/触摸）进入游戏对象时触发
+
+`IPointerExitHandler - OnPointerExit`
+当指针离开游戏对象时触发
+
+`IPointerDownHandler - OnPointerDown`
+在游戏对象上按下指针时触发（按下瞬间）
+
+`IPointerUpHandler - OnPointerUp`
+松开指针时触发（需在原本按下的对象上松开）
+
+`IPointerClickHandler - OnPointerClick`
+在同一个游戏对象上完成"按下→松开"操作时触发（完整点击）
+
+`IBeginDragHandler - OnBeginDrag`
+开始拖动操作时在可拖动对象上触发
+
+`IDragHandler - OnDrag`
+拖动过程中持续触发（每帧调用）
+
+`IEndDragHandler - OnEndDrag`
+拖动操作完成时触发
+
+- 不常用接口 了解即可
+
+`InitializePotentialDragHandler - OnInitializePotentialDrag`
+在找到拖动目标时调用，可用于初始化拖动操作的初始值
+
+`IDropHandler - OnDrop`
+当拖拽物体释放到目标对象上时调用
+
+`IScrollHandler - OnScroll`
+当鼠标滚轮滚动时调用
+
+`IUpdateSelectedHandler - OnUpdateSelected`
+每次勾选时在选定对象上持续调用（每帧）
+
+`ISelectHandler - OnSelect
+当对象被选中时调用（如通过Tab键或控制器选择）
+
+`IDeselectHandler - OnDeselect`
+当对象取消选中状态时调用
+
+`IMoveHandler - OnMove`
+发生方向移动事件时调用（如上、下、左、右等导航操作）
+
+`ISubmitHandler - OnSubmit`
+按下确认/提交按钮时调用（如键盘Enter或手柄A键）
+
+`ICancelHandler - OnCancel`
+按下取消按钮时调用（如键盘Esc或手柄B键）
+3. 使用事件接口
+```c#
+public class L18 : MonoBehaviour,IPointerEnterHandler,IPointerExitHandler,IPointerDownHandler,IPointerUpHandler
+{
+    public void OnPointerEnter(PointerEventData eventData)
+    {
+        print("鼠标进入");
+    }
+
+    public void OnPointerExit(PointerEventData eventData)
+    {
+        //在移动设备商不存在进入的概念，下同
+        print("鼠标离开");
+    }
+
+    public void OnPointerDown(PointerEventData eventData)
+    {
+       print("鼠标按下");
+    }
+
+    public void OnPointerUp(PointerEventData eventData)
+    {
+        print("鼠标抬起");
+    }
+}
+```
+4. PointerEventData参数的关键内容
+
+`pointerId`
+指针事件ID，用于区分鼠标按键：
+0=左键，1=右键，2=中键
+
+`position`
+当前指针的屏幕坐标（Vector2，原点在屏幕左下角）
+
+`pressPosition`
+指针按下时的初始屏幕坐标（Vector2）
+常用于计算拖动距离
+
+`delta`
+指针移动增量（Vector2，当前帧与上一帧的位置差）
+拖拽时实时更新
+
+`clickCount`
+连续点击次数（int）
+可用于实现双击检测
+
+`clickTime`
+点击发生的时间（float，Unity时间系统）
+配合clickCount计算点击间隔
+
+`pressEventCamera`
+触发OnPointerPress事件的摄像机（Camera）
+常用于世界空间UI的射线检测
+
+`enterEventCamera`
+触发OnPointerEnter事件的摄像机（Camera）
+5. 总结
+- 好处：
+需要监听自定义事件的控件挂载继承实现了接口的脚本就可以监听到一些特殊事件
+，可以通过它实现一些长按，双击拖拽等功能
+- 坏处：
+不方便管理，需要自己写脚本继承接口挂载到对应控件上，比较麻烦
+
+### EventTrigger事件触发器
+1. 事件触发器是什么
+是一个集成了上节课中学习的所有事件接口的脚本
+可以让我们更加方便的为控件添加事件监听
+2. 如何使用时间触发器
+- 拖曳脚本
+在panel上添加处理逻辑的脚本
+```c#
+public void TestPointEnter(BaseEventData data)
+{
+    PointerEventData eventData = data as PointerEventData;
+    print("鼠标进入"+ eventData.position);
+}
+```
+在需要被控制的组件上添加EventTrigger组件，将panel的逻辑脚本拖拽到EventTrigger中
+- 代码添加
+```c#
+
+public EventTrigger et;
+// Start is called before the first frame update
+void Start()
+{
+    //代码添加
+    EventTrigger.Entry entry = new EventTrigger.Entry();
+    entry.eventID = EventTriggerType.PointerUp;
+    entry.callback.AddListener((data) =>
+    {
+        print("抬起");
+    });
+    //将声明好的事件加入到EventTRigger当中
+    et.triggers.Add(entry);
+}
+```
+
+### 屏幕坐标转UI相对坐标
+1. `RectTransformUtility`
+RectTransformUtility公共类 是一个RectTransform的辅助类，
+主要用于进行一些坐标的转换等等操作，其中对于我们目前最重要的函数是：
+将屏幕空间上的点，转换成Ui本地坐标下的点
+2. 将屏幕坐标转换成UI本地坐标系下的点
+- `RectTransformUtility.ScreenPointToLocalPointInRectangle`
+
+参数1：相对父对象
+
+参数2：屏幕点
+
+参数3：摄像机
+
+参数4：最终得到的点
+
+:::tip
+一般配合拖拽事件使用
+:::
+```c#
+public void OnDrag(PointerEventData eventData)
+{
+    Vector2 nowPos;
+    RectTransformUtility.ScreenPointToLocalPointInRectangle(
+    this.transform.parent as RectTransform, eventData.position,
+    eventData.enterEventCamera, out nowPos);
+    this.transform.localPosition = nowPos;
+}
+```
