@@ -172,220 +172,240 @@ Standalone Input Module组件参数(一般不会修改)：
 
 ## 三大基础控件
 
-### Image——图像控件
-1. Image是什么？
-- 是UGUI中用于显示精灵图片的关键组件
-- 除了背景图等大图，一般都使用Image来线束UI中的图片元素
-2. 相关参数
-- `Source lmage`:图片来源(图片类型必须是”精灵“类型)
-- `Color`:图像的颜色
-- `Material`:图像的材质(一般不修改，会使用U的默认材质)
-- `Raycast Target`:是否作为射线检测的目标(如果不勾选将不会响应射线检测)
-- `Maskable`:是否能被遮罩(之后结合遮罩相关知识点进行讲解)
-- `Image Type`:图片类型
-    - `Simple`-普通模式，均匀缩放整个图片
-    - `Sliced`-切片模式，9宫格拉伸，只拉伸中央十字区域(需要在图片上设置边框)
+### Image-图像控件
+Image 是什么：
+- 是 UGUI 中用于显示精灵图片的关键组件。
+- 除了背景图等大图，一般都使用 Image 来线束 UI 中的图片元素。
+
+相关参数：
+- `Source Image`：图片来源（图片类型必须是“Sprite 精灵”类型，可以在 Inspector 中设置）。
+- `Color`：图像的颜色。
+- `Material`：图像的材质（一般不修改，会使用 UI 的默认材质）。
+- `Raycast Target`：是否作为射线检测的目标（如果不勾选将不会响应射线检测）。
+- `Maskable`：是否能被遮罩（之后结合遮罩相关知识点进行讲解）。
+- `Image Type`：图片类型。
+    - `Simple`：普通模式，均匀缩放整个图片。
+    - `Sliced`：切片模式，9宫格拉伸，只拉伸中央十字区域（需要在图片上通过 Sprite Editor 设置 Border 边框）。
     ::: tip
-    需要安装2D Sprite包
-    下图为切片模式效果,左边为切片模式，右边为普通模式
+    在 Unity 2019 及以上版本中，使用切片模式时需要安装 2D Sprite 包。
+    
+    下图为切片模式效果，左边为切片模式，右边为普通模式。可以观察到，通过设置 Border，边框区域不会被拉伸，而是保持原样，只有中央部分被拉伸。
     :::
     ![切片模式效果](./images/切片模式.png)
-    - `Tiled`-平铺模式，重复平铺中央部分
-    - `Filled`-填充模式
-        - `Fill Method`:填充方式
-        - `Fill Origin`:填充原点
-        - `Fill Amount`:填充量
-        - `Clockwise`:顺时针方向
-        - `Preserve Aspect`:保持宽高比
-- `Use Sprite Mesh`:使用精灵网格，勾选的话Unity会帮我们生成图片网格
-- `Preserve Aspect`:确保图像保持其现有尺寸
-- `Set Native Size`:设置为图片资源的原始大小
-3. 代码控制
+    - `Tiled`：平铺模式，重复平铺中央部分。也可以通过设置 Border 边框来控制平铺样式。
+    - `Filled`：填充模式。
+        - `Fill Method`：填充方式
+        - `Fill Origin`：填充原点
+        - `Fill Amount`：填充量
+        - `Clockwise`：顺时针方向
+        - `Preserve Aspect`：保持原图宽高比
+- `Use Sprite Mesh`：使用精灵网格，勾选的话 Unity 会自动生成图片网格。一般用于 2D 游戏。
+- `Preserve Aspect`：确保图像保持其现有尺寸。
+- `Set Native Size`：设置为图片资源的原始大小。
+
+通过代码控制：
 ```c#
-   void Start()
-    {
-        Image image = this.GetComponent<Image>();
-        image.sprite = Resources.Load<Sprite>("ui_TY_fanhui_01");
-        //其余均可点出来使用
-    }
+void Start()
+{
+    Image image = this.GetComponent<Image>();
+    image.sprite = Resources.Load<Sprite>("ui_TY_fanhui_01");
+    //其余均可点出来使用
+}
 ```
 :::tip
-一定要注意将图片类型转换为精灵
+需要将图片类型转换为 Sprite（精灵）才可以使用。
 :::
 
-### Text——文本控件
+### Text-文本控件
 :::warning
-注意在新版Unity中Text已经被遗弃，使用的是TextMeshPro
-TextMeshPro会在后续的课程中讲解
-:::
+新版 Unity 中 `Text` 已经被遗弃，转而使用 `TextMeshPro`。
+`TextMeshPro` 会在后续的课程中讲解。
+
 |特性    | Text  | TextMeshPro       |
 |-------|--------|------------------|
-|渲染质量| 低分辨率，缩放时易模糊  | 高分辨率，缩放时保持锐利（SDF技术）。          |
+|渲染质量| 低分辨率，缩放时易模糊。  | 高分辨率，缩放时保持锐利（SDF技术）。          |
 |  性能  |轻量级，但大文本或复杂UI效率较低。 | 优化更好，适合大量文本或动态内容。     |
-| 富文本支持   | 仅支持简单标签  | 支持复杂富文本（颜色、动画、超链接等）  |
+| 富文本支持   | 仅支持简单标签。  | 支持复杂富文本（颜色、动画、超链接等）。  |
 | 字体控制     | 有限（依赖系统字体或动态字体）。	   | 支持自定义SDF字体、字距调整、基线控制等。        |
 |多语言支持    | 基础支持（依赖字体字符集）。   | 更好支持（如表情符号、特殊字符）。     |
-| 动态布局     | 	需手动调整   | 支持自动换行、文本对齐、溢出处理等。        |
-|3D场景文本    | 仅限UI Canvas。   | 	支持3D场景中的TextMeshPro组件    |
+| 动态布局     | 	需手动调整。   | 支持自动换行、文本对齐、溢出处理等。        |
+|3D场景文本    | 仅限UI Canvas。   | 	支持3D场景中的TextMeshPro组件。    |
+:::
 
-1. 相关参数
+相关参数：
 ![Text相关参数](./images/Text相关参数.png)
-#### 富文本开启后
-可以以类似html的格式对文本进行编辑
+#### `Rich Text` 富文本开启后
+可以以类似 html 的格式对文本进行编辑：
 ```html
 <i><b>1231</b>23123131123</i>
 ```
+效果类似于：<ins><b>1231</b>23123131123</ins>
 
-### RawIamge——原始图像控件    
-1. 是什么?
+### RawImage-原始图像控件
+**`RawImage` 是什么：**
 - 是UGUI中用于显示任何纹理图片的关键组件
-- 它和Image的区别是 一般RawImage用于显示大图(背景图，不需要打入突击的图片，网络下载的图等等)
-2. 参数相关
-- `Texture`:图像纹理
-- `UV Rect`:图像在UI矩形内的偏移和大小
-- 位置偏移X和Y(取值0~1)
-- 大小偏移W和H(取值0~1)
-- 改变他们图像边缘将进行拉伸来填充UV矩形周围的空间
-3. 代码控制
-```c#
-    void Start()
-    {
-        RawImage raw = GetComponent<RawImage>();
-        raw.texture = Resources.Load<Texture>("ui_TY_erjikuang_01");
-    }
-```
-## UGUI——组合控件
+- 它和 `Image` 的区别是一般 `RawImage` 用于显示大图（背景图，不需要打入突击的图片，网络下载的图等等），且图片不需要转化为 Sprite 类型。
 
-### Button组合控件
-1. `Button`是什么
-- 是UGUI中用于处理玩家按钮相关交互的关键组件
-- 默认创建的`Button`由2个对象组成
-- 父对象——B`utton`组件依附对象 同时挂载了一个Image组件作为按钮背景图
-- 子对象——按钮文本(可选)
-:::tip
-由于旧的Text文本已经被遗弃，现在子对象上的组件是`TextMeshPro`，其余无大区别
-:::
-2. 相关重要参数
-- `Interactable`:是否接受输入
-- `Transition`:响应用户输入的过渡效果
-    - `None`:没有状态变化效果
-    - `ColorTint`:用颜色表示不同的状态变化
-    - `Sprite Swap`:用图片表示不同状态的变化
-    -  `Animation`:用动画表示不同状态的变化
-- `Navigation`:导航模式,可以设置UI元素如何在播放模式中控制导航
-3. 代码控制
+**组件参数：**
+- `Texture`：图像纹理。
+- `UV Rect`：图像在 UI 矩形内的偏移和大小。
+    - 位置偏移 X 和 Y (取值0~1)。
+    - 大小偏移 W 和 H (取值0~1)。
+    - 改变他们图像边缘将进行拉伸来填充 UV 矩形周围的空间。
+
+**通过代码控制：**
 ```c#
-    void Start()
-    {
-        Button btn = this.GetComponent<Button>();
-        btn.interactable = true;
-        Image img = this.GetComponent<Image>();
-    }
-```
-4. 监听点击事件的两种方式
-- 点击事件是在按钮区域按下抬起一次 就算点击
-```c#
-public class L10 : MonoBehaviour
+void Start()
 {
-    // Start is called before the first frame update
+    RawImage raw = GetComponent<RawImage>();
+    raw.texture = Resources.Load<Texture>("ui_TY_erjikuang_01");
+}
+```
+## UGUI-组合控件
+
+### Button-组合控件
+**`Button` 是什么**
+- 是 UGUI 中用于处理玩家按钮相关交互的关键组件。
+- 默认创建的 `Button` 由2个对象组成：
+    1. 父对象——`Button`组件依附对象 同时挂载了一个 `Image` 组件作为按钮背景图；
+    2. 子对象——按钮文本（可选）。
+
+::: tip
+由于旧的 `Text` 文本已经被遗弃，现在子对象上的组件是 `TextMeshPro` ，其余无大区别。
+:::
+
+**重要参数**
+- `Interactable`：是否能够交互。
+- `Transition`：响应用户输入（选中，悬停等）的过渡效果。
+    - `None`：没有状态变化效果。
+    - `ColorTint`：用颜色表示不同的状态变化。
+    - `Sprite Swap`：用图片表示不同状态的变化。
+    - `Animation`：用动画表示不同状态的变化。
+- `Navigation`：导航模式，可以设置UI元素如何在播放模式中控制导航。
+
+**通过代码控制**
+```c#
+void Start()
+{
+    Button btn = this.GetComponent<Button>();
+    btn.interactable = true;
+    Image img = this.GetComponent<Image>();
+}
+```
+
+**监听点击事件的两种方法**
+1. 通过在 Inspector 窗口拖拽的方式。
+2. 通过代码添加的方式。
+::: info
+在按钮区域按下再抬起算一次点击事件。
+:::
+
+代码示例：
+```c# 
+public class ButtonClickExample : MonoBehaviour
+{
+ 
     void Start()
     {
         Button btn = this.GetComponent<Button>();
         btn.interactable = true;
-        Image img = this.GetComponent<Image>();
-        //1.通过拖的形式
-        //2.采用代码添加法
+
+        // 通过代码监听事件
         btn.onClick.AddListener(ClickBtn2);
         btn.onClick.AddListener(() =>
         {
             print("通过表达式直接添加");
         });
+
+        // 移除方法
         btn.onClick.RemoveListener(ClickBtn2);
     }
+
+    // 通过拖代码的形式；必须为公共方法
     public void ClickBtn()
     {
         print("按钮点击，通过拖代码的形式");
     }
-
-    private void ClickBtn2()
-    {
-        print("按钮点击，通过代码的形式");
-    }
 }
 ```
-### `Toggle`开关控件
-1. `Toggle`是什么
-- 是UGUI中用于处理晚间单选框多选框相关交互的关键组件
-- 可以通过配合ToggleGroup组件制作为单选框
-- 默认个创建的Toggle由4个对象组成
-- 父对象——Toggle组件依附
-- 子对象——背景图（必备）、选中图（必备）、说明文字（可选）
-2. 相关重要参数
-- `IsOn`:当前是否处于打开状态
-- `Toggle Transition`:在开关值变化时的过渡方式
-    - `None`:无任何过渡直接显示隐藏
-    - `Fade`:淡入淡出
-- `Graphic`: 用于表示选中状态的图片
-- `Group`: 将ToggleGroup组件拖上去后，即可分组
-3. 代码控制
+### Toggle-开关控件
+
+**`Toggle`是什么**
+- 是 UGUI 中用于处理晚间单选框多选框相关交互的关键组件。
+- 可以通过配合 `ToggleGroup` 组件制作为单选框。
+- 默认个创建的 `Toggle` 由4个对象组成：
+    - 父对象—— `Toggle` 组件依附
+    - 子对象—— 背景图、选中图、说明文字（可选）
+
+**重要参数**
+- `IsOn`:当前是否处于打开状态。
+- `Toggle Transition`：在开关值变化时的过渡方式。
+    - `None`：无任何过渡直接显示隐藏。
+    - `Fade`：√ 淡入淡出效果。
+- `Graphic`：用于表示选中状态的图片。
+- `Group`：单选框分组；需要为所有单选项设置同一个 `ToggleGroup` 组件即可实现单选框。在 `ToggleGroup` 组件上勾选 `Allow Switch Off` 可以实现允许不选择任何选项。
+-  部分参数和 `Button` 组件相同，不再赘述。
+
+**通过代码控制**
 ```c#
-        Toggle tog =this.GetComponent<Toggle>();
-        tog.isOn = true;
-        print(tog.isOn);
-        
-        ToggleGroup togGroup = this.GetComponent<ToggleGroup>();
-        
-        //遍历当前选中的toggle
-        foreach (Toggle item in togGroup.ActiveToggles())
-        {
-            print(item.name + " : " + item.isOn);
-        }
+// 获取 Toggle 组件
+Toggle tog = this.GetComponent<Toggle>();
+tog.isOn = true;
+print(tog.isOn);
+
+// 获取 ToggleGroup 组件
+ToggleGroup togGroup = this.GetComponent<ToggleGroup>();
+
+//遍历当前选中的toggle
+foreach (Toggle item in togGroup.ActiveToggles())
+{
+    print(item.name + " : " + item.isOn);
+}
 ```
 
-### InputField——文本输入控件
+### InputField-文本输入控件
 :::warning
-现在使用的也是InputField(TMP),只在文本组件上有区别
+现在使用的也是 `InputField(TMP)`，只在文本组件上有区别。
 :::
-1. 是什么？
-- 是UGUI中用于处理玩家文本输入相关交互的关键组件
-- 默认创建的InputField由三个对象组成
-- 父对象——INputField组件依附对象 以及同时在其上挂载了一个Image作为背景图
-- 子对象——文本显示组件（必备）、默认显示文本组件（必备）
-2. 相关参数
-- `TextComponent`：用于关联显示输入内容的文本组件
-- `Text`：输入框的起始默认值
-- `Character Limit`：可以输入字符长度的最大值
-- `Content Type`：输入的字符类型限制
-- `Line Type`：行类型，定义文本格式
-- `Placeholder`：关联用于显示初始内容文本控件
-- `Caret Blink Rate`：光标闪烁速率
-- `Caret Width`：光标宽度
-- `Custom Caret Color`：自定义光标颜色
-- `Selection Color`：批量选中的背景颜色
-- `Hide Mobile Input`：隐藏移动设备屏幕上键盘（仅适用于iOS）
-- `Read Only`：只读，不可修改
-3. 代码控制相关
+
+**`InputField` 是什么？**
+- 是 UGUI 中用于处理玩家文本输入相关交互的关键组件。
+- 默认创建的 `InputField` 由三个对象组成：
+    - 父对象—— `InputField` 组件依附对象，以及同时在其上挂载了一个 `Image` 作为背景图。
+    - 子对象—— 文本显示组件（必备）、默认显示文本组件（必备）。
+
+**相关参数**
+- `TextComponent`：用于关联显示输入内容的文本组件。
+- `Text`：输入框的起始默认值。
+- `Character Limit`：可以输入字符长度的最大值。
+- `Content Type`：输入的字符类型限制。
+- `Line Type`：行类型，定义文本格式。
+- `Placeholder`：关联用于显示初始内容文本控件。
+- `Caret Blink Rate`：光标闪烁速率。
+- `Caret Width`：光标宽度。
+- `Custom Caret Color`：自定义光标颜色。
+- `Selection Color`：批量选中的背景颜色。
+- `Hide Mobile Input`：隐藏移动设备屏幕上键盘（仅适用于 iOS）。
+- `Read Only`：设为只读。
+
+**代码控制相关**
+
+获取 `InputField` 组件：
 ```c#
 TMP_InputField input = this.GetComponent<TMP_InputField>();
 print(input.text);
 input.text = "2233";
 ```
-
-4. 监听事件
+监听事件：
 ```c#
-    public void ChangeValue(string str)
-    {
-        print("改变的输入内容"+str);
-    }
-
-    public void EndInput(string str)
-    {
-        print("结束时输入的内容"+str);
-    }
+input.onValueChanged.AddListener(ChangeValue);
+input.onEndEdit.AddListener(EndInput);
+// ↓ 新版额外可监听的事件 
+input.onSelect.AddListener(SelectInput);
+input.onDeselect.AddListener(DeselectInput);
 ```
-:::tip
-新版有4个监听事件，前两个是一样的
-代码添加与上文一致
+::: tip
+新版有四个监听事件，前两个是一样的。
 :::
 
 ### Slider——滑动条控件

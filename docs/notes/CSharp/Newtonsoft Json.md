@@ -21,7 +21,7 @@ description: 猴子也能看懂的 Newtonsoft.Json 使用指南，涵盖基本�
 对于简单的场景，如果你想要在 JSON 字符串之间进行转换，`JsonConvert` 上的 `SerializeObject()` 和 `DeserializeObject()` 方法提供了一个易于使用的 `JsonSerializer` 封装。
 
 例如，可以通过如下方法使用 `JsonConvert` 进行 JSON 序列化和反序列化：
-```c#
+```c# {9,12}
 // 初始化数据
 Product product = new Product();
 product.Name = "Apple";
@@ -30,7 +30,7 @@ product.Price = 3.99M;
 product.Sizes = new string[] { "Small", "Medium", "Large" };
 
 // 序列化
-string output = JsonConvert.SerializeObject(product);
+string output = JsonConvert.SerializeObject(product); 
 
 // 反序列化
 Product deserializedProduct = JsonConvert.DeserializeObject<Product>(output);
@@ -104,7 +104,7 @@ public class SimpleSerializerExample : MonoBehaviour
 ```
 
 ::: tip
-写入文本时即使用 `StreamWriter` 。通过 `JsonTextWriter` 输出人类可读的纯文本 JSON，99% 的情况下，当你需要生成 .json 文本文件时，用的就是它。
+写入文本而非二进制数据时即使用 `StreamWriter` 。通过 `JsonTextWriter` 输出人类可读的纯文本 JSON，99% 的情况下，当你需要生成 .json 文本文件时，用的就是它。
 :::
 
 ## JsonSerializerSettings 
