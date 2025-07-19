@@ -781,3 +781,202 @@ public void OnDrag(PointerEventData eventData)
     this.transform.localPosition = nowPos;
 }
 ```
+
+### Mask遮罩
+1. 遮罩是什么
+在不改变图片的情况下，让游戏中只显示其中一部分
+2. 遮罩如何使用
+通过在父对象上添加Mask组件即可遮罩其子对象
+:::tip
+想要被遮罩的Image需要勾选Maskable
+
+只要父对象添加了Mask组件 那么所有的UI子对象都会被遮罩
+
+遮罩父对象图片的制作，不透明的地方显示，透明的地方被遮罩
+:::
+
+### 模型和粒子显示在UI之前
+1. 模型显示在UI之前
+- 方法一
+
+修改Canvas的Render Mode：
+
+将Canvas的Render Mode改为Screen Space - Camera
+
+指定一个单独的UI摄像机（不要和主场景摄像机混用）
+
+调整UI和模型的Sorting Layer：
+
+在Tags and Layers设置中创建新的Sorting Layer
+
+将UI放在下层，模型放在上层
+- 方法二
+
+将3D物体渲染在图片上，通过图片显示，专门用一个摄像机渲染3D模型，将其内容输出到Render Texture上
+，类似小地图的制作方式
+
+2. 粒子特效显示在UI之前
+与上文方法一一致（只需要让z轴在UI之前即可）或修改粒子特效的渲染顺序
+
+### 异形按钮
+1. 什么是异形按钮
+
+图片形状不是传统矩形的按钮
+2. 如何让异形按钮能够准确点击
+- 方法一：通过添加子对象的形式
+
+按钮之所以能够响应点击，主要是根据图片矩形范围进行判断的
+
+它的范围判断是自下而上的，意思是如果有子对象图片，子对象图片的范围也会算为可点击范围
+
+那么我们就能够用多个透明图片平凑不规则图形作为按钮子对象用于进行射线检测
+
+- 方法2：通过代码改变图片的透明度响应阈值
+::: warning
+该方法相对上一种方法较为浪费内存
+:::
+
+第一步：修改图片参数 开启Read/Write Enable开关
+
+第二步：通过代码修改图片的响应阈值
+
+`img.alphaHitTestMinimumThreshold = 0.1f;`
+
+该参数含义：制定一个像素必须具有的最小alpha值，以便能够认为射线命中了图片
+
+说人话：当像素点alpha值小于了该值就不会被射线检测了
+
+### 自动布局组件
+1. 自动布局是什么?
+
+虽然UGUI的RectTransform已经非常方便的可以帮助我们快速布局
+
+但UGUI中还提供了很多可以帮助我们对UI控件进行自动布局的组件
+
+他们可以帮助我们自动的设置UI控件的位置和大小等
+
+自动布局的工作方式一般是：自动布局控制组件+布局元素 = 自动布局
+
+自动布局控制组件：Unity提供了很多用于自动布局的管理性质的组件用于布局
+
+布局元素：具备布局属性的对象们，这里主要是指具备RectTransform的UI组件
+
+2. 水平垂直布局组件(Horizontal/Vertical Layout Group)
+
+`Padding`:
+控制布局边缘的偏移量（左、右、上、下）。
+
+`Spacing`:
+子对象之间的间距（单位：像素）。
+
+`Child Alignment`:
+子对象的对齐方式（九宫格定位，如居中、靠左、靠右等）。
+
+`Control Child Size`:
+是否强制控制子对象的 宽度（Horizontal） 或 高度（Vertical）。
+
+`Use Child Scale`:
+布局时是否考虑子对象的缩放（若子对象被缩放，勾选后按缩放后尺寸计算布局）。
+
+`Child Force Expand`:
+是否强制子对象 填充剩余空间（勾选后子对象会均分额外空间）。
+
+水平布局效果如下图：
+  ![水平布局效果](./images/水平布局组件.png)
+
+3. 网格布局组件（Grid Layout Group）
+
+`Padding`
+控制网格边缘的偏移量（左、右、上、下）。
+
+`Cell Size`
+每个格子的固定大小（宽度 × 高度）。
+
+`Spacing`
+格子之间的间隔（水平间距、垂直间距）。
+
+`Start Corner`
+第一个子对象的起始位置（4个角可选）：
+Upper Left（左上）、
+Upper Right（右上）、
+Lower Left（左下）、
+Lower Right（右下）
+
+`Start Axis`
+子对象的排列方向：
+
+`Horizontal`（水平排列，填满一行后换行）
+
+`Vertical`（垂直排列，填满一列后换列）
+
+`Child Alignment`
+网格整体的对齐方式（九宫格定位，如居中、靠左等）。
+
+`Constraint`（约束模式）
+
+`Flexible`（灵活模式）：自动调整行列数量以适应容器大小。
+
+`Fixed Column Count`（固定列数）：限制网格的列数。
+
+`Fixed Row Count`（固定行数）：限制网格的行数。
+
+4. 内容大小适配器（Content Size Fitter）
+
+- 核心功能
+
+自动调整UI元素（如Text）的RectTransform尺寸，使其适配内容大小。通常用于动态文本或配合布局组件使用。
+
+- 主要参数
+
+`Horizontal Fit`（水平适配模式）:
+`Unconstrained`：不自动调整宽度、
+`Min Size`：按子对象最小宽度调整、
+`Preferred Size`：按子对象理想宽度调整（如文本自然宽度）
+
+`Vertical Fit`（垂直适配模式）
+选项同水平模式（Unconstrained/Min Size/Preferred Size）
+
+5. 宽高比适配器(Aspect Ratio Fitter)
+- 核心功能:
+控制UI元素按固定宽高比自动调整尺寸，确保内容比例不变形。适用于需要保持特定比例的图像、视频等UI元素。
+
+- 主要参数:
+`Aspect Mode`（适配模式）:
+
+`None`：禁用比例适配
+
+`Width Controls Height`：以宽度为基准自动计算高度
+
+`Height Controls Width`：以高度为基准自动计算宽度
+
+`Fit In Parent`：在父容器内完整显示（可能产生黑边）
+
+`Envelope Parent`：填满父容器（可能内容被裁剪）
+
+`Aspect Ratio`（宽高比）:
+
+手动设置宽度与高度的比值（如16:9=1.78，4:3=1.33）
+
+### Canvas Group
+1. 如何整体控制一个面板的淡入淡出？
+
+使用目前的学习知识点，无法方便快捷的设置的，
+因此需要CanvasGroup来解决这个问题。
+
+2. CanvasGroup
+
+为面板幅度想添加 CanvasGroup组件，即可整体控制
+
+相关参数：
+
+`Alpha`（透明度）
+范围0-1，控制组内所有UI的全局透明度（不影响子对象单独设置的Alpha）
+
+`Interactable`（交互开关）
+禁用时组内所有按钮/输入框等交互组件失效（灰显状态）
+
+`Blocks Raycasts`（射线阻挡）
+若关闭，组内UI不会阻挡射线检测（相当于全部设为Raycast Target=false）
+
+`Ignore Parent Groups`（父组忽略）
+启用时不受父对象CanvasGroup属性影响（独立作用）
