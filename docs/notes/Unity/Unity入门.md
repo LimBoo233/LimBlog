@@ -99,12 +99,12 @@ Time.timeScale = 1f;
 
 ### 2. 帧间隔时间（秒）
 主要是用来计算位移的，需要根据需求选择。
-1. 如果希望游戏暂停时候不动的，使用deltaTime。
-2. 如果希望不受暂停影响，使用unscaledDeltaTime。
+1. 如果希望游戏暂停时候不动的，使用 `deltaTime`。
+2. 如果希望不受暂停影响，使用 `unscaledDeltaTime`。
 
-受scale影响的 - Time.deltaTime。
+受 scale 影响的 - `Time.deltaTime`。
 
-不受scale影响的 - Time.unscaledDeltaTime。
+不受 scale 影响的 - `Time.unscaledDeltaTime`。
 
 ### 3. 游戏开始到现在时间
 它主要用来单机游戏的计时。
@@ -131,10 +131,10 @@ Time.frameCount;
 ```
 
 ### 总结
-最常用的:
-1. 帧时间间隔：用于计算位移相关内容
-2. 时间缩放比例：用来暂停，倍速
-3. 帧数（帧同步）
+**最常用的:**
+1. 帧时间间隔：用于计算位移相关内容。
+2. 时间缩放比例：用来暂停，倍速。
+3. 帧数（帧同步）。
 
 ## Lesson 6 向量
 ### 1. 位置
@@ -155,7 +155,7 @@ Vector3 up = transform.up;
 ```
 
 ### 3.位移
-除了直接+，-，还可以使用Translate方法。一般使用API进行位移。
+除了直接 +，-，还可以使用 `Translate` 方法。一般使用 API 进行位移。
 ```c#
 // 相对坐标系
 transform.Translate(Vector3.forward * speed * Time.deltaTime);
@@ -174,7 +174,7 @@ Vector3 scale = transform.lossyScale;
 Vector3 localScale = transform.localScale;
 ```
 
-### 2. 看向
+### 2. 看向指定物体
 ```c#
 transform.LookAt(Camera.main.transform);
 ```
@@ -455,9 +455,9 @@ if (_rigidbody.IsSleeping())
 ```
 
 ## Lesson 20 代码控制音频
----
-一个音频播放器的初始化：
-```c#
+
+**初始化一个音频播放器：**
+```c# [AudioContoller.cs]
 public class AudioContoller : MonoBehaviour
 {
     private AudioSource _audioSource;
@@ -473,7 +473,7 @@ public class AudioContoller : MonoBehaviour
  
 }
 ```
----
+
 
 1. 代码控制播放
 ```c#
@@ -494,7 +494,7 @@ _audioSource.UnPause();
 
 2. 如何检测音效播放完毕
 
-如果希望在某一个音效完后，做些事情，那么可以在update函数中，不停地去检测它的属性。如果是false就代表播放完毕了。
+如果希望在某一个音效完后，做些事情，那么可以在 `Update` 函数中，不停地去检测它的属性。如果是 `false` 就代表播放完毕了。
 
 ```c#
 private void Update()
@@ -514,7 +514,7 @@ private void Update()
         ```c#
         Instantiate(obj);
         ```
-    - 用一个AudioSource来控制播放不同的音效
+    - 用一个 `AudioSource` 来控制播放不同的音效
     ```c#
     // 一个GameObject可以挂载多个AudioSource脚本
     AudioSource audioSource = gameObject.AddComponent<AudioSource>();
@@ -591,7 +591,6 @@ Application.Quit();
 ## Lesson 23 隐藏鼠标
 1. 隐藏鼠标
 ```c#
-// 隐藏鼠标
 Cursor.visible = false;
 ```
 2. 锁定鼠标
@@ -607,7 +606,7 @@ Cursor.lockState = CursorLockMode.Confined;
 ```
 
 3. 设置光标图片
-    - 参数一： 图片（如果不是正方形图片，会被压缩。图片的Texture Type最好设置成Cursor）
+    - 参数一： 图片（如果不是正方形图片，会被压缩。图片的 Texture Type 最好设置成 Cursor）
     - 参数二： 偏移位置，相对图片左上角
     - 参数三： 平台支持的光标模式（软件或硬件）
 ```c#
@@ -616,8 +615,8 @@ Cursor.SetCursor(texture2D, Vector2.zero, CursorMode.Auto);
 
 ## Lesson 24 随机数
 1. 随机数
-    - Unity的随机数，不是C#自己的随机数
-    - int左闭右开，而float的重载是左闭右闭
+    - Unity 的随机数，不是 C# 自己的随机数
+    - `int` 左闭右开，而 `float` 的重载是左闭右闭
 ```c#
 int num = Random.Range(0, 100);
 
@@ -626,8 +625,8 @@ System.Random random = new System.Random();
 ```
 
 2. 委托
-    - UnityAction 是一个委托类型，和Action一样。
-    - UnityEvent 是一个事件类型，和C#的事件类似。
+    - `UnityAction` 是一个委托类型，和 `Action` 一样。
+    - `UnityEvent` 是一个事件类型，和 C# 的事件类似。
 ```c#
 // C#
 Action ac = () => print("123");

@@ -105,7 +105,7 @@ UI原始尺寸 = 图片大小（像素）/ (Pixels Per Unit / Reference Pixels P
 
 Graphic Raycaster 是图形射线投射器，用于检测UI输入事件的射线发射器，主要负责通过射线检测玩家和UI元素的交互，判断是否点击到了UI元素
 
-相关参数：
+**相关参数：**
 - `Ignore Reversed Graphics`:是否忽略反转图形。
 - `Blocking Objects`: 射线被哪些类型的碰撞器阻挡（在覆盖渲染模式下无效）。
 - `Blocking Mask`: 射线被哪些层级的碰撞器阻挡（在覆盖渲染模式下无效）。
@@ -173,9 +173,9 @@ Standalone Input Module组件参数(一般不会修改)：
 ## 三大基础控件
 
 ### Image-图像控件
-Image 是什么：
+**`Image` 是什么：**
 - 是 UGUI 中用于显示精灵图片的关键组件。
-- 除了背景图等大图，一般都使用 Image 来线束 UI 中的图片元素。
+- 除了背景图等大图，一般都使用 `Image` 来线束 UI 中的图片元素。
 
 相关参数：
 - `Source Image`：图片来源（图片类型必须是“Sprite 精灵”类型，可以在 Inspector 中设置）。
@@ -185,11 +185,11 @@ Image 是什么：
 - `Maskable`：是否能被遮罩（之后结合遮罩相关知识点进行讲解）。
 - `Image Type`：图片类型。
     - `Simple`：普通模式，均匀缩放整个图片。
-    - `Sliced`：切片模式，9宫格拉伸，只拉伸中央十字区域（需要在图片上通过 Sprite Editor 设置 Border 边框）。
+    - `Sliced`：切片模式，9宫格拉伸，只拉伸中央十字区域（需要在图片上通过 Sprite Editor 设置 `Border` 边框）。
     ::: tip
     在 Unity 2019 及以上版本中，使用切片模式时需要安装 2D Sprite 包。
     
-    下图为切片模式效果，左边为切片模式，右边为普通模式。可以观察到，通过设置 Border，边框区域不会被拉伸，而是保持原样，只有中央部分被拉伸。
+    下图为切片模式效果，左边为切片模式，右边为普通模式。可以观察到，通过设置 `Border`，边框区域不会被拉伸，而是保持原样，只有中央部分被拉伸。
     :::
     ![切片模式效果](./images/切片模式.png)
     - `Tiled`：平铺模式，重复平铺中央部分。也可以通过设置 Border 边框来控制平铺样式。
@@ -264,7 +264,7 @@ void Start()
 ## UGUI-组合控件
 
 ### Button-组合控件
-**`Button` 是什么**
+**`Button` 是什么：**
 - 是 UGUI 中用于处理玩家按钮相关交互的关键组件。
 - 默认创建的 `Button` 由2个对象组成：
     1. 父对象——`Button`组件依附对象 同时挂载了一个 `Image` 组件作为按钮背景图；
@@ -283,7 +283,7 @@ void Start()
     - `Animation`：用动画表示不同状态的变化。
 - `Navigation`：导航模式，可以设置UI元素如何在播放模式中控制导航。
 
-**通过代码控制**
+**通过代码控制：**
 ```c#
 void Start()
 {
@@ -293,7 +293,7 @@ void Start()
 }
 ```
 
-**监听点击事件的两种方法**
+**监听点击事件的两种方法：**
 1. 通过在 Inspector 窗口拖拽的方式。
 2. 通过代码添加的方式。
 ::: info
@@ -330,14 +330,14 @@ public class ButtonClickExample : MonoBehaviour
 ```
 ### Toggle-开关控件
 
-**`Toggle`是什么**
+**`Toggle`是什么：**
 - 是 UGUI 中用于处理晚间单选框多选框相关交互的关键组件。
 - 可以通过配合 `ToggleGroup` 组件制作为单选框。
 - 默认个创建的 `Toggle` 由4个对象组成：
     - 父对象—— `Toggle` 组件依附
     - 子对象—— 背景图、选中图、说明文字（可选）
 
-**重要参数**
+**重要参数：**
 - `IsOn`:当前是否处于打开状态。
 - `Toggle Transition`：在开关值变化时的过渡方式。
     - `None`：无任何过渡直接显示隐藏。
@@ -346,7 +346,7 @@ public class ButtonClickExample : MonoBehaviour
 - `Group`：单选框分组；需要为所有单选项设置同一个 `ToggleGroup` 组件即可实现单选框。在 `ToggleGroup` 组件上勾选 `Allow Switch Off` 可以实现允许不选择任何选项。
 -  部分参数和 `Button` 组件相同，不再赘述。
 
-**通过代码控制**
+**通过代码控制：**
 ```c#
 // 获取 Toggle 组件
 Toggle tog = this.GetComponent<Toggle>();
@@ -368,13 +368,13 @@ foreach (Toggle item in togGroup.ActiveToggles())
 现在使用的也是 `InputField(TMP)`，只在文本组件上有区别。
 :::
 
-**`InputField` 是什么？**
+**`InputField` 是什么：**
 - 是 UGUI 中用于处理玩家文本输入相关交互的关键组件。
 - 默认创建的 `InputField` 由三个对象组成：
     - 父对象—— `InputField` 组件依附对象，以及同时在其上挂载了一个 `Image` 作为背景图。
     - 子对象—— 文本显示组件（必备）、默认显示文本组件（必备）。
 
-**相关参数**
+**相关参数：**
 - `TextComponent`：用于关联显示输入内容的文本组件。
 - `Text`：输入框的起始默认值。
 - `Character Limit`：可以输入字符长度的最大值。
@@ -388,7 +388,7 @@ foreach (Toggle item in togGroup.ActiveToggles())
 - `Hide Mobile Input`：隐藏移动设备屏幕上键盘（仅适用于 iOS）。
 - `Read Only`：设为只读。
 
-**代码控制相关**
+**代码控制相关：**
 
 获取 `InputField` 组件：
 ```c#
@@ -408,67 +408,71 @@ input.onDeselect.AddListener(DeselectInput);
 新版有四个监听事件，前两个是一样的。
 :::
 
-### Slider——滑动条控件
-1. 是什么？
-- 是UGUI中用于处理滑动条相关交互的关键组件
-- 默认创建的Slider由4组对象组成
-- 父对象——Slider组件依附的对象
-- 子对象——背景图、进度图、滑动块三组对象
-2. 相关参数
-- `Fill Rect`：进度条填充图形（显示当前值的填充区域）
-- `Handle Rect`：滑动块图形（用户拖拽的控制柄）
-- `Direction`：滑动条数值增加的方向
-- `Left To Right`（从左到右）
-- `Right To Left`（从右到左）
-- `Bottom To Top`（从下到上）
-- `Top To Bottom`（从上到下）
-- `Min Value` 和 `Max Value`：滑动条的最小值和最大值
-- `Whole Numbers`：是否限制为整数值（如1、2、3而非1.5）
-- `Value`：滑动条当前数值
-- `OnValueChanged`：值变化时触发的事件列表（可绑定函数）
-3. 代码控制
+### Slider-滑动条控件
+**`Slider` 是什么？**
+- 是 UGUI 中用于处理滑动条相关交互的关键组件。
+- 默认创建的 `Slider` 由4组对象组成：
+    - 父对象—— `Slider` 组件依附的对象。
+    - 子对象—— 背景图、进度图、滑动块三组对象。
+
+**相关参数:**
+- `Fill Rect`：进度条填充图形（显示当前值的填充区域）。
+- `Handle Rect`：滑动块图形（用户拖拽的控制柄）。
+- `Direction`：滑动条数值增加的方向。
+    - `Left To Right`：从左到右。
+    - `Right To Left`：从右到左。
+    - `Bottom To Top`：从下到上。
+    - `Top To Bottom`：从上到下。
+- `Min Value` 和 `Max Value`：滑动条的最小值和最大值。
+- `Whole Numbers`：是否限制滑动条的值只能为整数值（如1、2、3而非1.5）。
+- `Value`：滑动条当前值。
+- `OnValueChanged`：值变化时触发的事件列表（可绑定函数）。
+
+**通过代码获取 `Value`：**
 ```c#
 Slider s = this.GetComponent<Slider>();
-        print(s.value);
+print(s.value);
 ```
-4. 监听事件
+
+**监听事件：**
 ```c#
 s.onValueChanged.AddListener((v) =>
 {
-    print("代码添加的监听"+v);
+    print("通过代码添加的监听：" + v);
 });
 ```
 
-### ScrollBar——滚动条
-1. 是什么？
-- 是UGUI中用于处理滚动条相关交互的关键组件
-- 默认创建的ScrollBar由2组对象组成
-- 父对象——ScrollBar组件依附的独享
-- 子对象——滚动块对象
-:::tip
-一般情况下我们不会单独使用滚动条
+### ScrollBar-滚动条
+**`ScrollBar` 是什么**
+- 是 UGUI 中用于处理滚动条相关交互的关键组件。
+- 默认创建的 `ScrollBar` 由2组对象组成：
+- 父对象—— `ScrollBar` 组件与背景图所依附的对象。
+- 子对象—— 滚动块对象。
 
-都是配合ScrollView滚动条视图来使用的
+::: tip
+一般情况下我们不会单独使用滚动条，都是配合 `ScrollView` 滚动条视图来使用的。
 :::
-2. 相关参数
-- `Handle Rect`：用于关联滑动条的滚动块（滑块）图形对象
-- `Direction`定义滑动条数值增加的方向：
-- `Left To Right`：从左到右（默认）
-    - `Right To Left`：从右到左
-    - `Bottom To Top`：从下到上
-    - `Top To Bottom`：从上到下
-- `Value`滚动条的初始位置值（取值范围0~1）同时表示滚动块在滑动条中的比例大小（0~1）
-- `Number Of Steps`设置允许的滚动位置数量（离散间隔数）
-例如设置为5时，滑块只能停在0、0.25、0.5、0.75、1这5个位置
 
-- `OnValueChanged`值改变时触发的事件列表，可通过拖拽方式绑定响应函数
-3. 代码控制
+**相关参数：**
+- `Handle Rect`：用于关联滑动条的滚动块（滑块）图形对象。
+- `Direction`定义滑动条数值增加的方向：
+- `Left To Right`：从左到右（默认）。
+    - `Right To Left`：从右到左。
+    - `Bottom To Top`：从下到上。
+    - `Top To Bottom`：从上到下。
+- `Value` 滚动条的初始位置值（取值范围0~1）同时表示滚动块在滑动条中的比例大小（0~1）。
+- `Number Of Steps` 设置允许的滚动位置数量（离散间隔数）。
+例如设置为5时，滑块只能停在0、0.25、0.5、0.75、1这5个位置。
+- `OnValueChanged` 值变化时触发的事件列表（可绑定函数）。
+
+**通过代码控获取 `Value` 和 `Size`：**
 ```c#
 Scrollbar scrollbar = this.GetComponent<Scrollbar>();
 print(scrollbar.value);
 print(scrollbar.size);
 ```
-4. 监听事件
+
+**监听事件：**
 ```c#
 scrollbar.onValueChanged.AddListener((v) =>
 {
@@ -476,82 +480,292 @@ scrollbar.onValueChanged.AddListener((v) =>
 });
 ```
 
-### ScrollView——滚动视图
-1. ScrollRect是什么
-- 是UGUI中用于处理滚动视图相关交互的关键组件
-- 默认创建的ScrollRect由4组对象组成
-- 父对象——ScrollRect组件依附的对象 还有一个Image组件 作为背景图
-- 子对象
-    - `Viewport`控制滚动视图可视范围和内容显示
-    - `Scrollbar Horizontal`：水平滚动条
-    - `Scrollvar Vertical`:垂直滚动条
-2. 相关参数
-- `Content`：控制滚动视图显示内容的父对象，它的尺寸决定滚动视图能拖多远
-- `Horizontal`：启用水平滚动（勾选框）
-- `Vertical`：启用垂直滚动（勾选框）
-- `Movement Type`：滚动视图元素的运动类型，控制拖动时的反馈效果
-- `Elastic`：回弹效果，当拖动到边缘后会弹回边界（常用选项）
-- `Elasticity`：回弹系数，控制回弹效果强度，值越大回弹越慢
-- `Inertia`：移动惯性，开启后松开鼠标会有滑动惯性（勾选框）
-- `Deceleration Rate`：减速率（0~1），0表示没有惯性，1表示不会停止
-- `Scroll Sensitivity`：控制鼠标滚轮和触摸板的滚动事件敏感性
-- `Viewport`：关联滚动视图内容视口对象
-- `Horizontal Scrollbar`：关联水平滚动条对象
-- `Vertical Scrollbar`：关联垂直滚动条对象
-- `Visibility`：滚动条显示模式，包括：Permanent（一直显示）、Auto Hide（自动隐藏）、Auto Hide And Expand Viewport（自动隐藏并扩展视口）
-- `Spacing`：滚动条和视口之间的间隔空间大小
-- `OnValueChanged`：滚动视图位置改变时执行的事件列表
-- `Unrestricted`：不受限制的滚动模式（一般不使用）
-- `Clamped`：夹紧效果，始终限制在滚动范围内，没有回弹效果
-- `Permanent`：滚动条一直显示的模式
-- `Auto Hide`：滚动条自动隐藏的模式
-- `Auto Hide And Expand Viewport`：自动隐藏滚动条并且自动扩展内容视口的模式
-3. 代码控制
+### ScrollView-滚动视图
+
+
+
+**`ScrollView` 是什么：**
+- 是 UGUI 中用于处理滚动视图相关交互的关键控件。
+- 默认创建的 `ScrollView` 由4组对象组成：
+    - 父对象—— `ScrollRect` 组件依附的对象，还有一个 `Image` 组件作为背景图。
+    - 子对象：
+        - `Viewport`：控制滚动视图可视范围和内容显示。
+        - `Scrollbar Horizontal`：水平滚动条。
+        - `Scrollvar Vertical`:垂直滚动条。
+
+**相关参数：**
+- `Content`：控制滚动视图显示内容的父对象，它的尺寸决定滚动视图能拖多远。
+- `Horizontal`：启用水平滚动（勾选框）。
+- `Vertical`：启用垂直滚动（勾选框）。
+- `Movement Type`：滚动视图元素的运动类型，控制拖动时的反馈效果。
+    - `Elastic`（常用选项）：回弹效果，当拖动到边缘后会弹回边界，可以设置回弹系数 `Elasticity`。
+    - `Clamped`：夹紧效果，始终限制在滚动范围内，没有回弹效果。
+    - `Unrestricted`（不常用）：不受限制的滚动模式。
+- `Inertia`：开启移动惯性，松开鼠标会有滑动惯性。可以设置 `Deceleration Rate` 来控制减速率（0~1），0表示没有惯性，1表示不会停止。
+- `Scroll Sensitivity`：控制鼠标滚轮和触摸板的滚动事件敏感性。
+- `Viewport`：关联滚动视图内容视口对象。
+- `Horizontal Scrollbar` / `Vertical Scrollbar`：关联水平滚动条对象。关联垂直滚动条对象。
+    - `Visibility`：滚动条显示模式，包括：
+        - `Permanent`：始终显示；
+        - `Auto Hide`：自动隐藏）；
+        - `Auto Hide And Expand Viewport`：自动隐藏并扩展视口，当 Content 未超出视口时会自动使用滚动条所在区域填充内容。
+    - `Spacing`：滚动条和视口之间的间隔空间大小。
+- `OnValueChanged`：滚动视图位置改变时执行的事件列表。
+- `Unrestricted`：不受限制的滚动模式（一般不使用）。
+- `Clamped`：夹紧效果，始终限制在滚动范围内，没有回弹效果。
+- `Permanent`：滚动条一直显示的模式。
+- `Auto Hide`：滚动条自动隐藏的模式。
+- `Auto Hide And Expand Viewport`：自动隐藏滚动条并且自动扩展内容视口的模式。
+
+**通过代码控制：**
 ```c#
 ScrollRect sr = this.GetComponent<ScrollRect>();
-//改变内容的大小 具体可以拖动多少 都是根据它的尺寸来的
-//sr.content.sizeDelta = new Vector2(200, 200);
 
+// 改变内容的大小，具体可以拖动多少，都是根据它的尺寸来的
+sr.content.sizeDelta = new Vector2(200, 200);
+
+// 改变 Content 位置
 sr.normalizedPosition = new Vector2(0, 0.5f);
 ```
-4. 监听控制（了解即可）
+
+**监听控制（了解即可）：**
 ```c#
 sr.onValueChanged.AddListener(ChangeValue);
-public void ChangeValue(Vector2 value)
-    {
-        print(value);
-    }
-```
-### DropDown——下拉列表
-1. 是什么？
-- 是UGUI中用于处理下拉列表相关交互的关键组件
-- 默认创建的DropDown由4组对象组成
-- 父对象——DropDown组件依附的对象，还有一个Image组件作为背景图
-- 子对象——Label是当前选项描述、Arrow右侧小箭头、Template下拉列表选单
-2. 相关参数
 
-- `Template`：关联下拉列表模板对象
-- `Caption Text`：关联显示当前选项的文本组件
-- `Caption Image`：关联显示当前选项的图片组件
-- `Item Text`：关联选项列表中的文本控件
-- `Item Image`：关联选项列表中的图片控件
-- `Value`：当前选中选项的索引值
-- `Alpha Fade Speed`：下拉列表淡入淡出动画速度
-- `Options`：下拉列表中的选项集合
-3. 代码控制
+public void ChangeValue(Vector2 value) => print(value);
+```
+### DropDown-下拉列表
+
+**`DropDown` 是什么：**
+- 是 UGUI 中用于处理下拉列表相关交互的关键组件。
+- 默认创建的 `DropDown` 由 4 组对象组成:
+    - 父对象—— `DropDown` 组件依附的对象，还有一个 `Image` 组件作为背景图。
+    - 子对象—— `Label` 是当前选项描述、`Arrow` 右侧小箭头样式、`Template` 下拉列表选单。
+
+**相关参数：**
+- `Template`：关联下拉列表模板对象。
+- `Caption Text`：关联显示当前选项的文本组件。
+- `Caption Image`：关联显示当前选项的图片组件。
+- `Item Text`：关联选项列表中的文本控件。
+- `Item Image`：关联选项列表中的图片控件。
+- `Value`：当前选中选项的索引值。
+- `Alpha Fade Speed`：下拉列表淡入淡出动画速度。
+- `Options`：下拉列表中的选项集合。
+
+**通过代码获取选项信息：**
 ```c#
-TMP_Dropdown dropdown = this.gameObject.GetComponent<TMP_Dropdown>();
+TMP_Dropdown dropdown = GetComponent<TMP_Dropdown>();
 print(dropdown.value);
 print(dropdown.options[dropdown.value]);
+```
 
+**通过代码添加选项：**
+```c#
 dropdown.options.Add(new TMP_Dropdown.OptionData("123123"));
 ```
 
+**监听 `onValueChanged` 事件：**
+```c#
+dropdown.onValueChanged.AddListener((v) =>
+{
+    print("通过代码添加的监听：" + v);
+});
+```
+
 ### 图集制作
-1. 为什么要打图集
--  减少DrawCall 提高性能
-2. Untiy打包图集相关
-- Max SpriteAtlas Cache Size (GB)
+
+**图集（Atlas）是什么：**
+
+简单来说，图集（Atlas），也经常被称为 精灵表（Sprite Sheet），是一种优化技术，它将许多零散的小图片（比如 UI 图标、道具、角色动画的序列帧）合并到一张更大的图片上。
+
+多个 Sprite 都指向了同一张图集纹理，因而可以共享同一个材质。GPU 可以在不进行状态切换的情况下，一次性将它们全部绘制出来。这个过程，就是批处理 (Batching)。
+
+
+通过使用图集可以减少 Draw Call：通常每个单独的纹理都需要一次 Draw Call，而图集可以将多个小图合并，大幅减少渲染调用次数，提升游戏性能。
+
+::: details 什么是 Draw Call？为何会浪费性能？
+**Draw Call 本质上是 CPU 向 GPU 发出的一个“绘制”命令。**
+
+GPU 执行绘制操作本身是非常高效的，真正浪费性能的，是每次 Draw Call 之间，GPU 不得不进行的“状态切换”（Context Switching）。
+
+**性能浪费点总结：**
+1. CPU 开销：CPU 需要找出要绘制的每个物体，准备好各自的渲染数据，再把它们一个一个发送给 GPU。物体越多，CPU 就越忙，没时间去处理游戏逻辑（比如 AI、物理计算）。
+
+2. 驱动程序开销：CPU 的指令不是直接给 GPU 的，中间还要经过显卡驱动程序的“翻译”。指令越多，“翻译”工作也越重。
+
+3. **GPU 状态切换 (最主要的开销)**：每次 Draw Call 如果使用了和上一次不同的材质 (Material) 或纹理 (Texture)，GPU 就必须：
+    - 清空当前的工作状态。
+    - 加载新的纹理到显存。
+    - 设置新的着色器 (Shader) 和参数。
+    - ...等等一系列准备工作。
+:::
+
+
+**图集的应用场景：**
+
+- UI 界面中的各种图标、按钮、装饰元素
+- 角色/怪物的动画序列帧
+- 游戏道具、装备的图标
+- 粒子效果的纹理贴图
+- 地图中的小装饰物件
+
+**本篇会使用 Unity 自带的 Sprite Atlas 系统来制作图集。使用需要先安装 Unity 的 2D Sprite 包。**
+
+::: details 关于 Sprite Atlas 的历史（至2025.7.21）
+大约在 Unity 2020.1 版本发布后，Unity 官方正式将旧的 Sprite Packer (基于Packing Tag) 标记为“已弃用” (Deprecated)。从那时起，对于所有新项目和新开发者来说，Sprite Atlas 就成了唯一且标准的图集解决方案。这也是本篇目前只介绍 Sprite Atlas 的使用方法。
+:::
+
+**创建图集：**
+
+在 Project 窗口中，在你希望存放它的位置（比如 Assets/SpriteAtlases 文件夹），点击右键，选择 Create -> Sprite Atlas。建议给它起一个有意义的名字，比如 MainMenu_Atlas 或 Player_Atlas。这个命名很重要，它能帮助你管理不同模块的图集。
+
+::: tip
+尽量让图集的尺寸保持在 2 的幂次方。GPU 极其擅长处理以 2 为基础的运算。让纹理尺寸是 2 的幂次方，就是用它最喜欢、最高效的方式给它“喂”数据。
+:::
+
+**指定打包对象：**
+
+选中你刚才创建的 MainMenu_Atlas 资源，看向 Inspector 面板。你会看到下方有个区域叫做 `Objects for Packing` (打包对象)。
+::: details 下方区域提示未在 Editor 里启用 Sprite Packer
+如果下方区域提示未在 Editor 里启用 Sprite Packer，需要在 Project Settings -> Editor 中启用或者直接点击提示信息打开 Editor。
+
+在 Sprite Packer 中，有4个选项：
+| 模式 | 优点 | 缺点 | 推荐指数 |
+| :--- | :--- | :--- | :--- |
+| `V1 - Always Enabled` | 稳定可靠，编辑器/构建性能一致 | V1引擎打包速度可能较慢 | ⭐⭐⭐⭐ (如果V2不稳定，这是首选) |
+| **`V2 - Enabled`** | **V2引擎速度快，编辑器/构建性能一致** | V2可能在某些版本中存在实验性Bug | ⭐⭐⭐⭐⭐ **(绝大多数情况下的最佳选择)** |
+| `V1/V2 - Enabled for Builds` | 进入播放模式最快 | 编辑器性能与构建版本不符，无法准确调试 | ⭐⭐ (仅在极端追求迭代速度的大型项目中考虑) |
+
+默认先使用 `V2 - Enabled` 模式就好，除非有特殊需求。
+:::
+
+有两种方式可以添加对象到图集中：
+
+1. 打包整个文件夹（推荐）
+
+    直接从项目窗口中，将我们里创建的那个存放图片的文件夹（ex: Assets/Sprites/MainMenu），整个拖拽到 `Objects for Packing` 列表里。
+
+    在未来，你只要往这个文件夹里添加、删除或修改任何图片，Sprite Atlas 都会自动更新。你再也不用手动去管理列表了，这对于项目迭代和团队协作来说至关重要。
+
+    这种方式也有助于维持项目逻辑的清晰：一个功能模块（如主菜单、玩家角色）的所有图片都放在一个文件夹里，对应一个图集，项目结构非常清晰。
+
+2. 打包单个文件
+
+    你也可以把单个的精灵图片一个一个地拖拽到列表里。但当图片数量很多时，这种方式管理起来会非常痛苦。一般只在临时测试或有特殊需求时使用。
+
+
+**常用配置图集参数：**
+
+1. `Include in Build`（必须勾选）：勾选后，图集会在构建时打包到游戏中。如果不勾选，图集只在编辑器中使用，运行时不会加载。
+2. `Allow Rotation`：允许 Unity 在打包时旋转某些图片 90 度，以求得最紧凑的排列，节省空间。
+3. `Tight Packing`：允许 Unity 使用图片的实际轮廓而不是矩形边界来进行打包。
+4. `Padding` (内边距)：设置每个精灵图片之间以及图片与图集边缘之间的最小像素间距。
+5. `Show Platform Settings For` (平台特定覆盖): 这是专业级优化的关键。你可以为不同平台（如 PC, Android, iOS）设置不同的压缩格式、压缩质量和最大尺寸。
+
+::: tip
+当你绕过 Unity 的标准 UI 系统，去手动操作网格（Mesh）的 UV 坐标或使用特殊着色器（Shader） 时，`Allow Rotation` 和 `Tight Packing` 才有可能导致“错误旋转”等问题。对于日常使用的 `Image` 组件，Unity 在后台为你处理好了一切，它会读取图片打包信息并自动对 UV 坐标进行补偿，把旋转过的图“转回来”。因此在开发普通 UI 时，你可以放心使用这两个选项。
+:::
+
+下面是一些使用频率相对较低的参数 ↓
+::: details `Type` 参数
+
+**`Type` (类型)：`Master` vs `Variant`**
+
+`Type` 属性允许你创建一种父子关系的图集，这在需要管理不同版本或风格的资源时非常强大。
+
+
+**`Master Atlas` (主图集)**
+- 标准图集。它负责定义打包的结构——也就是哪些图片被打包进来，以及它们打包后的位置、旋转、裁切等所有布局信息。
+- 你可以把它想象成一个“蓝图”或“模板”。它规定了“贴纸簿”每一页的布局和上面应该有什么贴纸。
+
+**`Variant Atlas` (变体图集)**
+
+- `Variant Atlas` 自身不决定任何打包结构。相反，它必须指定一个 `Master Atlas` 作为它的“主图集”。
+- 它的作用是“继承”主图集的完整布局，然后用自己列表中的图片去替换掉主图集中对应位置的图片。
+- 你可以把它想象成是“贴纸簿”的“皮肤”或“高清替换包”。它沿用原版贴纸簿的每一页布局，但把上面的所有贴纸都换成了新的图案。
+
+
+一实际应用场景：高清(HD) / 标清(SD) 资源管理。
+:::
+
+::: details `Texture` 参数
+
+
+- `Read/Write` (读/写)
+    - 作用: 勾选后，允许你通过 C# 脚本在 CPU 端访问和修改这张纹理的像素数据（使用 `GetPixel`, `SetPixel` 等函数）。
+    - 代价: 这是一个极其昂贵的选项。它会在 CPU 内存中也创建一个纹理的副本，这会使这张纹理的内存占用直接翻倍。
+    - 使用场景: 仅当你确定需要在运行时通过代码动态地改变纹理时才开启。例如：制作一个可以画画的画板、程序化生成纹理、将截图保存为图片等。
+    - **结论: 对于普通的 UI 或精灵，永远不要勾选它。**
+
+- `Generate Mip Maps` (生成 Mipmap)
+    - 作用: Mipmap 是一系列预先计算好的、尺寸由大到小、逐渐模糊的纹理版本。它主要用于 3D 世界。当一个贴着此纹理的 3D 模型离摄像机很远时，GPU 会自动使用尺寸更小的 mipmap 版本来渲染，这样可以防止远处物体出现闪烁和锯齿（摩尔纹），并提升渲染性能。
+    - 对 UI/2D 的影响: 对于基本固定在屏幕上的 UI 元素，或者 2D 游戏中大小相对固定的精灵，我们不需要这个功能。开启它反而会额外增加约 33% 的内存占用。
+    - **结论: 对于 UGUI 和大部分 2D 精灵，请关闭此选项。只有当你的精灵被放置在 3D 空间中，且会被摄像机从很远的地方观察时，才需要开启。**
+
+- `sRGB` (Color Texture) (sRGB 色彩纹理)
+    - 作用: 这个选项告诉 GPU，这张图片是用来表示“颜色”的（比如 UI 按钮的颜色、角色的皮肤颜色），它处在人眼视觉友好的 sRGB (Gamma) 空间。GPU 在进行光照计算时，会先将其转换到线性的色彩空间，以保证物理计算的正确性。
+    - 什么时候关闭: 当你的纹理不代表颜色，而是代表纯粹的数据时。例如：法线贴图 (Normal Map)、高度图、金属度/粗糙度贴图等。这些数据图需要保持其原始的线性数值。
+    - **结论: 对于所有用于显示的 UI 和精灵，请保持勾选。**
+
+- `Filter Mode` (滤波模式)
+    - 作用: 决定了当纹理被放大或缩小时，像素之间如何插值，影响最终的视觉效果。
+    - `Point` (no filter): 不进行混合。像素边缘会非常清晰，放大后呈块状。像素艺术 (Pixel Art) 风格的游戏必选此项。
+    - `Bilinear`: 对相邻的 4 个像素进行平滑混合。这是最常用的模式，放大后图像边缘会显得平滑但略带模糊。
+    - `Trilinear`: 在双线性过滤的基础上，还会在两个最接近的 Mipmap 等级之间进行混合。只有在开启 Generate Mip Maps 时才有意义。可以提供最平滑的远景过渡效果。
+    - **结论: 大多数高清 UI/精灵选择 Bilinear，像素风格选择 Point。**
+
+
+- `Max Texture Size` (最大纹理尺寸)
+    - 作用: 限制最终生成的图集大图的最大边长。例如，设置为 2048，那么图集的宽和高都不会超过 2048 像素。如果内容太多，Unity 会自动创建第二张、第三张图集（名字相同，但内部会编号）。
+    - 一些旧的移动设备可能不支持超过 2048x2048 甚至 1024x1024 的纹理。为移动平台设置一个较低的尺寸上限可以保证兼容性。而 PC 平台则可以放心使用 4096 或更高。
+
+- `Format` (压缩格式)
+    - 这是性能优化的核心。它决定了你的图集纹理在被 GPU 读取时使用的压缩算法。不同的平台对压缩格式的支持和效率是不同的。
+    - `Automatic`: Unity 会根据平台自动选择一个它认为合适的格式，通常是比较安全的通用格式。
+    - 手动选择:
+        - PC (Standalone): 通常选择 DXT5 (也叫 BC3)。如果需要更高质量，可以选择 BC7。
+        - Android: 优先选择 ASTC。它非常灵活，可以在压缩率和质量之间做很好的平衡。如果需要兼容非常老的设备，可以选择 ETC2。
+        - iOS: 同样优先选择 ASTC。
+        - RGBA 32 bit: 这是不压缩的格式。质量最高，但占用的显存也最大，通常只用于对图像质量有极端要求的特定情况。
+
+- `Compression Quality` (压缩质量)
+    - 当 `Format` 设置为 `Automatic` 或某些支持质量选择的格式（如 ASTC）时，这个选项才有效。
+    - 它提供了 `Low Quality`, `Normal Quality`, `High Quality` 三个档位，让你在压缩速度和最终图片质量之间做取舍。通常选择 `Normal Quality` 就足够了。
+
+- `Use Crunch Compression` (使用 Crunch 压缩)
+    - 作用: Crunch 是一种附加的、有损的压缩技术，它可以在 DXT 或 ASTC 等标准 GPU 压缩格式之上，进一步减小纹理在硬盘上的存储体积。
+    - 工作原理: 当游戏加载时，需要先将 Crunch 格式解压成目标平台支持的普通 GPU 压缩格式（如 DXT），然后再加载到显存。
+    - 优点: 能显著减小最终游戏包的大小。
+    - 缺点: 可能会稍微增加初次加载这张资源的时间，并且因为是有损压缩，可能会轻微降低图像质量。
+    - **结论: 对于那些对存储体积敏感的项目（如手游），这是一个非常有用的优化工具。你可以对一些次要的、或本身就比较模糊的背景图开启它，以换取更小的包体。**
+
+:::
+
+::: tip
+**对于这些杂七杂八的参数很多的情况下，很多时候最好的做法就是保持默认设置，只做必要的修改。之后通过性能分析器（Profiler）找到问题，最后再“对症下药”地进行优化。**
+
+这种做法遵循了 KISS(Keep It Simple, Stupid) 原则和 不要过早优化(Do Not Prematurely Optimize) 原则。
+:::
+
+**预览和验证：**
+
+在 Inspector 面板的底部，点击 Pack Preview 按钮。Unity 会立即执行一次打包，并在下方的小窗口中显示出最终生成的大图集的样子。你可以看到所有小图是如何被排列组合的。
+
+**在项目中使用图集中的精灵：**
+
+通过先加载图集，然后从中获取精灵的方式来使用图集。例如：
+```c#
+//加载图集
+SpriteAtlas sa = Resources.Load<SpriteAtlas>("MyAtlas");
+
+sa.GetSprite("bk");
+```
+
+**注意事项：**
+如果在渲染同一个图集的图片时，突然在渲染的顺序中插入了一个不同图集的图片，Unity 会先自动切换图集再切换回来，这会导致 Draw Call 增加。因此，尽量在渲染同一图集的图片时保持顺序一致。
+
+---
+
 功能
 设置运行时 动态图集（Dynamic Atlas） 的最大内存缓存容量（单位：GB）。
 
@@ -559,39 +773,14 @@ dropdown.options.Add(new TMP_Dropdown.OptionData("123123"));
 
 默认值通常为 1GB，可根据项目需求调整（如移动端建议降低至 0.5GB）。
 
-注意事项
+::: warning
 
 超过容量时，Unity 会自动释放未使用的动态图集。
 
 过高可能导致内存压力，过低可能增加频繁生成的性能开销。
-
-- Mode（图集模式选择）
-Unity 提供 两种版本 的 Sprite Atlas 系统，需根据项目兼容性选择：
-
-Sprite Atlas V1（旧版）
-
-Enabled For Builds：仅构建时生效（编辑器内禁用）。
-
-Always Enabled：编辑器和运行时均启用（兼容老项目）。
-
-Sprite Atlas V2（新版，推荐）
-
-Enabled：默认启用（编辑器+运行时）。
-
-Enabled for Builds：仅构建时生效（编辑器禁用）。
-
-选择建议：新项目优先用 V2（性能更好），旧项目升级可选 V1 - Always Enabled 过渡。
-3. 打图集参数
-:::tip
-详细内容在Unity核心中
 :::
-4. 代码加载
-```c#
-//加载图集
-SpriteAtlas sa = Resources.Load<SpriteAtlas>("MyAtlas");
 
-sa.GetSprite("bk");
-```
+
 ## UGUI——进阶
 
 ### UI事件监听接口
