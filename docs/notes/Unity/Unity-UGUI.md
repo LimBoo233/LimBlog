@@ -166,6 +166,12 @@ Standalone Input Module组件参数(一般不会修改)：
 - `Left / Top / Right / Bottom`：矩形边缘相对于锚点的位置；当锚点分离时会出现这些内容。
 - `Rotation`：围绕轴心点旋转的角度。
 
+可以通过 `anchoredPosition` 属性来来获取或设置 UI 元素轴心点 (Pivot) 相对于其锚点 (Anchors) 位置，例如：
+```c#
+// 获取组件相锚点相对轴心的位置
+Vector2 anchoredPosition = rectTransform.anchoredPosition;
+```
+
 在 Inspector 窗口第二行参数的右侧，有两个按钮，分别代表 `Blueprintt Mode` (蓝图模式) 和 `Raw Edit Mode` (原始编辑模式)。这两个模式的区别在于：
 1. 开启蓝图模式后，编辑和旋转不会影响矩形，只会影响显示内容。
 2. 开启原始编辑模式后，改变轴心和锚点值不会改变矩形位置。
@@ -758,13 +764,15 @@ GPU 执行绘制操作本身是非常高效的，真正浪费性能的，是每�
 //加载图集
 SpriteAtlas sa = Resources.Load<SpriteAtlas>("MyAtlas");
 
+// 获取图集中的精灵 
 sa.GetSprite("bk");
 ```
 
 **注意事项：**
+
 如果在渲染同一个图集的图片时，突然在渲染的顺序中插入了一个不同图集的图片，Unity 会先自动切换图集再切换回来，这会导致 Draw Call 增加。因此，尽量在渲染同一图集的图片时保持顺序一致。
 
----
+<!-- ---
 
 功能
 设置运行时 动态图集（Dynamic Atlas） 的最大内存缓存容量（单位：GB）。
@@ -778,142 +786,193 @@ sa.GetSprite("bk");
 超过容量时，Unity 会自动释放未使用的动态图集。
 
 过高可能导致内存压力，过低可能增加频繁生成的性能开销。
-:::
+::: -->
 
 
-## UGUI——进阶
+## UGUI-进阶
 
-### UI事件监听接口
-1. 事件监听接口用来解决什么问题
-目前所有的控件都只提供了常用的事件监听列表，如果想做一些类似长按，双击，拖拽等功能
-是无法制作的，或者想让Image和Text，RawImage三大基础控件能够响应玩家输入也是无法制作的
-，而事件接口就是用来处理类似问题的，让所有控件都能够添加更多的事件监听来处理对应的逻辑。
-2. 有哪些事件接口
-- 常用事件接口
+### UI 事件监听接口
 
-`IPointerEnterHandler - OnPointerEnter`
-当指针（鼠标/触摸）进入游戏对象时触发
+UGUI 的事件接口是让你能够编写 C# 脚本来响应各种用户输入的“钩子”(Hooks)。
 
-`IPointerExitHandler - OnPointerExit`
-当指针离开游戏对象时触发
+当 `EventSystem` 检测到用户的操作（如点击、拖拽）并确定了目标 UI 对象后，它就会检查该对象上的脚本是否实现了特定的事件接口。如果实现了，`EventSystem` 就会调用该接口定义的方法，从而让你能够执行自定义的交互逻辑。
 
-`IPointerDownHandler - OnPointerDown`
-在游戏对象上按下指针时触发（按下瞬间）
+**为什么需要事件接口？**
 
-`IPointerUpHandler - OnPointerUp`
-松开指针时触发（需在原本按下的对象上松开）
+目前所有的控件都只提供了常用的事件监听列表，如果想做一些类似**长按、双击、拖拽**等功能是无法制作的，或者想让 `Image`、`Text`、`RawImage` 三大基础控件能够响应玩家输入也是无法制作的。事件接口就是用来处理类似问题的，让所有控件都能够添加更多的事件监听来处理对应的逻辑。
 
-`IPointerClickHandler - OnPointerClick`
-在同一个游戏对象上完成"按下→松开"操作时触发（完整点击）
+#### 指针事件接口
 
-`IBeginDragHandler - OnBeginDrag`
-开始拖动操作时在可拖动对象上触发
+这些接口主要处理鼠标和触摸相关的交互：
 
-`IDragHandler - OnDrag`
-拖动过程中持续触发（每帧调用）
+| 接口名称 | 触发时机 | 方法名称 |
+|---------|----------|----------|
+| `IPointerEnterHandler` | 指针进入游戏对象 | `OnPointerEnter` |
+| `IPointerExitHandler` | 指针离开游戏对象 | `OnPointerExit` |
+| `IPointerDownHandler` | 指针按下瞬间 | `OnPointerDown` |
+| `IPointerUpHandler` | 指针松开（需在原本按下的对象上） | `OnPointerUp` |
+| `IPointerClickHandler` | 完整点击（按下 → 松开） | `OnPointerClick` |
 
-`IEndDragHandler - OnEndDrag`
-拖动操作完成时触发
+#### 拖拽事件接口
 
-- 不常用接口 了解即可
+专门处理拖拽操作的接口：
 
-`InitializePotentialDragHandler - OnInitializePotentialDrag`
-在找到拖动目标时调用，可用于初始化拖动操作的初始值
+| 接口名称 | 触发时机 | 方法名称 |
+|---------|----------|----------|
+| `IBeginDragHandler` | 开始拖拽 | `OnBeginDrag` |
+| `IDragHandler` | 拖拽过程中（每帧） | `OnDrag` |
+| `IEndDragHandler` | 拖拽结束 | `OnEndDrag` |
 
-`IDropHandler - OnDrop`
-当拖拽物体释放到目标对象上时调用
+#### 其他交互事件接口
 
-`IScrollHandler - OnScroll`
-当鼠标滚轮滚动时调用
+| 接口名称 | 触发时机 | 方法名称 |
+|---------|----------|----------|
+| `IInitializePotentialDragHandler` | 找到拖拽目标时，初始化拖拽操作 | `OnInitializePotentialDrag` |
+| `IDropHandler` | 拖拽物体释放到目标上 | `OnDrop` |
+| `IScrollHandler` | 鼠标滚轮滚动 | `OnScroll` |
+| `ISelectHandler` | 对象被选中（Tab 键/手柄选择） | `OnSelect` |
+| `IDeselectHandler` | 对象取消选中 | `OnDeselect` |
+| `IUpdateSelectedHandler` | 选中状态下持续调用（每帧） | `OnUpdateSelected` |
+| `IMoveHandler` | 方向移动事件（导航操作） | `OnMove` |
+| `ISubmitHandler` | 确认/提交按钮（Enter /手柄 A 键） | `OnSubmit` |
+| `ICancelHandler` | 取消按钮（Esc /手柄 B 键） | `OnCancel` |
 
-`IUpdateSelectedHandler - OnUpdateSelected`
-每次勾选时在选定对象上持续调用（每帧）
+#### 使用事件接口
 
-`ISelectHandler - OnSelect
-当对象被选中时调用（如通过Tab键或控制器选择）
+**基本使用示例：**
 
-`IDeselectHandler - OnDeselect`
-当对象取消选中状态时调用
-
-`IMoveHandler - OnMove`
-发生方向移动事件时调用（如上、下、左、右等导航操作）
-
-`ISubmitHandler - OnSubmit`
-按下确认/提交按钮时调用（如键盘Enter或手柄A键）
-
-`ICancelHandler - OnCancel`
-按下取消按钮时调用（如键盘Esc或手柄B键）
-3. 使用事件接口
 ```c#
-public class L18 : MonoBehaviour,IPointerEnterHandler,IPointerExitHandler,IPointerDownHandler,IPointerUpHandler
+using UnityEngine;
+using UnityEngine.EventSystems;
+
+public class UIEventHandler : MonoBehaviour, 
+    IPointerEnterHandler, IPointerExitHandler, 
+    IPointerDownHandler, IPointerUpHandler, IPointerClickHandler
 {
     public void OnPointerEnter(PointerEventData eventData)
     {
-        print("鼠标进入");
+        Debug.Log("鼠标进入");
+        // 可以在这里改变 UI 外观，比如高亮显示
     }
 
     public void OnPointerExit(PointerEventData eventData)
     {
-        //在移动设备商不存在进入的概念，下同
-        print("鼠标离开");
+        Debug.Log("鼠标离开");
+        // 注意：在移动设备上不存在"悬停"的概念
     }
 
     public void OnPointerDown(PointerEventData eventData)
     {
-       print("鼠标按下");
+        Debug.Log($"鼠标按下 - 按键ID: {eventData.pointerId}");
+        // 0 = 左键，1 = 右键，2 = 中键
     }
 
     public void OnPointerUp(PointerEventData eventData)
     {
-        print("鼠标抬起");
+        Debug.Log("鼠标抬起");
+    }
+    
+    public void OnPointerClick(PointerEventData eventData)
+    {
+        Debug.Log("完整点击事件");
+        // 只有在同一对象上完成"按下→抬起"才会触发
     }
 }
 ```
-4. PointerEventData参数的关键内容
 
-`pointerId`
-指针事件ID，用于区分鼠标按键：
-0=左键，1=右键，2=中键
+**拖拽功能示例：**
 
-`position`
-当前指针的屏幕坐标（Vector2，原点在屏幕左下角）
+```c# [DragHandler.cs]
+using UnityEngine;
+using UnityEngine.EventSystems;
 
-`pressPosition`
-指针按下时的初始屏幕坐标（Vector2）
-常用于计算拖动距离
+public class DragHandler : MonoBehaviour, 
+    IBeginDragHandler, IDragHandler, IEndDragHandler
+{
+    private Vector3 originalPosition;
+    
+    public void OnBeginDrag(PointerEventData eventData)
+    {
+        originalPosition = transform.position;
+        Debug.Log("开始拖拽");
+    }
+    
+    public void OnDrag(PointerEventData eventData)
+    {
+        // 跟随鼠标位置移动
+        transform.position = eventData.position;
+    }
+    
+    public void OnEndDrag(PointerEventData eventData)
+    {
+        Debug.Log("拖拽结束");
+        // 可以在这里判断是否拖拽到有效区域
+    }
+}
+```
 
-`delta`
-指针移动增量（Vector2，当前帧与上一帧的位置差）
-拖拽时实时更新
+#### PointerEventData 重要参数
 
-`clickCount`
-连续点击次数（int）
-可用于实现双击检测
+`PointerEventData` 是事件接口方法的参数，包含了丰富的事件信息：
 
-`clickTime`
-点击发生的时间（float，Unity时间系统）
-配合clickCount计算点击间隔
+| 参数名称 | 类型 | 说明 |
+|---------|------|------|
+| `pointerId` | int | 指针事件ID：0 = 左键，1 = 右键，2 = 中键 |
+| `position` | Vector2 | 当前指针的屏幕坐标（原点在屏幕左下角） |
+| `pressPosition` | Vector2 | 指针按下时的初始屏幕坐标，常用于计算拖动距离 |
+| `delta` | Vector2 | 指针移动增量（当前帧与上一帧的位置差） |
+| `clickCount` | int | 连续点击次数，可用于实现双击检测 |
+| `clickTime` | float | 点击发生的时间（Unity时间系统） |
+| `pressEventCamera` | Camera | 触发 OnPointerPress 事件的摄像机 |
+| `enterEventCamera` | Camera | 触发 OnPointerEnter 事件的摄像机 |
 
-`pressEventCamera`
-触发OnPointerPress事件的摄像机（Camera）
-常用于世界空间UI的射线检测
+**使用示例：**
 
-`enterEventCamera`
-触发OnPointerEnter事件的摄像机（Camera）
-5. 总结
-- 好处：
-需要监听自定义事件的控件挂载继承实现了接口的脚本就可以监听到一些特殊事件
-，可以通过它实现一些长按，双击拖拽等功能
-- 坏处：
-不方便管理，需要自己写脚本继承接口挂载到对应控件上，比较麻烦
+```c#
+public void OnPointerDown(PointerEventData eventData)
+{
+    // 判断是否为右键点击
+    if (eventData.pointerId == 1)
+    {
+        Debug.Log("右键点击");
+    }
+    
+    // 获取点击位置
+    Vector2 clickPos = eventData.position;
+    Debug.Log($"点击位置: {clickPos}");
+    
+    // 检测双击
+    if (eventData.clickCount == 2)
+    {
+        Debug.Log("双击检测");
+    }
+}
+```
 
-### EventTrigger事件触发器
-1. 事件触发器是什么
-是一个集成了上节课中学习的所有事件接口的脚本
-可以让我们更加方便的为控件添加事件监听
-2. 如何使用时间触发器
-- 拖曳脚本
-在panel上添加处理逻辑的脚本
+#### 事件接口总结
+
+**优点：**
+- 提供了比内置事件更丰富的交互功能
+- 可以让基础控件（Image、Text等）响应用户输入
+- 能够实现长按、双击、拖拽等高级交互
+- 事件信息详细，便于实现复杂逻辑
+
+**缺点：**
+- 需要自己编写脚本继承接口
+- 管理相对麻烦，每个需要事件的对象都要挂载脚本
+- 代码量相对较大
+
+### `EventTrigger` 事件触发器
+
+`EventTrigger` 是一个集成了上节课中学习的所有事件接口的脚本组件，可以让我们更加方便的为控件添加事件监听，而无需自己编写继承接口的脚本。
+
+**使用事件触发器**
+
+可以通过拖曳脚本的方式为 `EventTrigger` 添加事件监听。
+
+例如我们有一个图像对象，其父对象是一个面板 `panel`。如果我们希望为这个图像添加对应事件，可以为图片对象添加 `EventTrigger` 组件，然后在 `panel` 中编写方法并注册到 `EventTrigger` 中。
+
+在 `EventTrigger` 组件中，选择对应类型的事件，然后就可以将 `panel` 中的方法拖拽到事件列表中。方法例如:
 ```c#
 public void TestPointEnter(BaseEventData data)
 {
@@ -921,39 +980,41 @@ public void TestPointEnter(BaseEventData data)
     print("鼠标进入"+ eventData.position);
 }
 ```
-在需要被控制的组件上添加EventTrigger组件，将panel的逻辑脚本拖拽到EventTrigger中
-- 代码添加
-```c#
 
-public EventTrigger et;
-// Start is called before the first frame update
-void Start()
+此外，还可以通过代码的方式添加事件监听。通过 `EventTrigger.Entry` 来创建一个新的事件条目，并将其添加到 `EventTrigger.triggers` 列表中实现事件的注册。例如：
+
+```c#
+public class Panel : MonoBehaviour
 {
-    //代码添加
-    EventTrigger.Entry entry = new EventTrigger.Entry();
-    entry.eventID = EventTriggerType.PointerUp;
-    entry.callback.AddListener((data) =>
-    {
-        print("抬起");
-    });
-    //将声明好的事件加入到EventTRigger当中
-    et.triggers.Add(entry);
+	[SerializeField] private EventTrigger eventTrigger;
+
+	private void Start()
+	{
+        // 在父对象 panel 的脚本中监听 EventTrigger 的事件
+		EventTrigger.Entry entry = new EventTrigger.Entry
+		{
+			eventID = EventTriggerType.PointerUp
+		};
+		entry.callback.AddListener(baseEventData => print("抬起"));
+		
+		eventTrigger.triggers.Add(entry);
+	}
 }
 ```
 
 ### 屏幕坐标转UI相对坐标
-1. `RectTransformUtility`
-RectTransformUtility公共类 是一个RectTransform的辅助类，
-主要用于进行一些坐标的转换等等操作，其中对于我们目前最重要的函数是：
-将屏幕空间上的点，转换成Ui本地坐标下的点
-2. 将屏幕坐标转换成UI本地坐标系下的点
-- `RectTransformUtility.ScreenPointToLocalPointInRectangle`
 
-参数1：相对父对象
+`RectTransformUtility` 公共类是一个 `RectTransform` 的辅助类，主要用于进行一些坐标的转换等等操作，其中对于我们目前最重要的函数是：将屏幕空间上的点，转换成 UI 本地坐标下的点。
 
-参数2：屏幕点
 
-参数3：摄像机
+通过 `RectTransformUtility` 中的方法 `ScreenPointToLocalPointInRectangle()` 可以将屏幕坐标转换为相对于父对象的本地坐标。
+
+方法完整的定义方式：
+```c#
+RectTransformUtility.ScreenPointToLocalPointInRectangle(
+    this.transform.parent as RectTransform, eventData.position,
+    eventData.enterEventCamera, out nowPos);
+```
 
 参数4：最终得到的点
 
@@ -971,201 +1032,177 @@ public void OnDrag(PointerEventData eventData)
 }
 ```
 
-### Mask遮罩
-1. 遮罩是什么
-在不改变图片的情况下，让游戏中只显示其中一部分
-2. 遮罩如何使用
-通过在父对象上添加Mask组件即可遮罩其子对象
-:::tip
-想要被遮罩的Image需要勾选Maskable
+### Mask 遮罩
 
-只要父对象添加了Mask组件 那么所有的UI子对象都会被遮罩
+遮罩使图片只显示自身的一部分。
 
-遮罩父对象图片的制作，不透明的地方显示，透明的地方被遮罩
-:::
+通过在父对象上添加 `Mask` 组件，子对象勾选 `Maskable`（默认开启），可以实现遮罩其子对象。需要注意父对象透明的部分会被遮罩，只有不透明的部分会显示。
+
 
 ### 模型和粒子显示在UI之前
-1. 模型显示在UI之前
-- 方法一
 
-修改Canvas的Render Mode：
 
-将Canvas的Render Mode改为Screen Space - Camera
+**方法一：修改Canvas渲染模式**
+1. 将Canvas的 `Render Mode` 改为 `Screen Space - Camera`。
+2. 指定一个专用的UI摄像机（避免与主场景摄像机混用）。
+3. 调整渲染层级：
+   - 在 `Tags and Layers` 设置中创建新的 `Sorting Layer`。
+   - 将UI放在下层，模型放在上层。
 
-指定一个单独的UI摄像机（不要和主场景摄像机混用）
+**方法二：渲染到纹理**
+1. 使用专门的摄像机渲染3D模型。
+2. 将渲染结果输出到 `Render Texture`。
+3. 通过UI `Image` 组件显示纹理（类似小地图的制作方式）。
 
-调整UI和模型的Sorting Layer：
-
-在Tags and Layers设置中创建新的Sorting Layer
-
-将UI放在下层，模型放在上层
-- 方法二
-
-将3D物体渲染在图片上，通过图片显示，专门用一个摄像机渲染3D模型，将其内容输出到Render Texture上
-，类似小地图的制作方式
-
-2. 粒子特效显示在UI之前
-与上文方法一一致（只需要让z轴在UI之前即可）或修改粒子特效的渲染顺序
+粒子特效号可以通过设置 `Particle System` 的 `Renderer` 组件中的 `Sorting Layer` 和 `Order in Layer` 来控制其渲染顺序。
 
 ### 异形按钮
-1. 什么是异形按钮
 
-图片形状不是传统矩形的按钮
-2. 如何让异形按钮能够准确点击
-- 方法一：通过添加子对象的形式
+#### 什么是异形按钮
+异形按钮是指图片形状不是传统矩形的按钮，如圆形、多边形或其他不规则形状。
 
-按钮之所以能够响应点击，主要是根据图片矩形范围进行判断的
+#### 实现精确点击检测
 
-它的范围判断是自下而上的，意思是如果有子对象图片，子对象图片的范围也会算为可点击范围
+**方法一：子对象拼接法**
 
-那么我们就能够用多个透明图片平凑不规则图形作为按钮子对象用于进行射线检测
+原理：
+按钮的点击检测基于图片的矩形范围判断，且检测范围采用自下而上的层级判断，所以子对象的图片范围也会被算入可点击范围。
 
-- 方法2：通过代码改变图片的透明度响应阈值
-::: warning
-该方法相对上一种方法较为浪费内存
-:::
+实现步骤：
+1. 创建多个透明图片作为按钮的子对象。
+2. 用这些透明图片拼接出不规则形状。
 
-第一步：修改图片参数 开启Read/Write Enable开关
+**方法二：透明度阈值法**
 
-第二步：通过代码修改图片的响应阈值
+> **⚠️ 注意**  
+> 该方法相对第一种方法会消耗更多内存资源
 
-`img.alphaHitTestMinimumThreshold = 0.1f;`
+实现步骤：
 
-该参数含义：制定一个像素必须具有的最小alpha值，以便能够认为射线命中了图片
+1. 在 Inspector 中开启图片的 `Read/Write Enable` 选项。
 
-说人话：当像素点alpha值小于了该值就不会被射线检测了
+2. 为控件（ex:：按钮）编写脚本，通过代码修改子对象图片透明度的响应阈值，例如：
+   ```c#
+   // 透明度小于 0.1f 的像素点不会响应点击事件
+   img.alphaHitTestMinimumThreshold = .1f;
+   ```
+
+参数说明：
+- `alphaHitTestMinimumThreshold`：设置像素点被射线检测的最小 alpha 值。
+- 当像素点的 alpha 值小于设定值时，该像素点不会响应射线检测。
+- 简单来说：透明或半透明区域不会响应点击事件。
 
 ### 自动布局组件
-1. 自动布局是什么?
 
-虽然UGUI的RectTransform已经非常方便的可以帮助我们快速布局
+#### 什么是自动布局
 
-但UGUI中还提供了很多可以帮助我们对UI控件进行自动布局的组件
+虽然 UGUI 的 `RectTransform` 已经非常方便地帮助我们快速布局，但 UGUI 中还提供了很多可以帮助我们对UI控件进行自动布局的组件。
 
-他们可以帮助我们自动的设置UI控件的位置和大小等
+这些组件可以帮助我们自动设置UI控件的位置和大小等属性。
 
-自动布局的工作方式一般是：自动布局控制组件+布局元素 = 自动布局
+**工作原理：**
+- 自动布局控制组件 + 布局元素 = 自动布局
+- 自动布局控制组件：Unity提供的用于自动布局管理的组件
+- 布局元素：具备布局属性的对象，主要指具备 `RectTransform` 的UI组件
 
-自动布局控制组件：Unity提供了很多用于自动布局的管理性质的组件用于布局
+#### 水平/垂直布局组件 (`Horizontal/Vertical Layout Group`)
 
-布局元素：具备布局属性的对象们，这里主要是指具备RectTransform的UI组件
+**主要参数：**
 
-2. 水平垂直布局组件(Horizontal/Vertical Layout Group)
+- **`Padding`**：控制布局边缘的偏移量（左、右、上、下）
+- **`Spacing`**：子对象之间的间距（单位：像素）
+- **`Child Alignment`**：子对象的对齐方式（九宫格定位，如居中、靠左、靠右等）
+- **`Control Child Size`**：是否强制控制子对象的宽度（Horizontal）或高度（Vertical）以填充
+- **`Use Child Scale`**：布局时是否考虑子对象的缩放（若子对象被缩放，勾选后按缩放后尺寸计算布局）
+- **`Child Force Expand`**：是否强制子对象填充剩余空间（勾选后子对象会均分额外空间），在不设置 `Layout Element` 的情况下不会影响子对象的原始尺寸。
 
-`Padding`:
-控制布局边缘的偏移量（左、右、上、下）。
+**效果展示：**
+![水平布局效果](./images/水平布局组件.png)
 
-`Spacing`:
-子对象之间的间距（单位：像素）。
+此外还可以通过给子对象添加 `Layout Element` 组件来控制子对象的最小/最大宽度和高度等布局属性。
 
-`Child Alignment`:
-子对象的对齐方式（九宫格定位，如居中、靠左、靠右等）。
 
-`Control Child Size`:
-是否强制控制子对象的 宽度（Horizontal） 或 高度（Vertical）。
 
-`Use Child Scale`:
-布局时是否考虑子对象的缩放（若子对象被缩放，勾选后按缩放后尺寸计算布局）。
+#### 网格布局组件 (`Grid Layout Group`)
 
-`Child Force Expand`:
-是否强制子对象 填充剩余空间（勾选后子对象会均分额外空间）。
+**基础参数：**
+- **`Padding`**：控制网格边缘的偏移量（左、右、上、下）
+- **`Cell Size`**：每个格子的固定大小（宽度 × 高度）
+- **`Spacing`**：格子之间的间隔（水平间距、垂直间距）
 
-水平布局效果如下图：
-  ![水平布局效果](./images/水平布局组件.png)
+**起始位置设置：**
+- **`Start Corner`**：第一个子对象的起始位置
+  - `Upper Left`（左上）
+  - `Upper Right`（右上）
+  - `Lower Left`（左下）
+  - `Lower Right`（右下）
 
-3. 网格布局组件（Grid Layout Group）
+**排列方向：**
+- **`Start Axis`**：子对象的排列方向
+  - `Horizontal`：水平排列，填满一行后换行
+  - `Vertical`：垂直排列，填满一列后换列
 
-`Padding`
-控制网格边缘的偏移量（左、右、上、下）。
+**对齐方式：**
+- **`Child Alignment`**：网格整体的对齐方式（九宫格定位，如居中、靠左等）
 
-`Cell Size`
-每个格子的固定大小（宽度 × 高度）。
+**约束模式：**
+- **`Constraint`**：
+  - `Flexible`：灵活模式，自动调整行列数量以适应容器大小
+  - `Fixed Column Count`：固定列数模式，限制网格的列数
+  - `Fixed Row Count`：固定行数模式，限制网格的行数
 
-`Spacing`
-格子之间的间隔（水平间距、垂直间距）。
+#### 内容大小适配器 (Content Size Fitter)
 
-`Start Corner`
-第一个子对象的起始位置（4个角可选）：
-Upper Left（左上）、
-Upper Right（右上）、
-Lower Left（左下）、
-Lower Right（右下）
+**核心功能：**
+自动调整UI元素（如Text）的 `RectTransform` 尺寸，使其适配内容大小。通常用于动态文本或配合布局组件使用。
 
-`Start Axis`
-子对象的排列方向：
+**主要参数：**
 
-`Horizontal`（水平排列，填满一行后换行）
+- **`Horizontal Fit`**（水平适配模式）：
+    - `Unconstrained`：不自动调整宽度
+    - `Min Size`：按子对象最小宽度调整
+    - `Preferred Size`：按子对象理想宽度调整（如文本自然宽度）
 
-`Vertical`（垂直排列，填满一列后换列）
+- **`Vertical Fit`**（垂直适配模式）：
+  - 选项同水平模式（`Unconstrained` / `Min Size` / `Preferred Size`）
 
-`Child Alignment`
-网格整体的对齐方式（九宫格定位，如居中、靠左等）。
+#### 宽高比适配器 (Aspect Ratio Fitter)
 
-`Constraint`（约束模式）
-
-`Flexible`（灵活模式）：自动调整行列数量以适应容器大小。
-
-`Fixed Column Count`（固定列数）：限制网格的列数。
-
-`Fixed Row Count`（固定行数）：限制网格的行数。
-
-4. 内容大小适配器（Content Size Fitter）
-
-- 核心功能
-
-自动调整UI元素（如Text）的RectTransform尺寸，使其适配内容大小。通常用于动态文本或配合布局组件使用。
-
-- 主要参数
-
-`Horizontal Fit`（水平适配模式）:
-`Unconstrained`：不自动调整宽度、
-`Min Size`：按子对象最小宽度调整、
-`Preferred Size`：按子对象理想宽度调整（如文本自然宽度）
-
-`Vertical Fit`（垂直适配模式）
-选项同水平模式（Unconstrained/Min Size/Preferred Size）
-
-5. 宽高比适配器(Aspect Ratio Fitter)
-- 核心功能:
+**核心功能：**
 控制UI元素按固定宽高比自动调整尺寸，确保内容比例不变形。适用于需要保持特定比例的图像、视频等UI元素。
 
-- 主要参数:
-`Aspect Mode`（适配模式）:
+**主要参数：**
 
-`None`：禁用比例适配
+- **`Aspect Mode`**（适配模式）：
+  - `None`：禁用比例适配
+  - `Width Controls Height`：以宽度为基准自动计算高度
+  - `Height Controls Width`：以高度为基准自动计算宽度
+  - `Fit In Parent`：在父容器内完整显示（可能产生黑边）
+  - `Envelope Parent`：填满父容器（可能内容被裁剪），可以用来做背景图
 
-`Width Controls Height`：以宽度为基准自动计算高度
-
-`Height Controls Width`：以高度为基准自动计算宽度
-
-`Fit In Parent`：在父容器内完整显示（可能产生黑边）
-
-`Envelope Parent`：填满父容器（可能内容被裁剪）
-
-`Aspect Ratio`（宽高比）:
-
-手动设置宽度与高度的比值（如16:9=1.78，4:3=1.33）
+- **`Aspect Ratio`**（宽高比）：
+  - 手动设置宽度与高度的比值（如 16:9 = 1.78，4:3 = 1.33）
 
 ### Canvas Group
-1. 如何整体控制一个面板的淡入淡出？
 
-使用目前的学习知识点，无法方便快捷的设置的，
-因此需要CanvasGroup来解决这个问题。
+使用目前学过的知识点，无法方便快捷地设置面板的整体淡入淡出效果，因此需要 `CanvasGroup` 来解决这个问题。
 
-2. CanvasGroup
+为面板添加 `CanvasGroup` 组件，即可实现整体控制效果。
 
-为面板幅度想添加 CanvasGroup组件，即可整体控制
+**主要参数：**
 
-相关参数：
+- **`Alpha`**（透明度）
+  - 范围：0-1，控制组内所有UI的全局透明度
+  - 不影响子对象单独设置的Alpha值
 
-`Alpha`（透明度）
-范围0-1，控制组内所有UI的全局透明度（不影响子对象单独设置的Alpha）
+- **`Interactable`**（交互开关）
+  - 禁用时组内所有按钮/输入框等交互组件失效
+  - 失效的控件会显示为灰色状态
 
-`Interactable`（交互开关）
-禁用时组内所有按钮/输入框等交互组件失效（灰显状态）
+- **`Blocks Raycasts`**（射线阻挡）
+  - 关闭时，组内UI不会阻挡射线检测
+  - 相当于将所有子对象的 `Raycast Target` 设为 false
 
-`Blocks Raycasts`（射线阻挡）
-若关闭，组内UI不会阻挡射线检测（相当于全部设为Raycast Target=false）
-
-`Ignore Parent Groups`（父组忽略）
-启用时不受父对象CanvasGroup属性影响（独立作用）
+- **`Ignore Parent Groups`**（忽略父组）
+  - 启用时不受父对象 `CanvasGroup` 属性影响
+  - 让当前组独立作用
