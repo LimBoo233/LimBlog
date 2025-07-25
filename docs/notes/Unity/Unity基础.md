@@ -709,82 +709,82 @@ Addressable Assets System (以下简称 Addressables) 是 Unity 官方推出的�
 让我们通过一个最基础的例子，走完 Addressables 的完整流程。
 
 1. 安装与初始化
-- 在 Unity 编辑器中，打开 Window > Package Manager。
-- 在 Packages: Unity Registry 下找到 Addressables 并点击 Install。
-- 安装后，打开 Window > Asset Management > Addressables > Groups。
-- 在弹出的窗口中点击 Create Addressables Settings，完成初始化。
+    - 在 Unity 编辑器中，打开 Window > Package Manager。
+    - 在 Packages: Unity Registry 下找到 Addressables 并点击 Install。
+    - 安装后，打开 Window > Asset Management > Addressables > Groups。
+    - 在弹出的窗口中点击 Create Addressables Settings，完成初始化。
 
 2. 标记资源为 Addressable
-- 在 Project 窗口中选中你想管理的资源（例如一个 Player 预制体）。
-- 在 Inspector 窗口中，勾选 Addressable 复选框。
-- 你可以为它指定一个自定义的、易于记忆的地址，比如 PlayerCharacter。
+    - 在 Project 窗口中选中你想管理的资源（例如一个 Player 预制体）。
+    - 在 Inspector 窗口中，勾选 Addressable 复选框。
+    - 你可以为它指定一个自定义的、易于记忆的地址，比如 PlayerCharacter。
 
 3. 编写加载脚本
-- 这是与 Addressables 交互的核心。我们将使用 `AssetReference` 和 `async/await` 来实现一个健壮的加载器。
-    ```c#
-    public class AddressableManager : MonoBehaviour
-    {
-        // 在 Inspector 中使用 AssetReference，这是最安全、最推荐的资源引用方式
-        [SerializeField]
-        private AssetReferenceGameObject playerPrefabRef;
-
-        // 用于持有加载操作的句柄
-        private AsyncOperationHandle<GameObject> loadHandle;
-
-        // 用于持有实例化后的对象
-        private GameObject playerInstance;
-
-        async void Start()
+    - 这是与 Addressables 交互的核心。我们将使用 `AssetReference` 和 `async/await` 来实现一个健壮的加载器。
+        ```c#
+        public class AddressableManager : MonoBehaviour
         {
-            Debug.Log("开始通过 Addressables 加载玩家预制体...");
+            // 在 Inspector 中使用 AssetReference，这是最安全、最推荐的资源引用方式
+            [SerializeField]
+            private AssetReferenceGameObject playerPrefabRef;
 
-            // 1. 发起加载请求
-            // LoadAssetAsync 不会阻塞主线程，它立即返回一个操作句柄(Handle)
-            loadHandle = playerPrefabRef.LoadAssetAsync<GameObject>();
+            // 用于持有加载操作的句柄
+            private AsyncOperationHandle<GameObject> loadHandle;
 
-            // 2. 异步等待
-            // await 会暂停此方法，将控制权交还给Unity主循环。
-            // 当后台加载完成后，代码将从这里继续执行。
-            await loadHandle.Task;
+            // 用于持有实例化后的对象
+            private GameObject playerInstance;
 
-            // 3. 检查结果并使用
-            if (loadHandle.Status == AsyncOperationStatus.Succeeded)
+            async void Start()
             {
-                Debug.Log("预制体加载成功!");
-                GameObject loadedPrefab = loadHandle.Result;
-                playerInstance = Instantiate(loadedPrefab, transform);
-                playerInstance.name = "Player_Loaded";
+                Debug.Log("开始通过 Addressables 加载玩家预制体...");
+
+                // 1. 发起加载请求
+                // LoadAssetAsync 不会阻塞主线程，它立即返回一个操作句柄(Handle)
+                loadHandle = playerPrefabRef.LoadAssetAsync<GameObject>();
+
+                // 2. 异步等待
+                // await 会暂停此方法，将控制权交还给Unity主循环。
+                // 当后台加载完成后，代码将从这里继续执行。
+                await loadHandle.Task;
+
+                // 3. 检查结果并使用
+                if (loadHandle.Status == AsyncOperationStatus.Succeeded)
+                {
+                    Debug.Log("预制体加载成功!");
+                    GameObject loadedPrefab = loadHandle.Result;
+                    playerInstance = Instantiate(loadedPrefab, transform);
+                    playerInstance.name = "Player_Loaded";
+                }
+                else
+                {
+                    Debug.LogError($"预制体加载失败: {loadHandle.OperationException}");
+                }
             }
-            else
+
+            void OnDestroy()
             {
-                Debug.LogError($"预制体加载失败: {loadHandle.OperationException}");
+                Debug.Log("开始释放 Addressables 资源...");
+
+                // 4. 释放资源 (至关重要！)
+                // 首先销毁场景中的实例
+                if (playerInstance != null)
+                {
+                    Destroy(playerInstance);
+                }
+
+                // 然后，释放 Addressables 加载的资源，减少其引用计数。
+                // 当引用计数为0时，资源将从内存中被卸载。
+                // 如果忘记释放，将导致内存泄漏。
+                if (loadHandle.IsValid()) // 确保句柄是有效的再释放
+                {
+                    Addressables.Release(loadHandle);
+                }
+                
+                // 注意：如果使用 AssetReference 加载，也可以用 playerPrefabRef.ReleaseAsset();
+                // 它内部会自动找到对应的句柄并释放，是更便捷的封装。
             }
         }
-
-        void OnDestroy()
-        {
-            Debug.Log("开始释放 Addressables 资源...");
-
-            // 4. 释放资源 (至关重要！)
-            // 首先销毁场景中的实例
-            if (playerInstance != null)
-            {
-                Destroy(playerInstance);
-            }
-
-            // 然后，释放 Addressables 加载的资源，减少其引用计数。
-            // 当引用计数为0时，资源将从内存中被卸载。
-            // 如果忘记释放，将导致内存泄漏。
-            if (loadHandle.IsValid()) // 确保句柄是有效的再释放
-            {
-                Addressables.Release(loadHandle);
-            }
-            
-            // 注意：如果使用 AssetReference 加载，也可以用 playerPrefabRef.ReleaseAsset();
-            // 它内部会自动找到对应的句柄并释放，是更便捷的封装。
-        }
-    }
-    ```
+        ```
 
     当你在 Unity 中切换场景时，Unity 会**卸载（unload）** 当前场景中所有直接加载的资源。这意味着：
     1. 场景中的所有游戏对象和组件都会被销毁。 比如，你当前场景里的玩家角色、敌人、UI元素等都会消失。

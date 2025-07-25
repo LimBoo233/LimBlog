@@ -2,6 +2,8 @@
 
 UGUI (Unity GUI) 是 Unity 引擎中用于创建用户界面 (UI) 的官方系统。它在 Unity 4.6 版本中被引入，取代了老旧且效率不高的 IMGUI (Immediate Mode GUI)，成为了制作游戏 UI 的主流方案。
 
+UGUI 源码位于编辑器根目录下的： `Data/Resources/PackageManager/BuiltInPackages/com.unity.ugui`
+
 ## 六大基础组件
 
 1. `Canvas` 对象上依附的：
@@ -73,7 +75,14 @@ UI原始尺寸 = 图片大小（像素）/ (Pixels Per Unit / Reference Pixels P
         - `Match`：以二者的某种平均值作为参考来缩放画布。
             1. 当 Match = 0 时，强制 UI 的缩放只参考屏幕宽度的变化；
             2. 当 Match = 1 时，强制 UI 的缩放只参考屏幕高度的变化；
-            3. **当 Match = 0.5 时，这是最常用，也通常是效果最好的设置。** 它会在“匹配宽度”和“匹配高度”之间取得一个平衡。它试图找到一个中间点，让你的 UI 在各种不同的宽高比下都能合理地显示。
+            3. 当 Match = 0.5 时，它会在“匹配宽度”和“匹配高度”之间取得一个平衡。它试图找到一个中间点，让你的 UI 在各种不同的宽高比下都能合理地显示。
+            ::: tip
+            `Match Width Or Height` 也有可能产生黑边或裁剪，但它会尽量保持 UI 元素的完整性。
+
+            Match = 0 时，UI 会优先使屏幕水平方向被完整的填充，此时可能会导致屏幕上下出现黑边或裁剪。同理，Match = 1 时，UI 会优先使屏幕垂直方向被完整的填充，此时可能会导致屏幕左右出现黑边或裁剪。
+
+            综上一般来说，横屏游戏会设置 Match = 1，竖屏游戏会设置 Match = 0。
+            :::
     - `Expand`: 水平或垂直拓展画布区域，会根据宽高比的变化大小来放大缩小画布。可以完全的展示参考分辨率下创建的所有内容，但可能会展示出未设置的区域，如屏幕上或下出空白区域。
         - 拓展匹配，将Canvas Size进行宽或高扩大，让他高于参考分辨率。
         - 缩放系数 = Mathf.Min(屏幕宽 / 参考分辨率宽, 屏幕高 / 参考分辨率高)
@@ -1195,7 +1204,7 @@ public void OnDrag(PointerEventData eventData)
   - 范围：0-1，控制组内所有UI的全局透明度
   - 不影响子对象单独设置的Alpha值
 
-- **`Interactable`**（交互开关）
+- **`Interactable`**（交互开关）当 Match = 0.5 时
   - 禁用时组内所有按钮/输入框等交互组件失效
   - 失效的控件会显示为灰色状态
 
@@ -1206,3 +1215,19 @@ public void OnDrag(PointerEventData eventData)
 - **`Ignore Parent Groups`**（忽略父组）
   - 启用时不受父对象 `CanvasGroup` 属性影响
   - 让当前组独立作用
+
+## 插件
+1. DoTween
+   - 一个强大的动画插件，支持各种类型的动画效果。
+   - 可以轻松实现 UI 元素的平移动画、缩放动画、颜色渐变等。
+
+## 实践技巧
+
+#### 创建专门渲染 UI 的摄像机
+设置一个专门渲染 UI 的摄像机与主摄像机分离能带来更好的灵活性和逻辑上的清晰度。
+
+我们可以创建一个新的摄像机，并且将主摄像机和 UI 摄像机的 `Clear Flags` 设置为 `Depth Only`，再修改主相机和 UI 摄像机的 `Culling Mask`，使其只渲染各自需要的层。
+
+然后设置 `Canvas` 的 `Render Mode` 为 `Screen Space - Camera`，这种模式下，Canvas 会使用指定的摄像机进行渲染，并且方便我们以后在 UI 上添加 3D 元素。然后，可以在 `Canvas Scaler` 中设置 `UI Scale Mode` 为 `Scale With Screen Size`，然后修改 `Reference Resolution` 使 UI 能够根据屏幕分辨率自动缩放，这个数值可以根据实际需求调整，比如可以设置背景图大小。对于下方的 `Screen Match Mode`，可以设置为 `Match Width Or Height`，然后根据实际需求调整 `Match` 的值，比如横屏游戏设置为 1，竖屏游戏设置为 0。
+
+#### 创建 `UI Manager` 管理器
