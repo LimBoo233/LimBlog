@@ -548,6 +548,13 @@ string projectPath = Application.dataPath + "/";
 
 
 #### 资源文件夹 Resources
+
+::: warning Legacy System
+现在通过 Resources 文件夹来管理资源已被官方不推荐，被认为是“遗留系统”(Legacy System)。现在推荐使用 `Addressable Assets System` 来管理资源。
+
+在资源异步加载部分会先简单介绍 `Addressable Assets System` 的使用方法。
+::: 
+
 一个特殊的文件夹，Unity 会在打包时将其所有内容打包到游戏中，并对其压缩加密，设为只读。我们需要手动创建 Resources 文件夹。一般不需要获取这个路径，只通过 Resource 相关 API 进行加载。
 
 一个项目可以有多个 Resources 文件夹，且可以放在不同的路径下。打包时，所有 Resources 文件夹都会被打包在一起。

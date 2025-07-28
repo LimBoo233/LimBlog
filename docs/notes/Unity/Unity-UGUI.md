@@ -768,7 +768,9 @@ GPU 执行绘制操作本身是非常高效的，真正浪费性能的，是每�
 
 **在项目中使用图集中的精灵：**
 
-通过先加载图集，然后从中获取精灵的方式来使用图集。例如：
+可以像往常一样继续使用精灵，只不过现在它们都来自于图集。Unity 会自动处理从图集中加载精灵的细节。
+
+不过也可以通过先加载图集，然后从中获取精灵的方式来使用图集，不过一般不会这样做。例如：
 ```c#
 //加载图集
 SpriteAtlas sa = Resources.Load<SpriteAtlas>("MyAtlas");
@@ -1223,11 +1225,229 @@ public void OnDrag(PointerEventData eventData)
 
 ## 实践技巧
 
-#### 创建专门渲染 UI 的摄像机
+### 创建专门渲染 UI 的摄像机
 设置一个专门渲染 UI 的摄像机与主摄像机分离能带来更好的灵活性和逻辑上的清晰度。
 
 我们可以创建一个新的摄像机，并且将主摄像机和 UI 摄像机的 `Clear Flags` 设置为 `Depth Only`，再修改主相机和 UI 摄像机的 `Culling Mask`，使其只渲染各自需要的层。
 
 然后设置 `Canvas` 的 `Render Mode` 为 `Screen Space - Camera`，这种模式下，Canvas 会使用指定的摄像机进行渲染，并且方便我们以后在 UI 上添加 3D 元素。然后，可以在 `Canvas Scaler` 中设置 `UI Scale Mode` 为 `Scale With Screen Size`，然后修改 `Reference Resolution` 使 UI 能够根据屏幕分辨率自动缩放，这个数值可以根据实际需求调整，比如可以设置背景图大小。对于下方的 `Screen Match Mode`，可以设置为 `Match Width Or Height`，然后根据实际需求调整 `Match` 的值，比如横屏游戏设置为 1，竖屏游戏设置为 0。
 
-#### 创建 `UI Manager` 管理器
+### 创建 `UI Manager` 管理器
+
+首先为了方便管理 UI 元素和逻辑上的清晰，我们先来管理一下 UI 元素。
+
+我们在 Hierarchy 窗口中创建两个空的 GameObject，分别命名为 `[UI]` 和 `[Managers]`。然后将所有 UI 元素（ex：`Canvas`, `EventSystem`, `UICamera`）放入 `[UI]` 下，将所有管理器脚本（ex：`_UIManager`）放入 `[Managers]` 下。
+
+先创建一个 `GameManager` 脚本，挂载到 `[Managers]` 下，然后为其添加如下代码防止切换场景时自身被删除：
+```c# [GameManager.cs]
+using UnityEngine;
+
+public class GameManager: MonoBehaviour
+{
+	private void Awake()
+	{
+		DontDestroyOnLoad(gameObject);
+	}
+}
+
+```
+
+```c# [UIManager.cs]
+using System.Collections.Generic;
+using System.Threading.Tasks;
+using MyGame.UI;
+using UnityEngine;
+using UnityEngine.AddressableAssets;
+using UnityEngine.ResourceManagement.AsyncOperations;
+
+namespace MyGame.Managers
+{
+	/// <summary>
+	/// UI 管理器，负责所有 UI 面板的加载、显示、隐藏和卸载。
+	/// 采用单例模式，并使用 Addressables 进行异步资源管理。
+	/// </summary>
+	public class UIManager : MonoBehaviour
+	{
+		// 单例模式
+		public static UIManager Instance { get; private set; }
+	
+		// [UI] 引用
+		[SerializeField] private Transform uiRoot;
+
+		// 画布的 Transform 引用
+		[SerializeField] private Transform canvasTrans;
+
+		// 面板字典，存储已加载的面板
+		private Dictionary<string, BasePanel> _panelDict;
+
+		private void Awake()
+		{
+			// 确保只创建一个 UIManager 实例
+			if (Instance != null)
+			{
+				Debug.LogWarning("UIManager 已经存在，不会重复创建。");
+				Destroy(gameObject);
+				return;
+			}
+
+			Instance = this;
+
+			// 确保画布存在
+			if (canvasTrans == null)
+			{
+				canvasTrans = GameObject.Find("Canvas")?.transform;
+				if (canvasTrans is null)
+				{
+					Debug.LogError("UIManager 未能找到 Canvas！请在 Inspector 中手动指定。");
+				}
+			}
+
+			if (uiRoot == null)
+			{
+				uiRoot = new GameObject("[UI]").transform;
+				if (uiRoot == null)
+				{
+					Debug.LogError("UIManager 无法创建 UI 根对象，请检查场景设置。");
+				}
+				else
+				{
+					DontDestroyOnLoad(uiRoot);
+				}
+			}
+		
+			_panelDict = new Dictionary<string, BasePanel>();
+		}
+
+		/// <summary>
+		/// 异步加载并显示指定类型的 UI 面板。
+		/// 如果面板已加载，则直接返回已加载的实例。
+		/// 面板资源通过 Addressables 系统加载，并挂载到指定的 Canvas 下。
+		/// </summary>
+		/// <typeparam name="T">面板类型，需继承自 BasePanel。</typeparam>
+		/// <returns>
+		/// 返回异步任务，任务结果为面板实例（T）。
+		/// 如果加载失败或未找到 BasePanel 组件，则返回 null。
+		/// </returns>
+		public async Task<T> ShowPanelAsync<T>() where T : BasePanel
+		{
+			string panelName = typeof(T).Name;
+			if (TryGetPanel(out T panel))
+			{
+				Debug.LogWarning($"面板 {panelName} 已经加载，无需重复加载。");
+				return panel;
+			}
+
+		
+			// 异步加载面板资源
+			AsyncOperationHandle<GameObject> handle = Addressables.InstantiateAsync("UI/" + panelName, canvasTrans);
+			print(panelName);
+			GameObject panelGo = await handle.Task;
+
+			// 检查加载结果
+			if (handle.Status != AsyncOperationStatus.Succeeded || panelGo == null)
+			{
+				Debug.LogError($"加载或实例化面板失败： {panelName}");
+				return null;
+			}
+
+			// 确保面板上有 BasePanel 组件并获取该组件
+			panel = panelGo.GetComponent<T>();
+			if (panel == null)
+			{
+				Debug.LogError($"面板 {panelName} 上未找到 BasePanel 组件。");
+				Addressables.ReleaseInstance(panelGo);
+				return null;
+			}
+
+			_panelDict[panelName] = panel;
+			panel.Show();
+			return panel;
+		}
+
+		/// <summary>
+		/// 隐藏并卸载指定类型的 UI 面板。
+		/// 如果面板未加载，则不会执行任何操作。
+		/// 面板隐藏后会释放其实例资源（通过 Addressables）。
+		/// </summary>
+		/// <typeparam name="T">面板类型，需继承自 BasePanel。</typeparam>
+		public void HidePanel<T>() where T : BasePanel
+		{
+			string panelName = typeof(T).Name;
+			if (!TryGetPanel(out T panel))
+			{
+				Debug.LogWarning($"面板 {panelName} 未加载，无法隐藏。");
+				return;
+			}
+
+			panel.Hide(() => Addressables.ReleaseInstance(panel.gameObject));
+			_panelDict.Remove(panelName);
+		}
+
+		/// <summary>
+		/// 尝试从已加载的面板字典中获取指定类型的面板实例。
+		/// </summary>
+		/// <param name="panel">输出参数，返回找到的面板实例；如果未找到则为 null。</param>
+		/// <typeparam name="T">面板类型，需继承自 BasePanel。</typeparam>
+		/// <returns>如果找到面板则返回 true，否则返回 false。</returns>
+		public bool TryGetPanel<T>(out T panel) where T : BasePanel
+		{
+			string panelName = typeof(T).Name;
+			if (_panelDict.TryGetValue(panelName, out BasePanel basePanel))
+			{
+				panel = basePanel as T;
+				return panel != null;
+			}
+
+			panel = null;
+			return false;
+		}
+	}
+} 
+```
+### 外部字体导入
+
+先获得你想使用的字体文件（.ttf 或 .otf 格式 或 .ttc），然后将其放入 Unity 项目的 `Assets` 文件夹中。图方便的话字体也可以在 `C:\Windows\Fonts` 这个目录下找。
+
+导入字体后，在 Project 窗口右键你的字体文件选择 `Create` -> `TextMeshPro` -> `Font Asset`，然后会生成一个新的字体资产文件，可以被使用在 TMP 中。
+
+接下来修改字体资产的图集分辨率。找到 `Generation Setting` 中的 `Atlas Width`，更改为 8192 （或更高），然后点击 Apply 按钮。更高清的图集分辨率可以让字体在高分辨率屏幕上显示得更清晰。
+
+此外可以通过`Windows` -> `TextMeshPro` 里的 `Font Asset Creator` 进行更高级的设置和优化。这里暂时先不展开(~~挖坑~~)。
+
+### 排序文字和图片时减少 DC 
+在渲染同一个图集的图片时，如果突然插入渲染一个文字或不同图集的图片，Unity 会先自动切换图集再切换回来，这会导致 Draw Call 增加。因此，尽量在渲染同一图集的图片时保持顺序一致。文字和图片也分开渲染，避免和图片混合渲染增加 Draw Call。
+
+例如:
+```
+> Camera
+> Canvas
+    > Panel
+    > Image1.1
+    > Image1.2
+    > Text1
+    > Text2
+    > Image2.1
+    > Image2.2
+    > ..
+> EventSystem
+```
+
+当然如果是小型项目，或者图片数量不多，Draw Call 数量也不多，且实现该方法不方便，那么可以不必过于强求。对于大型项目，或者图片数量较多的项目，会有更好的方法，而不是简单通过排序来减少 Draw Call。
+
+### `Aspect Ratio Fitter` 
+
+`Aspect Ratio Fitter` 组件可以帮助我们保持 UI 元素的宽高比，确保在不同分辨率下仍然保持正确的比例。
+
+**Comming Soon...**
+
+### `Grid`
+
+`Grid` 组件可以帮助我们创建网格布局，自动排列子对象。它可以与 `Horizontal Layout Group` 或 `Vertical Layout Group` 结合使用，来实现更复杂的布局。
+
+**Comming Soon...**
+
+### `Content Size Fitter`
+
+`Content Size Fitter` 组件可以自动调整 UI 元素的大小，以适应其内容。它通常与 `Layout Group` 组件一起使用，以确保子对象的大小和位置正确。
+
+**Comming Soon...**

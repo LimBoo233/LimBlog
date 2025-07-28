@@ -43,6 +43,10 @@ JSON 序列化后的字符串：
 
 `SerializeObject` 和 `DeserializeObject` 方法都提供了接受 `JsonSerializerSettings` 参数的重载。通过 `JsonSerializerSettings` 对象，您可以在使用简单序列化方法的同时，灵活配置下文列出的多种 `JsonSerializer` 序列化设置。
 
+::: info
+默认情况下，`Newtonsoft.Json` 会序列化所有 `public` 成员（包括公共属性和公共字段）。
+:::
+
 ## 使用 `JsonSerializer`
 
 若想更精细地控制对象的序列化过程，可以直接使用 `JsonSerializer`。`JsonSerializer` 能够通过 `JsonTextReader` 和 `JsonTextWriter`，将 JSON 文本直接读取或写入到一个流 (stream) 中。
@@ -107,7 +111,7 @@ public class SimpleSerializerExample : MonoBehaviour
 写入文本而非二进制数据时即使用 `StreamWriter` 。通过 `JsonTextWriter` 输出人类可读的纯文本 JSON，99% 的情况下，当你需要生成 .json 文本文件时，用的就是它。
 :::
 
-## JsonSerializerSettings 
+## `JsonSerializerSettings`
 
 `JsonSerializerSettings` 对象类似于一个“配置方案”或“设置面板”。
 

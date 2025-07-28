@@ -93,7 +93,7 @@ export default defineConfig({
         // 侧边栏
         sidebar: [
             { 
-                text: 'Unity学习', 
+                text: 'Unity', 
                 items: [
                     {
                         text: 'Unity主要内容',
@@ -104,13 +104,14 @@ export default defineConfig({
                             { text: '数据持久化之-Json', link: '/notes/Unity/数据持久化-Json' },
                             { text: 'Untiy-UGUI', link: '/notes/Unity/Unity-UGUI' }
                         ]
-                    }
+                    },
                 ]
             },
 
             { 
                 text: 'CSharp', 
                 items: [
+                    { text: 'CSharp技巧', link: '/notes/CSharp/CSharp技巧' },
                     { text: 'Newtonsoft Json', link: '/notes/CSharp/Newtonsoft Json' },
                     { text: '多线程', link: '/notes/CSharp/多线程' },
                     { text: '异步编程', link: '/notes/CSharp/异步编程' },
