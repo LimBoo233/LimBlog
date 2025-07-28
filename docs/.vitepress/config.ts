@@ -102,7 +102,8 @@ export default defineConfig({
                             { text: 'Unity-GUI', link: '/notes/Unity/Unity-GUI' },
                             { text: 'Unity基础', link: '/notes/Unity/Unity基础' },
                             { text: '数据持久化之-Json', link: '/notes/Unity/数据持久化-Json' },
-                            { text: 'Untiy-UGUI', link: '/notes/Unity/Unity-UGUI' }
+                            { text: 'Untiy-UGUI', link: '/notes/Unity/Unity-UGUI' },
+                            { text: 'Untiy核心', link: '/notes/Unity/Unity核心' }
                         ]
                     },
                 ]
