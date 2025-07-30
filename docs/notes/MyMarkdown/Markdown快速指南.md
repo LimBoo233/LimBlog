@@ -61,13 +61,41 @@ Console.WriteLine("Hello, World!");
 
 
 ```lua [Lua.lua]
-print("Hello, World!")
+for i = 1, 5 do
+    print("Hello, World!")
+end
+```
+
+```bash [Bash.sh]
+for i in {1..5}
+do
+    echo "Hello, World!"
+done
 ```
 
 ```py [Python.py]
-print("Hello, World!")
+for i in range(5):
+    print("Hello, World!")
+```
+
+```cpp [C++.cpp]
+#include <iostream>
+using namespace std;
+int main() {
+    cout << "Hello, World!" << endl;
+    return 0;
+}
+```
+
+```go [Go.go]
+for i := 1; i <= 5; i++ {
+    fmt.Println("Hello, World!")
+}
 ```
 
 ```powershell [PowerShell.ps1]
-Write-Host "Hello, World!"
+for ($i = 1; $i -le 5; $i++) {
+    Write-Host "Hello, World!"
+}
 ```
+

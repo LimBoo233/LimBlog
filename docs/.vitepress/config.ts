@@ -36,11 +36,16 @@ export default defineConfig({
 
     markdown: {
         lineNumbers: true, // 显示行号
+         theme: {
+            dark: 'material-theme-ocean',    
+            light: 'catppuccin-latte' 
+        },
+
         config: (md) => {
         // This is your existing plugin for code group icons
         md.use(groupIconMdPlugin);
 
-        // 👇 Now, add the new rule for headings right here
+        // 自动在 h1 标签后添加表头组件
         md.renderer.rules.heading_close = (tokens, idx, options, env, slf) => {
             // First, get the default rendered HTML (e.g., "</h1>")
             let htmlResult = slf.renderToken(tokens, idx, options);

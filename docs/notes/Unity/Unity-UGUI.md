@@ -205,8 +205,10 @@ Vector2 anchoredPosition = rectTransform.anchoredPosition;
     在 Unity 2019 及以上版本中，使用切片模式时需要安装 2D Sprite 包。
     
     下图为切片模式效果，左边为切片模式，右边为普通模式。可以观察到，通过设置 `Border`，边框区域不会被拉伸，而是保持原样，只有中央部分被拉伸。
-    :::
+
     ![切片模式效果](./images/切片模式.png)
+    :::
+
     - `Tiled`：平铺模式，重复平铺中央部分。也可以通过设置 Border 边框来控制平铺样式。
     - `Filled`：填充模式。
         - `Fill Method`：填充方式
@@ -247,8 +249,19 @@ void Start()
 |3D场景文本    | 仅限UI Canvas。   | 	支持3D场景中的TextMeshPro组件。    |
 :::
 
-相关参数：
-![Text相关参数](./images/Text相关参数.png)
+常用
+- `Text`：显示的文本内容。
+- `Font`：字体资源，决定文本显示的字体。
+- `Font Style`：字体样式（如 Normal、Bold、Italic、Bold And Italic）。
+- `Font Size`：字体大小。
+- `Line Spacing`：行间距。
+- `Rich Text`：是否启用富文本格式。
+- `Alignment`：文本对齐方式（左、中、右、顶部、底部等）。
+- `Raycast Target`：是否响应射线检测。
+- `Color`：文本颜色。
+- `Horizontal Overflow`：水平溢出处理（Wrap 换行，Overflow 溢出）。
+- `Vertical Overflow`：垂直溢出处理（Truncate 截断，Overflow 溢出）。
+- `Best Fit`：自动调整字体大小以适应区域。
 #### `Rich Text` 富文本开启后
 可以以类似 html 的格式对文本进行编辑：
 ```html
@@ -678,7 +691,7 @@ GPU 执行绘制操作本身是非常高效的，真正浪费性能的，是每�
 5. `Show Platform Settings For` (平台特定覆盖): 这是专业级优化的关键。你可以为不同平台（如 PC, Android, iOS）设置不同的压缩格式、压缩质量和最大尺寸。
 
 ::: tip
-当你绕过 Unity 的标准 UI 系统，去手动操作网格（Mesh）的 UV 坐标或使用特殊着色器（Shader） 时，`Allow Rotation` 和 `Tight Packing` 才有可能导致“错误旋转”等问题。对于日常使用的 `Image` 组件，Unity 在后台为你处理好了一切，它会读取图片打包信息并自动对 UV 坐标进行补偿，把旋转过的图“转回来”。因此在开发普通 UI 时，你可以放心使用这两个选项。
+当你绕过 Unity 的标准 UI 系统，去手动操作网格（Mesh）的 UV 坐标或使用特殊着色器（Shader） 时，`Allow Rotation` 和 `Tight Packing` 才有可能导致“错误旋转”等问题。对于日常使用的 `Image` 组件和 `Sprite Renderer`，Unity 在后台为你处理好了一切，它会读取图片打包信息并自动对 UV 坐标进行补偿，把旋转过的图“转回来”。因此在开发普通 UI 时，你可以放心使用这两个选项。
 :::
 
 下面是一些使用频率相对较低的参数 ↓
@@ -714,7 +727,7 @@ GPU 执行绘制操作本身是非常高效的，真正浪费性能的，是每�
 
 - `Generate Mip Maps` (生成 Mipmap)
     - 作用: Mipmap 是一系列预先计算好的、尺寸由大到小、逐渐模糊的纹理版本。它主要用于 3D 世界。当一个贴着此纹理的 3D 模型离摄像机很远时，GPU 会自动使用尺寸更小的 mipmap 版本来渲染，这样可以防止远处物体出现闪烁和锯齿（摩尔纹），并提升渲染性能。
-    - 对 UI/2D 的影响: 对于基本固定在屏幕上的 UI 元素，或者 2D 游戏中大小相对固定的精灵，我们不需要这个功能。开启它反而会额外增加约 33% 的内存占用。
+    - 对 UI / 2D 的影响: 对于基本固定在屏幕上的 UI 元素，或者 2D 游戏中大小相对固定的精灵，我们不需要这个功能。开启它反而会额外增加约 33% 的内存占用。
     - **结论: 对于 UGUI 和大部分 2D 精灵，请关闭此选项。只有当你的精灵被放置在 3D 空间中，且会被摄像机从很远的地方观察时，才需要开启。**
 
 - `sRGB` (Color Texture) (sRGB 色彩纹理)
@@ -772,7 +785,7 @@ GPU 执行绘制操作本身是非常高效的，真正浪费性能的，是每�
 
 不过也可以通过先加载图集，然后从中获取精灵的方式来使用图集，不过一般不会这样做。例如：
 ```c#
-//加载图集
+// 加载图集资源
 SpriteAtlas sa = Resources.Load<SpriteAtlas>("MyAtlas");
 
 // 获取图集中的精灵 
@@ -781,24 +794,7 @@ sa.GetSprite("bk");
 
 **注意事项：**
 
-如果在渲染同一个图集的图片时，突然在渲染的顺序中插入了一个不同图集的图片，Unity 会先自动切换图集再切换回来，这会导致 Draw Call 增加。因此，尽量在渲染同一图集的图片时保持顺序一致。
-
-<!-- ---
-
-功能
-设置运行时 动态图集（Dynamic Atlas） 的最大内存缓存容量（单位：GB）。
-
-动态图集会临时合并零散的小纹理，此值限制其总内存占用。
-
-默认值通常为 1GB，可根据项目需求调整（如移动端建议降低至 0.5GB）。
-
-::: warning
-
-超过容量时，Unity 会自动释放未使用的动态图集。
-
-过高可能导致内存压力，过低可能增加频繁生成的性能开销。
-::: -->
-
+如果在渲染同一个图集的图片时，突然在渲染的顺序中插入了一个不同图集的图片，Unity 会先自动切换图集再切换回来，这会导致 Draw Call 增加。因此，尽量在渲染同一图集的图片时保持顺序一致。值得一提的是 UGUI 对该情况进行了优化，只要不同图集之间的图片没有交叉、重叠，就不会增加 Draw Call。
 
 ## UGUI-进阶
 
@@ -997,19 +993,19 @@ public void TestPointEnter(BaseEventData data)
 ```c#
 public class Panel : MonoBehaviour
 {
-	[SerializeField] private EventTrigger eventTrigger;
+    [SerializeField] private EventTrigger eventTrigger;
 
-	private void Start()
-	{
+    private void Start()
+    {
         // 在父对象 panel 的脚本中监听 EventTrigger 的事件
-		EventTrigger.Entry entry = new EventTrigger.Entry
-		{
-			eventID = EventTriggerType.PointerUp
-		};
-		entry.callback.AddListener(baseEventData => print("抬起"));
-		
-		eventTrigger.triggers.Add(entry);
-	}
+        EventTrigger.Entry entry = new EventTrigger.Entry
+        {
+            eventID = EventTriggerType.PointerUp
+        };
+        entry.callback.AddListener(baseEventData => print("抬起"));
+        
+        eventTrigger.triggers.Add(entry);
+    }
 }
 ```
 
@@ -1244,10 +1240,10 @@ using UnityEngine;
 
 public class GameManager: MonoBehaviour
 {
-	private void Awake()
-	{
-		DontDestroyOnLoad(gameObject);
-	}
+    private void Awake()
+    {
+        DontDestroyOnLoad(gameObject);
+    }
 }
 
 ```
@@ -1262,146 +1258,146 @@ using UnityEngine.ResourceManagement.AsyncOperations;
 
 namespace MyGame.Managers
 {
-	/// <summary>
-	/// UI 管理器，负责所有 UI 面板的加载、显示、隐藏和卸载。
-	/// 采用单例模式，并使用 Addressables 进行异步资源管理。
-	/// </summary>
-	public class UIManager : MonoBehaviour
-	{
-		// 单例模式
-		public static UIManager Instance { get; private set; }
-	
-		// [UI] 引用
-		[SerializeField] private Transform uiRoot;
+    /// <summary>
+    /// UI 管理器，负责所有 UI 面板的加载、显示、隐藏和卸载。
+    /// 采用单例模式，并使用 Addressables 进行异步资源管理。
+    /// </summary>
+    public class UIManager : MonoBehaviour
+    {
+        // 单例模式
+        public static UIManager Instance { get; private set; }
+    
+        // [UI] 引用
+        [SerializeField] private Transform uiRoot;
 
-		// 画布的 Transform 引用
-		[SerializeField] private Transform canvasTrans;
+        // 画布的 Transform 引用
+        [SerializeField] private Transform canvasTrans;
 
-		// 面板字典，存储已加载的面板
-		private Dictionary<string, BasePanel> _panelDict;
+        // 面板字典，存储已加载的面板
+        private Dictionary<string, BasePanel> _panelDict;
 
-		private void Awake()
-		{
-			// 确保只创建一个 UIManager 实例
-			if (Instance != null)
-			{
-				Debug.LogWarning("UIManager 已经存在，不会重复创建。");
-				Destroy(gameObject);
-				return;
-			}
+        private void Awake()
+        {
+            // 确保只创建一个 UIManager 实例
+            if (Instance != null)
+            {
+                Debug.LogWarning("UIManager 已经存在，不会重复创建。");
+                Destroy(gameObject);
+                return;
+            }
 
-			Instance = this;
+            Instance = this;
 
-			// 确保画布存在
-			if (canvasTrans == null)
-			{
-				canvasTrans = GameObject.Find("Canvas")?.transform;
-				if (canvasTrans is null)
-				{
-					Debug.LogError("UIManager 未能找到 Canvas！请在 Inspector 中手动指定。");
-				}
-			}
+            // 确保画布存在
+            if (canvasTrans == null)
+            {
+                canvasTrans = GameObject.Find("Canvas")?.transform;
+                if (canvasTrans is null)
+                {
+                    Debug.LogError("UIManager 未能找到 Canvas！请在 Inspector 中手动指定。");
+                }
+            }
 
-			if (uiRoot == null)
-			{
-				uiRoot = new GameObject("[UI]").transform;
-				if (uiRoot == null)
-				{
-					Debug.LogError("UIManager 无法创建 UI 根对象，请检查场景设置。");
-				}
-				else
-				{
-					DontDestroyOnLoad(uiRoot);
-				}
-			}
-		
-			_panelDict = new Dictionary<string, BasePanel>();
-		}
+            if (uiRoot == null)
+            {
+                uiRoot = new GameObject("[UI]").transform;
+                if (uiRoot == null)
+                {
+                    Debug.LogError("UIManager 无法创建 UI 根对象，请检查场景设置。");
+                }
+                else
+                {
+                    DontDestroyOnLoad(uiRoot);
+                }
+            }
+        
+            _panelDict = new Dictionary<string, BasePanel>();
+        }
 
-		/// <summary>
-		/// 异步加载并显示指定类型的 UI 面板。
-		/// 如果面板已加载，则直接返回已加载的实例。
-		/// 面板资源通过 Addressables 系统加载，并挂载到指定的 Canvas 下。
-		/// </summary>
-		/// <typeparam name="T">面板类型，需继承自 BasePanel。</typeparam>
-		/// <returns>
-		/// 返回异步任务，任务结果为面板实例（T）。
-		/// 如果加载失败或未找到 BasePanel 组件，则返回 null。
-		/// </returns>
-		public async Task<T> ShowPanelAsync<T>() where T : BasePanel
-		{
-			string panelName = typeof(T).Name;
-			if (TryGetPanel(out T panel))
-			{
-				Debug.LogWarning($"面板 {panelName} 已经加载，无需重复加载。");
-				return panel;
-			}
+        /// <summary>
+        /// 异步加载并显示指定类型的 UI 面板。
+        /// 如果面板已加载，则直接返回已加载的实例。
+        /// 面板资源通过 Addressables 系统加载，并挂载到指定的 Canvas 下。
+        /// </summary>
+        /// <typeparam name="T">面板类型，需继承自 BasePanel。</typeparam>
+        /// <returns>
+        /// 返回异步任务，任务结果为面板实例（T）。
+        /// 如果加载失败或未找到 BasePanel 组件，则返回 null。
+        /// </returns>
+        public async Task<T> ShowPanelAsync<T>() where T : BasePanel
+        {
+            string panelName = typeof(T).Name;
+            if (TryGetPanel(out T panel))
+            {
+                Debug.LogWarning($"面板 {panelName} 已经加载，无需重复加载。");
+                return panel;
+            }
 
-		
-			// 异步加载面板资源
-			AsyncOperationHandle<GameObject> handle = Addressables.InstantiateAsync("UI/" + panelName, canvasTrans);
-			print(panelName);
-			GameObject panelGo = await handle.Task;
+        
+            // 异步加载面板资源
+            AsyncOperationHandle<GameObject> handle = Addressables.InstantiateAsync("UI/" + panelName, canvasTrans);
+            print(panelName);
+            GameObject panelGo = await handle.Task;
 
-			// 检查加载结果
-			if (handle.Status != AsyncOperationStatus.Succeeded || panelGo == null)
-			{
-				Debug.LogError($"加载或实例化面板失败： {panelName}");
-				return null;
-			}
+            // 检查加载结果
+            if (handle.Status != AsyncOperationStatus.Succeeded || panelGo == null)
+            {
+                Debug.LogError($"加载或实例化面板失败： {panelName}");
+                return null;
+            }
 
-			// 确保面板上有 BasePanel 组件并获取该组件
-			panel = panelGo.GetComponent<T>();
-			if (panel == null)
-			{
-				Debug.LogError($"面板 {panelName} 上未找到 BasePanel 组件。");
-				Addressables.ReleaseInstance(panelGo);
-				return null;
-			}
+            // 确保面板上有 BasePanel 组件并获取该组件
+            panel = panelGo.GetComponent<T>();
+            if (panel == null)
+            {
+                Debug.LogError($"面板 {panelName} 上未找到 BasePanel 组件。");
+                Addressables.ReleaseInstance(panelGo);
+                return null;
+            }
 
-			_panelDict[panelName] = panel;
-			panel.Show();
-			return panel;
-		}
+            _panelDict[panelName] = panel;
+            panel.Show();
+            return panel;
+        }
 
-		/// <summary>
-		/// 隐藏并卸载指定类型的 UI 面板。
-		/// 如果面板未加载，则不会执行任何操作。
-		/// 面板隐藏后会释放其实例资源（通过 Addressables）。
-		/// </summary>
-		/// <typeparam name="T">面板类型，需继承自 BasePanel。</typeparam>
-		public void HidePanel<T>() where T : BasePanel
-		{
-			string panelName = typeof(T).Name;
-			if (!TryGetPanel(out T panel))
-			{
-				Debug.LogWarning($"面板 {panelName} 未加载，无法隐藏。");
-				return;
-			}
+        /// <summary>
+        /// 隐藏并卸载指定类型的 UI 面板。
+        /// 如果面板未加载，则不会执行任何操作。
+        /// 面板隐藏后会释放其实例资源（通过 Addressables）。
+        /// </summary>
+        /// <typeparam name="T">面板类型，需继承自 BasePanel。</typeparam>
+        public void HidePanel<T>() where T : BasePanel
+        {
+            string panelName = typeof(T).Name;
+            if (!TryGetPanel(out T panel))
+            {
+                Debug.LogWarning($"面板 {panelName} 未加载，无法隐藏。");
+                return;
+            }
 
-			panel.Hide(() => Addressables.ReleaseInstance(panel.gameObject));
-			_panelDict.Remove(panelName);
-		}
+            panel.Hide(() => Addressables.ReleaseInstance(panel.gameObject));
+            _panelDict.Remove(panelName);
+        }
 
-		/// <summary>
-		/// 尝试从已加载的面板字典中获取指定类型的面板实例。
-		/// </summary>
-		/// <param name="panel">输出参数，返回找到的面板实例；如果未找到则为 null。</param>
-		/// <typeparam name="T">面板类型，需继承自 BasePanel。</typeparam>
-		/// <returns>如果找到面板则返回 true，否则返回 false。</returns>
-		public bool TryGetPanel<T>(out T panel) where T : BasePanel
-		{
-			string panelName = typeof(T).Name;
-			if (_panelDict.TryGetValue(panelName, out BasePanel basePanel))
-			{
-				panel = basePanel as T;
-				return panel != null;
-			}
+        /// <summary>
+        /// 尝试从已加载的面板字典中获取指定类型的面板实例。
+        /// </summary>
+        /// <param name="panel">输出参数，返回找到的面板实例；如果未找到则为 null。</param>
+        /// <typeparam name="T">面板类型，需继承自 BasePanel。</typeparam>
+        /// <returns>如果找到面板则返回 true，否则返回 false。</returns>
+        public bool TryGetPanel<T>(out T panel) where T : BasePanel
+        {
+            string panelName = typeof(T).Name;
+            if (_panelDict.TryGetValue(panelName, out BasePanel basePanel))
+            {
+                panel = basePanel as T;
+                return panel != null;
+            }
 
-			panel = null;
-			return false;
-		}
-	}
+            panel = null;
+            return false;
+        }
+    }
 } 
 ```
 ### 外部字体导入

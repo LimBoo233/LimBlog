@@ -227,5 +227,309 @@ Mipmap 中每一个层级的小图都是主图的一个特定比例的缩小细�
 简单来说，开启 MipMap 功能后，Unity 会帮助我们根据图片信息生成 n 张不同分辨率的图片，在场景中会根据我们离该模型的距离选择合适尺寸的图片用于渲染，提升渲染效率。
 :::
 
+### 平铺拉伸设置
+
+**参数说明**
+
+- `Wrap Mode`（平铺纹理的方式）：
+    - `Repeat`：在区域内重复纹理。
+    - `Clamp`：拉伸纹理的边缘，超出部分会一直显示边缘像素。
+    - `Mirror`：在每个整数边界上镜像纹理，以创建重复图案。
+    - `Mirror Once`：镜像纹理一次，之后超出部分拉伸边缘。
+    - `Per-axis`：分别控制U轴和V轴上的包裹方式，可实现更灵活的平铺效果。
+
+- `Filter Mode`：控制纹理在 3D 变化拉伸时如何进行过渡和模糊处理。
+    - `Point`：纹理在靠近时变为块状。
+    - `Bilinear`：纹理在靠近时变得模糊。效果较好，常用。
+    - `Trilinear`：与`Bilinear`类似，但纹理也在不同的 Mip 级别之间模糊。
+
+- `Aniso Level`（各向异性过滤等级）：
+    - 以大角度查看纹理时提升纹理质量，数值越高效果越好，但性能消耗也越高。一般不会去修改。
+
+### 纹理打包平台
+参数说明：
+
+- `Max Size`：设置导入纹理的最大尺寸。即使美术导出的图片很大，也可以通过这里限制它们的尺寸在一定范围内，避免资源浪费。
+
+- `Resize Algorithm`：当纹理尺寸大于指定的 Max Size 时，使用的缩小算法。影响缩小后的图片质量。
+    - `Michell`：默认米歇尔算法。
+    - `Bilinear`：使用双线性插值调整大小，保留更多细节。
+
+- `Format`：纹理格式。各平台支持的格式有所不同，如果选择 Automatic，会根据平台使用默认设置。
+    - 都支持的格式：如 RGBA 32bit、RGB 16bit 等。
+    - 移动端和网页端有特有格式。
+    > 官方文档：[各平台的推荐、默认和支持的纹理压缩格式](https://docs.unity3d.com/cn/2022.3/Manual/class-TextureImporterOverride.html)
+    ::: info
+    IOS 如果使用默认 PVRTC 压缩格式可以获得更大的兼容性。如果应用程序不包含 OpenGL ES 2.0 的支持，则可以使用 ASTC 压缩格式，这种格式可以提供更好的质量和灵活性，并且压缩速度比前者快。
+
+    Android 设备情况更为复杂。对于安装了 OpenGL ES 3.1 的 Android 设备，可以使用 ASTC 压缩格式。此外还有各种别的格式：
+    2. ETC：在所有 Android 设备上支持。
+    1. ETC2 / EAC：在 OpenGL ES 3.0 上支持。
+    3. RGBA 16位 / RGBA 32位：在所有设备上都支持。  
+    :::
+
+- `Compression`：选择纹理的压缩类型，帮助 Unity 正确选择压缩格式。会根据平台和压缩格式的可用性进行压缩。
+- `Use Crunch Compression`：启用后，使用 Crunch 压缩。Crunch 是一种基于 DXT 或 ETC 纹理压缩的有损压缩格式。压缩时间长，但解压速度快，适合需要极致压缩的场景。可以通过设置 `Compression Quality` 来控制压缩质量。
+
+ETC 格式下会出现的参数：
+- `Split Alpha Channel`：Alpha 通道分离，节约内存。会把一张图分成两张纹理，一张包含 RGB 数据，一张包含 Alpha 数据，在渲染时再合并渲染。这是一个很好的设置，可以节约内存。
+
+- `Override ETC2 fallback`：不支持 ETC2 压缩的设备上，使用的回退格式。用于兼容性处理。
+
+### Sprite Editor
+
+主要用于编辑 2D 游戏开发中使用的 Sprite 精灵图片，可以用于编辑图集中提取元素，设置精灵边框，设置九宫格，设置轴心点等功能。
+
+在 Unity 的 3D 模版下，需要下载 `2D Sprite` 包才能使用。
+
+#### 对于单图
+
+单图的情况下，Sprite Editor 主要用于设置精灵的属性和编辑。
+
+**Sprite Editor 精灵编辑器：**
+- `Name`：精灵的名称。
+- `Postition`：这个独立的 Sprite 在原始的整张大图（Sprite Sheet）中所占据的矩形区域。
+- `Border` 参数用于设置九宫格的边框。在 UGUI 笔记中已有涉及，此处不再赘述。
+- `Pivot`：轴心。可以通过 `Custom` 自定义轴心点位置。
+- `Pivot Unit Mode`：轴心点单位模式。
+    - `Pixels`：像素单位。
+    - `Normalized`：归一化单位，范围从 0 到 1。推荐。
+
+**Custom Outline 自定义渲染范围：**
+
+- 在左上角和从 Sprite Editor 切换到 Custom Outline 模式。在该模式下，可以自定义边缘线设置和精灵网格的轮廓形状。
+
+- 默认情况下，图片都是在矩形网格上渲染，边缘外部透明区域会被渲染，浪费性能。使用自定义轮廓，可以调小透明区域，提高性能。
+
+- 在该模式下，左上角有新的选项：
+    - Snap：开启后，在拖拽轮廓顶点时，光标会自动“吸附”到最接近的像素网格上，保证顶点的坐标为整数，避免半像素的情况。
+    - Outline Tolerance：轮廓点的复杂度和准确性，值越大轮廓点越多，越精细。
+    - Generate：生成网格轮廓。
+
+**Custom Physics Shape 自定义物理形状：**
+
+- 在该模式下，可以自定义精灵的物理形状，该形状决定了碰撞检测的区域。
+
+- 左上角的选项和 Custom Outline 模式下相同，只是发挥最用不同。
+
+**Skinning Editor 蒙皮编辑器：**
+> Comming soon...
+
+**Secondary Textures 次要纹理：**
+
+- 次要纹理设置，可以将其他纹理与该精灵关联。着色器可以得到这些辅助纹理，然后用于做一些特殊效果的处理，让精灵用于其他效果。
+
+- 与 Shader 结合使用，可以实现更复杂的视觉效果。
+    > Coming soon...
+
+#### 对于多图
+
+当图片资源为图集时，我们需要设置精灵的属性为 `Multiple`，然后在 Sprite Editor 中进行分割。
+
+**Sprite Editor 精灵编辑器**左上角会出现新的的选项：
+- SLice：切割选项。
+    - `Type`：切割类型。
+        - `Automatic`：自动切割，Unity 会根据图片内容智能识别切割区域。
+        - `Grid By Cell Size`：按网格大小切割，指定每个精灵的宽度和高度。
+        - `Grid By Cell Count`：按网格数量切割，指定行数和列数。
+        - `Isometric Grid`：等距网格切割，指定
+    - `Pivot`：小图轴心点。
+    - `Method`：处理现有小图矩形。
+        - `Delete Existing`：自动生成新的矩形以替换现有的矩形。
+        - `Smart`：尝试创建新的矩形并保留或调整现有矩形。
+        - `Safe`：添加新的矩形，保留现有矩形。
+
+- Trim：自动修建，清除透明区域。
+
+在选中小图后，右下角会出现类似于单图的设置选项。
+
+#### 对于 `Polygon` 模式
+
+可以在左上角 `Sides` 设置多边形的边，取值为 3 到 128。也可以通过 `Custom Outline` 自动生成渲染范围。
+
+值得一提的是，这种模式在实际开发中使用的非常少。
+
+### `Sprite Renderer`
+
+`Sprite Renderer` 是 Unity 中专门用来在 2D 游戏中显示和渲染 2D 图像（除了 UI 元素） 的核心组件。
+
+**参数说明**
+- `Sprite`：渲染的精灵图像。
+- `Color`：定义着色。
+- `Filp`：水平或垂直翻转精灵。
+- `Draw Mode`：绘制模式，决定当 `Scale` 变化时的缩放方式。
+    - `Simple`：普通模式，均匀缩放整个图片。
+    - `Sliced`：切片模式，9宫格拉伸，只拉伸中央十字区域（需要通过 Sprite Editor 设置 Border 边框）。此时需要通过修改 `Size` 来设置大小。
+    - `Tiled`：平铺模式，重复平铺中央部分。也可以通过设置 Border 边框来控制平铺样式。大小也通过 `Size` 设置。
+        - `Tiled Mode`：平铺时的行为。
+            - `Continuous`：中央部分平铺，边缘部分不拉伸但会切割。
+            - `Adaptive`：类似 `Simple` 模式，当尺寸到达 `Value` 时会平铺。
+    ::: tip
+    如果调整到 `Sliced` 和 `Tiled` 模式时发出警告，是提示该模式只适用于 Sprite 的 `Mesh Type` 为 `Full Rect` 或 `Sprite Mode` 为 `Polygon` 的精灵。
+    :::
+- `Mask Interaction`：与遮罩的交互方式。
+    - `None`：不与遮罩交互。
+    - `Visible Inside Mask`：只在遮罩内可见。
+    - `Visible Outside Mask`：只在遮罩外可见。   
+- `Sprite Sort Point`：决定计算图片和摄像机距离时，采用图片中心还是轴心点。一般不用修改。
+- `Material`：渲染材质，一般使用默认材质即可。如果有特殊需求（如受光照影响的效果），可以自定义材质。
+- `Additional Settings`：可通过 `Sorting Layer` 和 `Order in Layer` 两个属性来控制渲染顺序。
+    ::: tip
+    在 2D 游戏中，摄像机一般是 `Orthographic`（正交投影），因此图片在 Z 轴上不同位置并不会影响显示的大小，但 Z 轴位置仍然会影响哪个物体更靠前。所以其实也可以通过调整 Z 轴位置来控制渲染顺序。`Order in Layer` 对渲染层级的控制强于 `Z` 轴位置。
+    :::
+   
+可以通过代码动态的改显示的图片：
+```csharp
+var spriteRenderer = GetComponent<SpriteRenderer>();
+var handle = await Addressables.LoadAssetAsync<Sprite>("YourSprite.png");
+
+// 设置 SpriteRenderer 的精灵
+if (handle.Status == AsyncOperationStatus.Succeeded)
+    spriteRenderer.sprite = handle.Result;
+```
+
+加载 `Mutiple` 模式下的精灵时，需要使用 `LoadAssetsAsync<T>`。`LoadAssetsAsync` 会返回一个 `AsyncOperationHandle<IList<Sprite>>`，需要通过 `await handle.Task` 来获取加载结果 `IList<T>`。
+
+::: details 代码示例
+```csharp {16-18} [MyTest.cs]
+using System.Collections.Generic;
+using System.Threading.Tasks;
+using UnityEngine;
+using UnityEngine.AddressableAssets;
+using UnityEngine.ResourceManagement.AsyncOperations;
+
+public class MyTest : MonoBehaviour
+{
+	[SerializeField] private string address = "my_sprites";
+
+	private List<Sprite> _spriteList;
+	private AsyncOperationHandle<IList<Sprite>> _handle;
+	
+    // 加载图集
+	private async Task LoadSpritesAsync()
+	{
+        // 异步加载精灵列表
+		_handle = Addressables.LoadAssetsAsync<Sprite>(address, null);
+		IList<Sprite> sprites = await _handle.Task;
+
+		if (_handle.Status == AsyncOperationStatus.Succeeded)
+		{
+			_spriteList = new List<Sprite>(sprites);
+		}
+	}
+	
+	private void OnDestroy()
+	{
+		if (_handle.IsValid())
+			Addressables.Release(_handle);
+	}
+
+    // 简单的在图集中加载特定名称的精灵的示例
+    private async Task<Sprite> LoadSpecificSpriteAsync(string address)
+    {
+        // address 的格式需要为 $"{图集 Address}[{精灵.Name}]"
+        AsyncOperationHandle<Sprite> handle = Addressables.LoadAssetAsync<Sprite>(address);
+        await handle.Task;
+        if (handle.Status == AsyncOperationStatus.Succeeded)
+            return handle.Result;
+
+        return null;
+    }
+}
+```
+::: 
+
+如果想要加载 Unity 里面创建的图集，不需要单独加载图集再从图集里抽出单图来使用，整个过程会更加方便。就像 UGUI 一样，你可以直接使用单图，最后再打包图集，Unity 会自动使用图集中的图片。这也是 Unity 官方推荐的做法。
+
+### Sprite Creator
+
+可以通过 Sprite Creator 创建新的精灵。它是一个简单的工具，可以快速创建各种多边形精灵。它的主要作用是制作快速的 2D 游戏原型，用作美术资源的占位符。
+
+在 Project 面板中右键点击，选择 `Create > Sprites` 或者 `Create > 2D > Sprite`，即可创建简单的多边形。
+
+### `Sprite Mask`
+
+`Sprite Mask` 是 Unity 里的一个组件，它能让你控制一个或一组 Sprite（2D 图像）的可见部分。就像是用一张镂空的卡片盖在一张画上，你只能看到镂空部分下面的画。
+
+可以在 Project 面板中选择 `Create` 创建一个携带 `Sprite Mask` 组件的对象。该组件如果想发挥作用，需要将希望被遮罩的图片的 `Sprite Renderer` 组件的 `Mask Interaction` 设置为 `Visible Inside Mask` 或 `Visible Outside Mask`。
+
+参数说明：
+- `Sprite`：遮罩的形状。
+- `Alpha Cutoff`：遮罩的透明度阈值，低于该值的像素将被遮罩掉。
+- `Custom Range`：是否自定义遮罩范围。
+    - `Front`：遮罩层范围的最大值。
+    - `Back`：遮罩层范围的最小值。
+- `Sprite Sort Point`：决定计算图片和摄像机距离时，采用图片中心还是轴心点。一般不用修改。
+
+### `Sorting Group`
+
+`Sorting Group` 是一个组件，它的核心作用是将一个游戏对象及其所有子对象的渲染器（如 `Sprite Renderer`）“打包”成一个独立的单元。Unity 在决定渲染顺序时，会优先处理这个“单元”，而不是去单独计算其内部每一个子对象的排序。
+
+`Sorting Group` 只会在同一父游戏对象下的子对象之间起作用，不会影响其他父对象或兄弟对象的渲染顺序，除非设置 `Sort at Root`。
+
+属性说明：
+- `Sorting Layer`：决定了整个组属于哪个渲染层。
+- `Order in Layer`：这个数字决定了在同一个 Sorting Layer 中，这个组的渲染优先级。
+- `Sort at Root`：忽略父级的存在，直接参与到全局的根排序中。
 
 
+
+### Sprite Atlas
+
+有关图集的内容，已经在 UGUI 笔记中介绍过了，不再赘述。
+
+[Unity-UGUI#图集制作](./Unity-UGUI#图集制作)
+
+### 刚体
+
+在 Unity 中，如果你希望一个 2D 游戏对象（比如角色、子弹、箱子）能够受到物理规律的影响（如重力、推力、摩擦力、碰撞），那么你就必须为它添加 `Rigidbody 2D` 组件。
+
+2D 物理系统中的刚体和 3D 物理系统中的刚体基本相同，最大区别在于 2D 游戏对象只在 X 和 Y 平面上移动，并且只在垂直于该平面上的轴旋转。
+
+参数说明：
+- `Body Type`：决定了该物体的基本物理行为。
+    - `Dynamic`：这是默认类型，也是功能最全的类型。一个完全的物理对象。它会受到重力、推力 (AddForce)、速度 (velocity) 等所有物理效果的影响。它会与其他任何类型的刚体（包括静态和运动学刚体）发生真实的物理碰撞，并产生反弹、旋转等效果。
+    - `Kinematic`：运动学刚体，它拥有物理外形（可以触发碰撞），但它不受物理引擎的力所控制。可以通过脚本移动。
+    - `Static`：静态刚体，一个完全静止、不可移动的物理对象。适用于地形、墙壁等不动的对象。
+- `Material`：指它在物理世界中的表面特性。可以设置摩擦力、弹性等属性。会优先使用 2D 碰撞器上的物理材质，其次是刚体上，其次是全局物理材质。
+    ::: details `Physics Material 2D`
+    简单来说，这个“物理材质”不是指物体看起来的样子（比如颜色、纹理），而是指它在物理世界中的表面特性，主要控制两个方面：
+    1. 摩擦力（Friction）
+    2. 弹性（Bounciness）
+
+    要使用 `Physics Material 2D`，你首先需要在项目（Project）窗口中创建一个 `Physics Material 2D` 资源。在 Project 窗口点击鼠标右键 -> Create -> 2D -> Physics Material 2D。
+
+    创建并选中这个资源后，你会在 Inspector 窗口看到两个主要的滑块：
+    1. `Friction` (摩擦力)
+        - 作用: 定义了物体与其他表面接触时的滑动摩擦系数。
+    2. `Bounciness` (弹性 / 恢复系数)
+        - 作用: 定义了物体碰撞后能“弹回”多少能量。
+    :::
+- `Simulated`：是否启用物体及其子对象的物理模拟。
+- `Use Auto Mass`：自动计算质量。
+- `Liner Drag`：线性阻力，控制物体在移动时的阻力大小。值越大，物体移动时减速越快。 
+- `Angular Drag`：角阻力，控制物体旋转时的阻力大小。
+- `Gravity Scale`：收到的重力的缩放比例。
+- `Collision Detection`：碰撞检测模式。
+    - `Discrete`：离散碰撞检测，适用于大多数情况。物体在每一帧之间的移动不会被考虑。
+    - `Continuous`：连续碰撞检测，适用于快速移动的物体，可以减少穿透其他物体的风险。
+    ::: details `Continuous Dynamic` 和 `Continuous Speculative`
+    3D 当中还有 `Continuous Dynamic` 和 `Continuous Speculative` 用于 连续碰撞检测（Continuous Collision Detection, CCD）但在 2D 中没有这两个选项。
+
+    `Continuous Dynamic` (连续动态)
+    - 这是 `Continuous` 的增强版，也是最“豪华”的模式。它不仅会扫描和预测与静态物体的碰撞，还会预测与其他 `Continuous` 和 `Continuous Dynamic` 刚体的碰撞（因为 `Continuous` 不能防止穿透其他同样在运动的 `Continuous` 或 `Continuous Dynamic` 刚体）。
+    - **性能开销非常非常大。**
+
+    `Continuous Speculative` (连续推测)
+    - 这是 Unity 引入的一种更新、更现代的 CCD 模式。它的工作方式完全不同。它不是向前“扫描”，而是根据物体的速度，在物体周围“膨胀”出一个检测范围，然后推测它在下一帧的运动轨迹上是否可能与别的物体发生接触。它在处理高速旋转（Angular Motion）时的穿隧问题比 `Continuous Dynamic` 更有效。
+    - **性能比 `Continuous Dynamic` 好得多，在很多情况下甚至接近 `Discrete`。是目前官方推荐的首选 CCD 方案。**
+    :::
+- `Sleeping Mode`：对象处于静止状态时进入睡眠状态。
+    - `Never Sleep`：永不进入睡眠状态，会一直进行检测计算。性能消耗大。
+    - `Start Awake`：游戏对象在被创建或加载时，物理状态是活跃的。它会正常参与物理计算，直到它自己满足了休眠条件而进入休眠。默认且推荐的选项。
+    - `Start Asleep`：最初处于睡眠状态，但可以被碰撞唤醒。
+
+- `Interpolate`：插值模式，控制物体在运动时的平滑度。
+    - `None`：不进行插值。
+    - `Interpolate`：根据上一帧的位置进行插值。
+    - `Extrapolate`：根据物体的速度预测下一帧的位置。
