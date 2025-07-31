@@ -94,7 +94,7 @@ Destroy(gameObject, 2f);
 你也可以用`Destroy()`来销毁一个组件，而不是整个`GameObject`。例如`Destroy(GetComponent<Rigidbody>())`。
 :::
 
-## Lesson 5 时间
+## 时间与帧控制
 
 ### 1. 时间缩放比例
 ```c#
@@ -140,7 +140,7 @@ Time.frameCount;
 2. 时间缩放比例：用来暂停，倍速。
 3. 帧数（帧同步）。
 
-## Lesson 6 向量
+## 向量与空间运算
 ### 1. 位置
 ```c#
 // 相对世界坐标系
@@ -167,7 +167,7 @@ transform.Translate(Vector3.forward * speed * Time.deltaTime);
 transform.Translate(Vector3.forward * speed * Time.deltaTime, Space.World);
 ```
 
-## Lesson 8 缩放
+## 缩放与变换
 
 ### 1. 缩放
 缩放只能修改本地坐标系缩放，缩放没有提供修改的API。
@@ -183,7 +183,7 @@ Vector3 localScale = transform.localScale;
 transform.LookAt(Camera.main.transform);
 ```
 
-## Lesson 9 父子关系
+## 父子关系与层级操作
 ### 1. 获取和设置父对象
 ```c#
 Transform parent = transform.parent;
@@ -238,8 +238,8 @@ transform1.SetSiblingIndex(2);
 Component[] components = GetComponentsInChildren<Component>();
 ```
 
-## Lesson 10 坐标转化
-世界坐标系转化为本地坐标系: 
+## 坐标系转换
+世界坐标系转化为本地坐标系：
 - 可以帮我们判断一个相对位置。
 ```c#
 // 点
@@ -253,7 +253,7 @@ transform.InverseTransformDirection(Vector3.forward);
 transform.InverseTransformVector(Vector3.forward); 
 ```
 
-## Lesson 12 屏幕
+## 屏幕与分辨率
 1. 静态属性
 ```c#
 // 当前显示器分辨率
@@ -291,7 +291,7 @@ Screen.orientation = ScreenOrientation.AutoRotation;
 Screen.SetResolution(1920, 1080, false);
 ```
 
-## Lesson 14 相机
+## 相机控制与坐标转换
 1. 重要静态成员
 ```c#
 # region 1. 获取摄像机
@@ -332,13 +332,13 @@ print(Camera.main.ScreenToWorldPoint(position));
 # endregion
 ```
 
-## Lesson 15 光源
+## 光源参数
 面板上的参数都可以通过代码控制。
 ```c#
 myLight.intensity = .5f;
 ```
 
-## Lesson 16 碰撞
+## 碰撞检测与触发器
 1. 物理碰撞检测响应函数
 ```c#
 // 碰撞接触触发时，会自动执行这个函数
@@ -395,8 +395,8 @@ private void OnTriggerStay(Collider other)
 }
 ```
 
-## Lesson 17 刚体加力
-1. 刚体自带添加力的方法
+## 刚体与力的应用
+1. 刚体自带添加力的方法：
 ```c#
 _rigidbody = GetComponent<Rigidbody>();
 
@@ -421,10 +421,7 @@ _rigidbody.velocity = Vector3.forward * 10;
 _rigidbody.AddExplosionForce(10, Vector3.zero, 10);
 ```
 2. 力的几种模式- 第二个参数
-    - 力的模式 
-    - 主要的作用就是**计算方式不同**
-
-
+    - 主要的作用就是计算方式不同。
 ```c#
 // 1. Acceleration
 // 给物体一个持续的加速度，忽略其质量
@@ -438,7 +435,7 @@ _rigidbody.AddForce(Vector3.forward, ForceMode.Acceleration);
 _rigidbody.AddForce(Vector3.forward, ForceMode.Force);
 
 // 3. Impulse
-// 给物体一个瞬间的冲击力，时间默认为1
+// 给物体一个冲量。大部分文档描述为“添加一个瞬时的力”
 _rigidbody.AddForce(Vector3.forward, ForceMode.Impulse);
 
 // 4. VelocityChange
@@ -447,7 +444,7 @@ _rigidbody.AddForce(Vector3.forward, ForceMode.VelocityChange);
 ```
 
 3. 力场脚本
-存在一个叫做ConstantForce的脚本，可以给物体添加一个持续的力。
+    - 存在一个叫做 `ConstantForce` 的脚本，可以给物体添加一个持续的力。
 
 4. 补充：刚体休眠
 ```c#
@@ -458,7 +455,7 @@ if (_rigidbody.IsSleeping())
 }
 ```
 
-## Lesson 20 代码控制音频
+## 音频控制与播放
 
 **初始化一个音频播放器：**
 ```c# [AudioContoller.cs]
@@ -526,7 +523,7 @@ private void Update()
     audioSource.Play();
     ```
 
-## Lesson 21 麦克风输入相关
+## 麦克风输入与录音
 1. 获取麦克风信息
 ```c#
 // 获取麦克风设备列表
@@ -575,7 +572,7 @@ float[] f = new float[_audioClip.channels * _audioClip.samples];
 _audioClip.GetData(f, 0);
 ```
 
-## Lesson 22 场景切换
+## 场景切换与退出
 1. 场景切换
     - 切换到场景二
 ```c#
@@ -592,7 +589,7 @@ Application.LoadLevel("Scene2");
 Application.Quit();
 ```
 
-## Lesson 23 隐藏鼠标
+## 鼠标控制与光标设置
 1. 隐藏鼠标
 ```c#
 Cursor.visible = false;
@@ -610,14 +607,14 @@ Cursor.lockState = CursorLockMode.Confined;
 ```
 
 3. 设置光标图片
-    - 参数一： 图片（如果不是正方形图片，会被压缩。图片的 Texture Type 最好设置成 Cursor）
+    - 参数一： 图片（如果不是正方形图片，会被压缩。图片的 `Texture Type` 最好设置成 `Cursor`）
     - 参数二： 偏移位置，相对图片左上角
     - 参数三： 平台支持的光标模式（软件或硬件）
 ```c#
 Cursor.SetCursor(texture2D, Vector2.zero, CursorMode.Auto);
 ```
 
-## Lesson 24 随机数
+## 随机数与委托
 1. 随机数
     - Unity 的随机数，不是 C# 自己的随机数
     - `int` 左闭右开，而 `float` 的重载是左闭右闭

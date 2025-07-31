@@ -400,29 +400,29 @@ using UnityEngine.ResourceManagement.AsyncOperations;
 
 public class MyTest : MonoBehaviour
 {
-	[SerializeField] private string address = "my_sprites";
+    [SerializeField] private string address = "my_sprites";
 
-	private List<Sprite> _spriteList;
-	private AsyncOperationHandle<IList<Sprite>> _handle;
-	
+    private List<Sprite> _spriteList;
+    private AsyncOperationHandle<IList<Sprite>> _handle;
+    
     // 加载图集
-	private async Task LoadSpritesAsync()
-	{
+    private async Task LoadSpritesAsync()
+    {
         // 异步加载精灵列表
-		_handle = Addressables.LoadAssetsAsync<Sprite>(address, null);
-		IList<Sprite> sprites = await _handle.Task;
+        _handle = Addressables.LoadAssetsAsync<Sprite>(address, null);
+        IList<Sprite> sprites = await _handle.Task;
 
-		if (_handle.Status == AsyncOperationStatus.Succeeded)
-		{
-			_spriteList = new List<Sprite>(sprites);
-		}
-	}
-	
-	private void OnDestroy()
-	{
-		if (_handle.IsValid())
-			Addressables.Release(_handle);
-	}
+        if (_handle.Status == AsyncOperationStatus.Succeeded)
+        {
+            _spriteList = new List<Sprite>(sprites);
+        }
+    }
+    
+    private void OnDestroy()
+    {
+        if (_handle.IsValid())
+            Addressables.Release(_handle);
+    }
 
     // 简单的在图集中加载特定名称的精灵的示例
     private async Task<Sprite> LoadSpecificSpriteAsync(string address)
@@ -445,13 +445,13 @@ public class MyTest : MonoBehaviour
 
 可以通过 Sprite Creator 创建新的精灵。它是一个简单的工具，可以快速创建各种多边形精灵。它的主要作用是制作快速的 2D 游戏原型，用作美术资源的占位符。
 
-在 Project 面板中右键点击，选择 `Create > Sprites` 或者 `Create > 2D > Sprite`，即可创建简单的多边形。
+在 Project 面板中右键点击，选择 Create > 2D > Sprite，即可创建简单的多边形。
 
 ### `Sprite Mask`
 
 `Sprite Mask` 是 Unity 里的一个组件，它能让你控制一个或一组 Sprite（2D 图像）的可见部分。就像是用一张镂空的卡片盖在一张画上，你只能看到镂空部分下面的画。
 
-可以在 Project 面板中选择 `Create` 创建一个携带 `Sprite Mask` 组件的对象。该组件如果想发挥作用，需要将希望被遮罩的图片的 `Sprite Renderer` 组件的 `Mask Interaction` 设置为 `Visible Inside Mask` 或 `Visible Outside Mask`。
+可以在 Project 面板中选择 Create > 2D Object > Sprite Mask 创建一个携带 `Sprite Mask` 组件的对象。该组件如果想发挥作用，需要将希望被遮罩的图片的 `Sprite Renderer` 组件的 `Mask Interaction` 设置为 `Visible Inside Mask` 或 `Visible Outside Mask`。
 
 参数说明：
 - `Sprite`：遮罩的形状。
@@ -505,7 +505,8 @@ public class MyTest : MonoBehaviour
     2. `Bounciness` (弹性 / 恢复系数)
         - 作用: 定义了物体碰撞后能“弹回”多少能量。
     :::
-- `Simulated`：是否启用物体及其子对象的物理模拟。
+- `Simulated`：是否启用物体及其子对象的物理模拟。`Kinematic` 的刚体开启后会充当一个质量无限大的物体，不可移动但可碰撞。
+- `Use Full Kinematic Contacts`：仅在 `Kinematic` 模式会出现，可以和所有 2D 刚体碰撞，如其他 `Kinematic` 的或 `Static` 的刚体。
 - `Use Auto Mass`：自动计算质量。
 - `Liner Drag`：线性阻力，控制物体在移动时的阻力大小。值越大，物体移动时减速越快。 
 - `Angular Drag`：角阻力，控制物体旋转时的阻力大小。
@@ -533,3 +534,242 @@ public class MyTest : MonoBehaviour
     - `None`：不进行插值。
     - `Interpolate`：根据上一帧的位置进行插值。
     - `Extrapolate`：根据物体的速度预测下一帧的位置。
+
+- `Constraints`：约束选项，限制物体不在一个轴上运动或受力的影响。
+- `Info`：显示物体的物理信息，如质量、速度、加速度等。
+
+依据情况，选择使用不同的刚体：
+
+| 类型      | 说明 |
+|-----------|--------------------------------------------------|
+| `Dynamic`   | 受力的作用，需要碰撞的对象。|
+| `Kinematic` | 通过刚体 API 移动，不受力的作用，但想要进行碰撞检测。|
+| `Static`    | 不动不受力的静态物体，但想要进行碰撞检测。|
+
+可以通过代码为刚体添加力的作用，例如：
+```csharp
+Rigidbody2D rb = GetComponent<Rigidbody2D>();
+// 添加一个向上的力
+rb.AddForce(new Vector2(0, 10));
+// 添加一个向上的相对力
+rb.AddRelativeForce(new Vector2(0, 10));
+```
+还可为刚体添加扭矩（Torque）：
+```csharp
+rb.AddTorque(5f);
+```
+::: tip
+扭矩旋转的方向可以使用 **右手定则(Right-Hand Rule)**  来判断。
+
+将大拇指方向指向旋转轴的正方向（2D 中为正 Z 轴，即从屏幕指向眼睛的方向），其余四指弯曲的方向就是扭矩旋转的方向。
+:::
+`AddForce` 和 `AddRelativeForce` 方法还可以接受第二个参数，以指定力的作用方式：
+1. `ForceMode2D.Force`：默认方式，持续施加力。t 为物理帧间隔。
+2. `ForceMode2D.Impulse`：常描述为添加瞬时冲击力。本质上是施加一个冲量（I = m * v）。
+3. `ForceMode2D.VelocityChange`：施加一个瞬时速度变化。
+
+::: info
+通过代码添加力的内容与 [Unity入门#刚体与力的应用](./Unity入门#刚体与力的应用) 中的内容相似。
+:::
+
+通过代码添加速度：
+```csharp
+rb.velocity = new Vector2(5f, 0f);
+```
+
+### 碰撞器
+
+碰撞器是一个组件，它为游戏对象定义了一个用于物理碰撞的、不可见的形状。如同物体的“物理骨骼”或“力场边界”——它不负责移动，不负责受力，它只做一件事：定义物体的物理边界。
+
+因此刚体可以通过碰撞器获得的范围信息进行物理计算。
+
+#### `Sphere Collider 2D` 球形碰撞器
+参数说明：
+- `Edit Collider`：快捷编辑碰撞器的形状。
+- `Material`：物理材质，定义摩擦力和弹性等属性。
+- `Is Trigger`：是否为触发器。触发器不会产生物理碰撞，但可以检测到碰撞事件（如 `OnTriggerEnter2D`）。
+- `Used By Effector`：是否被效应器使用。效应器可以对碰撞器施加额外的物理效果，如风力、重力等。
+- `Offset`：碰撞器位置的偏移量。
+- `Radius`：碰撞器的半径。
+
+#### `Box Collider 2D` 矩形碰撞器
+参数说明：
+- `Used By Composite`：是否被复合碰撞器使用。复合碰撞器可以将多个碰撞器组合成一个更复杂的形状，勾选后消失的属性需要可以在复合碰撞器上设置。
+- `Auto Tiling`：当精灵大小改变时，自动调整碰撞器的大小。
+- `Size`：可设置宽高。
+- `Edge Radius`：圆角半径，控制碰撞器边缘的圆滑程度。
+
+#### `Polygon Collider 2D` 多边形碰撞器
+参数 `Points` 定义了多边形的顶点。使用 `Edit Collider` 可以直接在 Scene 视图中编辑顶点，更直观快捷。
+
+#### `Edge Collider 2D` 边界碰撞器
+边界碰撞器定义了线段状的碰撞区域，可用于地面或墙壁。
+
+参数类似于 `Polygon Collider 2D`。
+
+#### `Capsule Collider 2D` 胶囊碰撞器
+参数 `Direction` 可设置胶囊的方向。
+#### `Composite Collider 2D` 复合碰撞器
+通过在父物体上添加 `Composite Collider 2D` 组件，可以将多个子碰撞器组合成一个更复杂的碰撞形状，子碰撞器需要启用 `Used By Composite` 选项。
+
+父物体添加 `Composite Collider 2D` 时 Unity 还会自动为其依赖的添加 `Rigidbody 2D`。但此时还是在复合组件上修改刚体属性，不需要修改 `Rigidbody 2D`。
+
+参数说明：
+- `Geometry Type`：定义组合碰撞器的几何类型。
+    - `Outlines`：空心轮廓，类似于边界碰撞器。
+    - `Polygons`：实心多边形，类似于多边形碰撞器。
+- `Generation Type`：定义组合碰撞器的生成方式。
+    - `Synchronous`：同步生成，实时更新碰撞器形状。
+    - `Manual`：手动生成——通过代码或点击下方 `Regenerate Geometry`。子物体位置改变时不会自动更新碰撞器形状。
+- `Vertex Distance`：顶点距离，控制生成的多边形顶点之间的距离。值大时会忽略小的棱角，值越小则更准确贴合子碰撞器形状。
+- `Offset Distance`（不常用）：将所有合并后的最终碰撞体轮廓，向外或者向内整体偏移指定的距离。
+
+碰撞检测函数：
+```csharp
+private void OnCollisionEnter2D(Collision2D collision)
+{
+    // 当有其他碰撞器与刚体发生碰撞时调用
+    Debug.Log("碰撞发生: " + collision.gameObject.name);
+}
+
+private void OnCollisionExit2D(Collision2D collision)
+{
+    // 当有其他碰撞器与刚体的碰撞结束时调用
+    Debug.Log("碰撞结束: " + collision.gameObject.name);
+}
+
+private void OnCollisionStay2D(Collision2D collision)
+{
+    // 当有其他碰撞器与刚体持续碰撞时调用
+    Debug.Log("持续碰撞: " + collision.gameObject.name);
+}
+
+
+```
+触发器检测函数：
+```csharp
+private void OnTriggerEnter2D(Collider2D collision)
+{
+    // 当有其他碰撞器进入触发器时调用
+    Debug.Log("触发器进入: " + collision.name);
+}
+
+private void OnTriggerExit2D(Collider2D collision)
+{
+    // 当有其他碰撞器离开触发器时调用
+    Debug.Log("触发器离开: " + collision.name);
+}
+
+private void OnTriggerStay2D(Collider2D collision)
+{
+    // 当有其他碰撞器持续在触发器内时调用
+    Debug.Log("触发器持续: " + collision.name);
+}
+```
+
+### 物理材质
+
+物理材质 (Physics Material) 是用来定义一个物体表面的物理特性的，主要控制两个属性：
+1. `Friction`：静态和动态摩擦系数大小。
+2. `Bounciness`：弹性系数大小。
+
+物理材质和物体看起来的样子（颜色、纹理）完全无关，只影响物理碰撞时的表现。
+
+在 Project 面板中右键点击，选择 Create > 2D > Physics Material 2D，即可创建一个新的物理材质资源。
+
+::: tip
+在 3D 中的物理材质 `Physics Material` 具有更多属性，可以单独设置滑动摩擦力（Dynamic Friction）和静态摩擦力（Static Friction）。此外，还可以通过 `Combine` 设置当两个带有不同物理材质的物体碰撞时，如何计算它们接触点最终的摩擦力和弹性。
+:::
+
+### 恒定力
+
+`Constant Force` 是一个特殊的脚本，可以给一个刚体施加一个持续的力。主要有三个属性：
+1. `Force`：施加的恒定力。
+3. `Relative Force`：施加的恒定力，相对于刚体的局部坐标系。
+2. `Torque`：施加的恒定扭矩。
+
+### 效应器
+
+效应器 (`Effector 2D`) 是一个可以附加到 2D 碰撞器(`Collider 2D`) 上的组件，可以让游戏物体在相互接触时产生一些特殊的物理作用力。可以实现风、水流、传送带或者单向平台等效果。有的效应器要求物体必须为触发器。
+
+效应器是 Unity 2D 物理系统独有的功能。在 3D 物理中没有完全对应的概念。
+
+##### `Area Effector 2D` 区域效应器
+在一个区域内，对所有进入的物体施加一个恒定方向和大小的力或扭矩。
+
+参数说明：
+- `Use Collider Mask`：是否使用碰撞器掩码来限制哪些层上的碰撞器可以受到效应器的影响。
+- `User Global Angle`：是否使用全局角度来计算作用力方向。
+- `Force Angle`：作用力的角度。
+- `Force Magnitude`：作用力的大小。
+- `Force Variation`：作用力的变化范围。
+- `Force Target`：效应器在目标对象上施加力的作用点。
+    - `Collider`：碰撞器当前位置。如果碰撞器有偏移没有位于质心，可能产生扭矩导致旋转。
+    - `Rigidbody`：刚体质心。
+- `Drag`：阻力。
+- `Angular Drag`：角阻力。
+
+#### `Buoyancy Effector 2D` 浮力效应器
+模拟液体浮力。它会尝试将进入其范围的物体推向“液面”。
+
+参数说明：
+- `Density`：液体密度，影响浮力大小（F = ρ * V * g）。
+- `Surface Level`：液体表面高度，影响浮力的作用点。
+- `Flow Angle`：液体流动的相对世界方向的角度。
+- `Flow Magnitude`：液体流动推力的大小。
+- `Flow Variation`：推力的变化范围
+
+#### `Platform Effector 2D` 平台效应器
+创建一个单向通过的平台。
+
+参数说明：
+- `Rotational Offset`：平台的旋转偏移角度。
+- `Use One Way`：是否启用单向碰撞行为。
+- `Use One Way Grouping`：当平台有多个碰撞器的时候，可以将它们组合成一个单向平台。 
+- `Surface Arc`：以局部坐标系下的正上方为中心，填写一个角度值，定义不允单项通过的区域范围。
+- `Use Side Friction`：是否启用侧向摩擦。不开启时平台两侧不会产生摩擦力。
+- `Use Side Bounce`：是否启用侧向弹性。
+- `Side Arc`：定义平台“侧面”的物理有效范围，专门用来防止角色在跳跃时从平台的边缘“穿”进去或者卡在里面。
+
+#### `Point Effector 2D` 点效应器
+从一个点出发，吸引或者排斥范围内的物体。
+
+参数说明：
+- `Force Magnitude`：作用力的大小。
+- `Force Variation`：作用力的变化范围。
+- `Distance Scale`：距离缩放，影响作用力随距离的衰减。
+- `Force Source`：作用力的来源。
+    - `Collider`：从碰撞器位置施加力。
+    - `Rigidbody`：从刚体质心施加力。
+- `Force Mode`：作用力的模式。
+    - `Constant`：忽略距离，施加恒定力。
+    - `Inverse Linear`：作用力随距离的增加而线性减小。
+    - `Inverse Squared`：作用力随距离的增加而平方减小，呈指数级减小，类似重力（F = G * m1 * m2 / r^2）。
+
+#### `Surface Effector 2D` 表面效应器
+当物体接触到这个效应器的表面时，沿着表面切线方向施加一个力。
+
+参数说明：
+- `Speed`：施加的速度。 
+- `Speed Variation`：速度变化范围。
+- `Force Scale`：缩放表面效应器施加的力的大小。
+- `Use Contact Force`：是否对接触物体表面的点施加力，如果选择会让对象旋转。
+- `Use Friction`：是否启用摩擦力。
+- `Use Bounce`：是否启用弹性。 
+
+### Sprite Shape 
+
+Sprite Shape 是一个让你像使用矢量绘图软件（如 Adobe Illustrator）一样，去创建和编辑复杂的 2D 形状和地形的工具。
+
+Sprite Shape 系统主要由两部分构成：
+1. `Sprite Shape Profile` (精灵形状配置文件)
+- 这是一个资产 (Asset)，存在于你的项目文件夹中。
+- 你可以把它理解为一套“外观蓝图”，你在这个 Profile 文件里定义好各种规则。
+
+2. `Sprite Shape Controller` (精灵形状控制器)
+- 这是一个组件，你可以将它添加到场景中的游戏对象上。
+- 这是实际使用的 `Sprite Shape Profile` (蓝图) 的地方。该组件提供一个样条曲线编辑器 (Spline Editor)，让你可以在场景中直接通过控制点 (Node) 来“绘制”你想要的形状。
+
+::: info
+Sprite Shape 是一个 Unity 的官方扩展包，你需要通过 Package Manager 来安装它。
+:::
