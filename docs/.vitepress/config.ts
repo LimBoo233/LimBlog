@@ -103,15 +103,22 @@ export default defineConfig({
                     {
                         text: 'Unity主要内容',
                         items: [
-                            { text: 'Unity入门', link: '/notes/Unity/Unity入门' },
-                            { text: 'Unity-GUI', link: '/notes/Unity/Unity-GUI' },
-                            { text: 'Unity基础', link: '/notes/Unity/Unity基础' },
-                            { text: '数据持久化之-Json', link: '/notes/Unity/数据持久化-Json' },
-                            { text: 'Untiy-UGUI', link: '/notes/Unity/Unity-UGUI' },
-                            { text: 'Untiy核心', link: '/notes/Unity/Unity核心' },
-                            { text: 'Untiy小技巧', link: '/notes/Unity/Unity小技巧' }
+                            { text: 'Unity入门', link: '/notes/Unity/Unity主要内容/Unity入门' },
+                            { text: 'Unity-GUI', link: '/notes/Unity/Unity主要内容/Unity-GUI' },
+                            { text: 'Unity基础', link: '/notes/Unity/Unity主要内容/Unity基础' },
+                            { text: '数据持久化之-Json', link: '/notes/Unity/Unity主要内容/数据持久化-Json' },
+                            { text: 'Untiy-UGUI', link: '/notes/Unity/Unity主要内容/Unity-UGUI' },
+                            { text: 'Untiy核心', link: '/notes/Unity/Unity主要内容/Unity核心' },
+                           
                         ]
                     },
+                    {
+                        text: '其他',
+                        items: [
+                            { text: 'Unity小技巧', link: '/notes/Unity/其他/Unity小技巧' }
+                        ]
+                    },
+                    
                 ]
             },
 

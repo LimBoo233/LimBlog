@@ -770,6 +770,93 @@ Sprite Shape 系统主要由两部分构成：
 - 这是一个组件，你可以将它添加到场景中的游戏对象上。
 - 这是实际使用的 `Sprite Shape Profile` (蓝图) 的地方。该组件提供一个样条曲线编辑器 (Spline Editor)，让你可以在场景中直接通过控制点 (Node) 来“绘制”你想要的形状。
 
-::: info
-Sprite Shape 是一个 Unity 的官方扩展包，你需要通过 Package Manager 来安装它。
+官方文档：[Sprite Shape](https://docs.unity3d.com/Packages/com.unity.2d.spriteshape@13.0/manual/index.html)
+
+::: tip Sprite Shape 精灵形状的图片导入设置
+
+导入用于 Sprite Shape 的图片时，请使用以下属性设置，以确保图片可以兼容 Sprite Shape：
+1. `Texture Type`：设置为 `Sprite (2D and UI)`。其他类型不支持 Sprite Shape。
+2. `Sprite Mode`：如果图片只包含一个精灵，设置为 `Single`。
+3. `Mesh Type`：必须设置为 `Full Rect`，否则无法用于 Sprite Shape。
 :::
+
+#### `Sprite Shape Profile` 精灵形状配置文件
+在 Project 面板中右键点击，选择 Create -> 2D -> Sprite Shape Profile 即可创建一个新的精灵形状配置文件。
+
+以下为 `Sprite Shape` Profile 主要属性说明：
+
+| 属性（Property） | 功能说明（Function） |
+|------------------|-------------------------------------------------------------|
+| `Control Points`<br>控制点 | - |
+| `Use Sprite Borders`<br>使用精灵边框 | 允许在控制点处绘制精灵的边框（主要用于九宫格拉伸）。需在 Sprite Editor 中定义 Sprite Borders。|
+| `Fill`<br>填充 | - |
+| `Texture`<br>纹理 | 设置用于填充的纹理。如果 Sprite Shape Controller 的 Open Ended 属性启用，则此项无效。|
+| `Offset`<br>偏移![SpriteShape-AngleRange](./images/SpriteShape-AngleRange.png) | 决定填充纹理边缘的边界偏移量。|
+| `Angle Ranges` (tool)<br>角度范围工具 | 用于创建角度范围并为其分配不同的精灵。|
+| `Start` (degrees)<br>起始角度 | 输入所选角度范围的起始角度（单位：度）。|
+| `End` (degrees)<br>结束角度 | 输入所选角度范围的结束角度（单位：度）。|
+| `Order`<br>显示顺序 | 决定精灵相交时的显示优先级。数值高的精灵会覆盖数值低的精灵。|
+| `Sprites`<br>精灵列表 | 分配给所选角度范围的精灵列表。列表顺序决定 Sprite Variant 编号，顶部为默认显示精灵。|
+| `Corners`<br>拐角 | - |
+| `All Corner options`<br>所有拐角选项 | 为各个拐角分配特定精灵。|
+
+::: tip
+现在`Sprite Shape Profile`资产已经不区分 Open Shape 和 Closed Shape 了。如果要创建一个封闭的形状，可以在 `Sprite Shape Controller` 组件中关闭 `Is Open Ended` 选项。
+:::
+
+#### `Sprite Shape Controller` 精灵形状控制器
+当将 `Sprite Shape Profile` 拖入场景时，`Sprite Shape Controller` 组件会自动附加到创建的 `GameObject` 上。可以通过 `Controller` 的设置编辑 `Sprite Shape` 轮廓的形状。
+
+::: info 
+该游戏对象上还有一个 `Sprite Shape Renderer` 组件，它负责渲染 `Sprite Shape` 的外观。参数比较简单易懂，不赘述。
+:::
+
+以下为 Sprite Shape Controller 主要属性说明：
+
+| 属性（Property） | 功能说明（Function） |
+|------------------|-------------------------------------------------------------|
+| `Profile`<br>配置文件 | 选择该 Sprite Shape 使用的 `Sprite Shape Profile`（精灵形状配置文件）。|
+| `Edit Spline`<br>编辑样条 | 启用后可显示并编辑控制点。|
+| `Spline`<br>样条 | - |
+| `Detail`<br>细分质量 | 选择渲染 Sprite Shape 网格的细分质量（高/中/低）。|
+| `Open Ended`<br>开放端点 | 关闭时将两端连接形成封闭形状，开启时两端不连接。|
+| `Adaptive UV`<br>自适应UV | 默认启用。启用后，Unity 会自动拉伸精灵以无缝拼接路径。关闭后，精灵只会平铺，宽度不足时可能被截断。|
+| `Enable Tangents`<br>启用切线 | 若需要切线计算（如使用 URP Shader）时启用。|
+| `Corner Threshold`<br>拐角阈值 | 设置判断拐角的阈值（角度，默认30°）。小于等于该值视为拐角。|
+| `Fill`<br>填充 | - |
+| `Fill Tessellation (C# Job)`<br>填充细分（C# Job） | 以 C# Job 方式生成填充几何体。|
+| `Stretch UV`<br>拉伸UV | 启用后，填充纹理的UV会拉伸至整个 Full Rect 区域。|
+| `Custom Geometry Creator`<br>自定义几何生成器 | 设置用于生成自定义几何体的 Scriptable Object。|
+| `Custom Geometry Modifier`<br>自定义几何修改器 | 设置用于修改生成几何体的 Scriptable Object 列表。|
+| `Pixels Per Unit`（仅在关闭 Stretch UV 时可用）<br>每单位像素 | 影响填充纹理的缩放，值越大纹理越小。默认100。|
+| `World Space UV`（仅在关闭 Stretch UV 时可用）<br>世界空间UV | 启用后，填充纹理按世界空间UV应用，而非每个 GameObject 的UV。|
+
+在开启 Edit Spline 后，可以在 Scene 视图中直接编辑控制点。可以通过拖动控制点来调整形状，也可以通过右键菜单添加或删除控制点。在选中一个控制点后，Scene 视图右下角会出现相关的控制点设置选项：
+
+| 属性 | 描述 |
+| :--- | :--- |
+| `Point` | - |
+| `Tangent Mode` (切线模式) | 选择三种点模式之一，来改变控制点上切线的编辑方式。 |
+| `Linear` (线性/尖角) | 在该控制点与其相邻点之间不形成曲线（即直线连接）。 |
+| `Continuous Mirrored` (平滑-镜像) | 控制点两侧会出现两条切线，使其与相邻点之间的样条线变为曲线。调整切线可以改变曲线的形状。在此模式下，两条切线之间的角度始终为 180 度。 |
+| `Broken Mirrored` (平滑-独立) | 控制点两侧会出现两条切线，使其与相邻点之间的样条线变为曲线。在此模式下，切线的长度和角度可以被独立调整。 |
+| `Position` (位置) | 选中控制点的局部 x 和 y 坐标。 |
+| `Height` (高度) | 以 0.1 到 4 的系数（倍数）增加或减少该控制点处精灵的高度。 |
+| `Corner` (拐角) | 设置是否在控制点处渲染拐角精灵。默认为`Automatic`。 |
+| `Disabled` (禁用) | 在选中的控制点处不渲染任何精灵。 |
+| `Automatic` (自动) | 如果该控制点及其相邻点都处于`Linear Point Mode`，则该控制点会显示指定的拐角精灵。 |
+| `Stretched` (拉伸) | 选中控制点处的拐角精灵会与其相邻点连接，并拉伸该精灵。 |
+| `Sprite Variant` (精灵变体) | 从可视化的变体选择器中选择`Sprite Variant`。按 N 键可以在该控制点所有可用的变体之间循环切换。 |
+| `Global snapping` (全局吸附) | 当`Edit Spline` 启用时，选择`Global Snap` 图标来开启或关闭网格吸附功能。 |
+
+![EditSplineEX](./images/EditSplineEX.png)
+
+#### 生成碰撞器
+
+要在 Sprite Shape 上启用碰撞器属性，需要为其添加 `Collider 2D` 组件。但请注意，Sprite Shape 仅支持 `Edge Collider 2D` 和 `Polygon Collider 2D` 两种碰撞器。
+
+默认情况下，每次编辑时，`Collider` 网格都会自动重塑以匹配 Sprite Shape。若要直接对 `Collider` 网格进行手动编辑，需要先在在 `Sprite Shape Controller` 的 `Collider` 设置中禁用 `Update Collider` 选项，这可以防止 `Sprite Shape Controller` 自动更新 `Collider` 网格并覆盖您的手动编辑。
+
+### Tilemap 瓦片地图
+
+Tilemap 是一个强大、高效的系统，它允许你使用一组小的、可重复使用的图片（称为“瓦片”或 Tile）像搭积木或贴瓷砖一样，在网格上“绘制”出你的 2D 游戏世界。相较于 Sprite Shape，Tilemap 可以制作出更复杂的地图和关卡设计。
