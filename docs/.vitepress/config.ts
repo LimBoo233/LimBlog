@@ -109,6 +109,7 @@ export default defineConfig({
                             { text: '数据持久化之-Json', link: '/notes/Unity/Unity主要内容/数据持久化-Json' },
                             { text: 'Untiy-UGUI', link: '/notes/Unity/Unity主要内容/Unity-UGUI' },
                             { text: 'Untiy核心', link: '/notes/Unity/Unity主要内容/Unity核心' },
+                            { text: 'Tilemap', link: '/notes/Unity/Unity主要内容/Tilemap' },
                            
                         ]
                     },
