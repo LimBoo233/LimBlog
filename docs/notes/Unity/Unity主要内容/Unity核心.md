@@ -860,3 +860,5 @@ Sprite Shape 系统主要由两部分构成：
 ### Tilemap 瓦片地图
 
 Tilemap 是一个强大、高效的系统，它允许你使用一组小的、可重复使用的图片（称为“瓦片”或 Tile）像搭积木或贴瓷砖一样，在网格上“绘制”出你的 2D 游戏世界。相较于 Sprite Shape，Tilemap 可以制作出更复杂的地图和关卡设计。
+
+[Tilemap](./Tilemap.md)
