@@ -70,7 +70,10 @@ export default defineConfig({
                     json: `catppuccin:json`,
                     markdown: `catppuccin:markdown`,
                     py: `catppuccin:python`,
-                    lua: `vscode-icons:file-type-lua`,
+                    lua: `catppuccin:lua`,
+                    cpp: `catppuccin:cpp`,
+                    go: `catppuccin:go`,
+                    bash: `catppuccin:bash`,
                     // https://icon-sets.iconify.design/
         }
             })

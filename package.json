@@ -8,6 +8,7 @@
     "serve": "vitepress serve docs"
   },
   "devDependencies": {
+    "@iconify-json/catppuccin": "^1.2.13",
     "vitepress": "^1.6.3",
     "vitepress-plugin-comment-with-giscus": "^1.1.15",
     "vitepress-plugin-group-icons": "^1.6.1",
