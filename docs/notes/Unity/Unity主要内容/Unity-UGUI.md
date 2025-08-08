@@ -1009,7 +1009,7 @@ public class Panel : MonoBehaviour
 }
 ```
 
-### 屏幕坐标转UI相对坐标
+### 屏幕坐标转 UI 相对坐标
 
 `RectTransformUtility` 公共类是一个 `RectTransform` 的辅助类，主要用于进行一些坐标的转换等等操作，其中对于我们目前最重要的函数是：将屏幕空间上的点，转换成 UI 本地坐标下的点。
 
@@ -1022,8 +1022,10 @@ RectTransformUtility.ScreenPointToLocalPointInRectangle(
     this.transform.parent as RectTransform, eventData.position,
     eventData.enterEventCamera, out nowPos);
 ```
-
-参数4：最终得到的点
+- 参数1：父对象的 `RectTransform`
+- 参数2：屏幕坐标 （如鼠标位置）
+- 参数3：事件摄像机（一般为 `eventData.enterEventCamera`）
+- 参数4：最终得到的点
 
 :::tip
 一般配合拖拽事件使用
@@ -1046,7 +1048,7 @@ public void OnDrag(PointerEventData eventData)
 通过在父对象上添加 `Mask` 组件，子对象勾选 `Maskable`（默认开启），可以实现遮罩其子对象。需要注意父对象透明的部分会被遮罩，只有不透明的部分会显示。
 
 
-### 模型和粒子显示在UI之前
+### 模型和粒子显示在 UI 之前
 
 
 **方法一：修改Canvas渲染模式**

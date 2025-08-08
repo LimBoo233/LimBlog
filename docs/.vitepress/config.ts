@@ -103,12 +103,13 @@ export default defineConfig({
                     {
                         text: 'Unity主要内容',
                         items: [
-                            { text: 'Unity入门', link: '/notes/Unity/Unity主要内容/Unity入门' },
+                            { text: 'Unity-入门', link: '/notes/Unity/Unity主要内容/Unity-入门' },
                             { text: 'Unity-GUI', link: '/notes/Unity/Unity主要内容/Unity-GUI' },
-                            { text: 'Unity基础', link: '/notes/Unity/Unity主要内容/Unity基础' },
+                            { text: 'Unity-基础', link: '/notes/Unity/Unity主要内容/Unity-基础' },
                             { text: '数据持久化之-Json', link: '/notes/Unity/Unity主要内容/数据持久化-Json' },
                             { text: 'Untiy-UGUI', link: '/notes/Unity/Unity主要内容/Unity-UGUI' },
-                            { text: 'Untiy核心', link: '/notes/Unity/Unity主要内容/Unity核心' },
+                            { text: 'Untiy-核心-2D', link: '/notes/Unity/Unity主要内容/Unity-核心-2D' },
+                            { text: 'Untiy-核心-动画', link: '/notes/Unity/Unity主要内容/Unity-核心-动画' },
                             { text: 'Tilemap', link: '/notes/Unity/Unity主要内容/Tilemap' },
                            
                         ]
@@ -120,7 +121,8 @@ export default defineConfig({
                         ]
                     },
                     
-                ]
+                ],
+                collapsed: true
             },
 
             { 
@@ -130,7 +132,8 @@ export default defineConfig({
                     { text: 'Newtonsoft Json', link: '/notes/CSharp/Newtonsoft Json' },
                     { text: '多线程', link: '/notes/CSharp/多线程' },
                     { text: '异步编程', link: '/notes/CSharp/异步编程' },
-                ]
+                ],
+                collapsed: true
             },
 
 

@@ -1,32 +1,6 @@
-# Unity-核心
+# Unity-核心-2D
 
-### 模型的基本制作过程
-
-3D模型的制作通常包括以下几个主要步骤：
-
-1. **建模**  
-   使用三角面片组合，像捏泥人一样拼装出模型的形状。
-
-2. **展UV**  
-   UV 是纹理贴图坐标的简称，具有U轴和V轴，类似于三维坐标系的XYZ轴。纹理坐标中的每一个点都和 3D 模型上的位置信息是相互联系的。展 UI 就像是将 3D 模型的表面“拆开”成一张 2D 图片上，方便后续贴图。
-   > 如果对具体内容很感兴趣的，可以观看[【Kurt】Blender零基础入门教程 | Blender中文区新手必刷教程(已完结)](https://www.bilibili.com/video/BV14u41147YH/?spm_id_from=333.337.search-card.all.click&vd_source=b3c97e3d2220b29b554866d21d02bd09)
-
-3. **材质和纹理贴图**  
-   - **纹理**：一张 2D 图片，包含颜色、细节等信息。
-   - **贴图**：通过 UV 坐标将纹理映射到 3D 模型表面。
-   - **纹理贴图**：为模型提供颜色、细节、UV 等信息。
-   - **材质**：决定模型的表现效果——结合纹理贴图和着色器算法，可呈现金属、塑料、玻璃等不同效果。
-
-4. **骨骼绑定**  
-   为模型添加骨骼结构，定义骨骼控制哪些网格区域，实现后续动画控制。
-
-5. **动画制作**  
-   利用骨骼的旋转、移动等操作，在时间轴上制作关键帧，通过插值规则让模型在关键帧之间平滑过渡，最终形成完整的动画效果。
-
-
-## 2D
-
-### 图片导入概述
+## 图片导入概述
 
 Unity 支持多种图片格式，常见格式如下：
 
@@ -42,7 +16,7 @@ Unity 支持多种图片格式，常见格式如下：
 
 最常用的格式为 JPG, PNG 和 TGA。
 
-### `Texture Type` 纹理类型
+## `Texture Type` 纹理类型
 
 纹理类型主要是为了让纹理图片有不同的主要用途，指明其是用于哪项工作的纹理。
 
@@ -129,7 +103,7 @@ Unity 支持多种图片格式，常见格式如下：
 通道是指图像中每个像素的颜色信息存储方式。例如：aRGB 三个通道，每个通道存储 8 位（0-255），代表不同的颜色信息，Alpha 通道则用于存储透明度信息。
 :::
 
-### `Texture Shape` 纹理形状
+## `Texture Shape` 纹理形状
 
 纹理不仅可以用于模型贴图，还可以用于制作天空盒和反射探针。纹理形状决定了你的纹理数据在内存中是如何组织的，以及它被用来做什么。它不再是关于纹理的“内容”（比如是颜色还是法线），而是关于它的“维度和结构。
 
@@ -177,7 +151,7 @@ Unity 支持多种图片格式，常见格式如下：
 - 颜色查找表 (LUT - Look-Up Table)
 
 
-### `Advanced` 纹理高级设置
+## `Advanced` 纹理高级设置
 在 Unity 导入纹理时，`Advanced`（高级）设置面板允许你对纹理的底层行为进行更细致的控制，适用于有特殊需求的项目或美术资源优化。
 
 
@@ -227,7 +201,7 @@ Mipmap 中每一个层级的小图都是主图的一个特定比例的缩小细�
 简单来说，开启 MipMap 功能后，Unity 会帮助我们根据图片信息生成 n 张不同分辨率的图片，在场景中会根据我们离该模型的距离选择合适尺寸的图片用于渲染，提升渲染效率。
 :::
 
-### 平铺拉伸设置
+## 平铺拉伸设置
 
 **参数说明**
 
@@ -246,7 +220,7 @@ Mipmap 中每一个层级的小图都是主图的一个特定比例的缩小细�
 - `Aniso Level`（各向异性过滤等级）：
     - 以大角度查看纹理时提升纹理质量，数值越高效果越好，但性能消耗也越高。一般不会去修改。
 
-### 纹理打包平台
+## 纹理打包平台
 参数说明：
 
 - `Max Size`：设置导入纹理的最大尺寸。即使美术导出的图片很大，也可以通过这里限制它们的尺寸在一定范围内，避免资源浪费。
@@ -276,7 +250,7 @@ ETC 格式下会出现的参数：
 
 - `Override ETC2 fallback`：不支持 ETC2 压缩的设备上，使用的回退格式。用于兼容性处理。
 
-### Sprite Editor
+## Sprite Editor
 
 主要用于编辑 2D 游戏开发中使用的 Sprite 精灵图片，可以用于编辑图集中提取元素，设置精灵边框，设置九宫格，设置轴心点等功能。
 
@@ -349,7 +323,7 @@ ETC 格式下会出现的参数：
 
 值得一提的是，这种模式在实际开发中使用的非常少。
 
-### `Sprite Renderer`
+## `Sprite Renderer`
 
 `Sprite Renderer` 是 Unity 中专门用来在 2D 游戏中显示和渲染 2D 图像（除了 UI 元素） 的核心组件。
 
@@ -371,7 +345,7 @@ ETC 格式下会出现的参数：
     - `None`：不与遮罩交互。
     - `Visible Inside Mask`：只在遮罩内可见。
     - `Visible Outside Mask`：只在遮罩外可见。   
-- `Sprite Sort Point`：决定计算图片和摄像机距离时，采用图片中心还是轴心点。一般不用修改。
+- `Sprite Sort Point`：决定了 Unity 使用精灵上的哪个点来计算其与摄像机的距离，从而确定渲染顺序。
 - `Material`：渲染材质，一般使用默认材质即可。如果有特殊需求（如受光照影响的效果），可以自定义材质。
 - `Additional Settings`：可通过 `Sorting Layer` 和 `Order in Layer` 两个属性来控制渲染顺序。
     ::: tip
@@ -441,13 +415,13 @@ public class MyTest : MonoBehaviour
 
 如果想要加载 Unity 里面创建的图集，不需要单独加载图集再从图集里抽出单图来使用，整个过程会更加方便。就像 UGUI 一样，你可以直接使用单图，最后再打包图集，Unity 会自动使用图集中的图片。这也是 Unity 官方推荐的做法。
 
-### Sprite Creator
+## Sprite Creator
 
 可以通过 Sprite Creator 创建新的精灵。它是一个简单的工具，可以快速创建各种多边形精灵。它的主要作用是制作快速的 2D 游戏原型，用作美术资源的占位符。
 
 在 Project 面板中右键点击，选择 Create > 2D > Sprite，即可创建简单的多边形。
 
-### `Sprite Mask`
+## `Sprite Mask`
 
 `Sprite Mask` 是 Unity 里的一个组件，它能让你控制一个或一组 Sprite（2D 图像）的可见部分。就像是用一张镂空的卡片盖在一张画上，你只能看到镂空部分下面的画。
 
@@ -461,7 +435,7 @@ public class MyTest : MonoBehaviour
     - `Back`：遮罩层范围的最小值。
 - `Sprite Sort Point`：决定计算图片和摄像机距离时，采用图片中心还是轴心点。一般不用修改。
 
-### `Sorting Group`
+## `Sorting Group`
 
 `Sorting Group` 是一个组件，它的核心作用是将一个游戏对象及其所有子对象的渲染器（如 `Sprite Renderer`）“打包”成一个独立的单元。Unity 在决定渲染顺序时，会优先处理这个“单元”，而不是去单独计算其内部每一个子对象的排序。
 
@@ -474,13 +448,13 @@ public class MyTest : MonoBehaviour
 
 
 
-### Sprite Atlas
+## Sprite Atlas
 
 有关图集的内容，已经在 UGUI 笔记中介绍过了，不再赘述。
 
 [Unity-UGUI#图集制作](./Unity-UGUI#图集制作)
 
-### 刚体
+## 刚体
 
 在 Unity 中，如果你希望一个 2D 游戏对象（比如角色、子弹、箱子）能够受到物理规律的影响（如重力、推力、摩擦力、碰撞），那么你就必须为它添加 `Rigidbody 2D` 组件。
 
@@ -577,7 +551,7 @@ rb.AddTorque(5f);
 rb.velocity = new Vector2(5f, 0f);
 ```
 
-### 碰撞器
+## 碰撞器
 
 碰撞器是一个组件，它为游戏对象定义了一个用于物理碰撞的、不可见的形状。如同物体的“物理骨骼”或“力场边界”——它不负责移动，不负责受力，它只做一件事：定义物体的物理边界。
 
@@ -667,7 +641,7 @@ private void OnTriggerStay2D(Collider2D collision)
 }
 ```
 
-### 物理材质
+## 物理材质
 
 物理材质 (Physics Material) 是用来定义一个物体表面的物理特性的，主要控制两个属性：
 1. `Friction`：静态和动态摩擦系数大小。
@@ -681,14 +655,14 @@ private void OnTriggerStay2D(Collider2D collision)
 在 3D 中的物理材质 `Physics Material` 具有更多属性，可以单独设置滑动摩擦力（Dynamic Friction）和静态摩擦力（Static Friction）。此外，还可以通过 `Combine` 设置当两个带有不同物理材质的物体碰撞时，如何计算它们接触点最终的摩擦力和弹性。
 :::
 
-### 恒定力
+## 恒定力
 
 `Constant Force` 是一个特殊的脚本，可以给一个刚体施加一个持续的力。主要有三个属性：
 1. `Force`：施加的恒定力。
 3. `Relative Force`：施加的恒定力，相对于刚体的局部坐标系。
 2. `Torque`：施加的恒定扭矩。
 
-### 效应器
+## 效应器
 
 效应器 (`Effector 2D`) 是一个可以附加到 2D 碰撞器(`Collider 2D`) 上的组件，可以让游戏物体在相互接触时产生一些特殊的物理作用力。可以实现风、水流、传送带或者单向平台等效果。有的效应器要求物体必须为触发器。
 
@@ -757,7 +731,7 @@ private void OnTriggerStay2D(Collider2D collision)
 - `Use Friction`：是否启用摩擦力。
 - `Use Bounce`：是否启用弹性。 
 
-### Sprite Shape 
+## Sprite Shape 
 
 Sprite Shape 是一个让你像使用矢量绘图软件（如 Adobe Illustrator）一样，去创建和编辑复杂的 2D 形状和地形的工具。
 
@@ -857,8 +831,11 @@ Sprite Shape 系统主要由两部分构成：
 
 默认情况下，每次编辑时，`Collider` 网格都会自动重塑以匹配 Sprite Shape。若要直接对 `Collider` 网格进行手动编辑，需要先在在 `Sprite Shape Controller` 的 `Collider` 设置中禁用 `Update Collider` 选项，这可以防止 `Sprite Shape Controller` 自动更新 `Collider` 网格并覆盖您的手动编辑。
 
-### Tilemap 瓦片地图
+## Tilemap 瓦片地图
 
-Tilemap 是一个强大、高效的系统，它允许你使用一组小的、可重复使用的图片（称为“瓦片”或 Tile）像搭积木或贴瓷砖一样，在网格上“绘制”出你的 2D 游戏世界。相较于 Sprite Shape，Tilemap 可以制作出更复杂的地图和关卡设计。
+Tilemap 是一个强大、高效的系统，它允许你使用一组小的、可重复使用的图片（称为“瓦片”或 `Tile`）像搭积木或贴瓷砖一样，在网格上“绘制”出你的 2D 游戏世界。相较于 Sprite Shape，Tilemap 可以制作出更复杂的地图和关卡设计。
 
 [Tilemap](./Tilemap.md)
+
+
+
