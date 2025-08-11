@@ -287,7 +287,7 @@ ETC 格式下会出现的参数：
 - 左上角的选项和 Custom Outline 模式下相同，只是发挥最用不同。
 
 **Skinning Editor 蒙皮编辑器：**
-> Comming soon...
+- 这个工具由包 `2D Animation` 提供，用于给角色制作骨骼动画。详细参考：[2D Animation](./Unity-核心-动画#_2d-animation)
 
 **Secondary Textures 次要纹理：**
 

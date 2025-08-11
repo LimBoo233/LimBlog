@@ -1,0 +1,182 @@
+/* ==================================================================
+   通用徽章系统 (Badges v2)
+   设计目标：
+   1. 单一基础类 .badge + data-属性/修饰类控制变体
+   2. 语义色 (success/info/warning/danger/neutral/primary/secondary/purple...)
+   3. 外观风格 (soft | solid | outline | subtle | ghost | gradient)
+   4. 尺寸 (xs / sm / md / lg) 与形状 (pill / round / square) 可组合
+   5. 暗色模式自动调和；高对比度可加强
+   6. 可自定义 data-rgb="r g b" 覆盖颜色主色
+   7. 纯 CSS 无需额外组件即可 Markdown 内复用
+   ================================================================== */
+
+/* ==================================================================
+   写法示例：
+   <span class="badge badge--success">OK</span>
+   <span class="badge" data-variant="warning" data-appearance="outline">Beta</span>
+   <span class="badge" data-variant="danger" data-appearance="solid" data-size="sm">Error</span>
+   <span class="badge" data-rgb="255 105 180" data-appearance="gradient">Custom</span>
+ ================================================================== */
+
+/* ================= 基础色板 (RGB) ================= */
+:root {
+  /* 按颜色命名，方便直觉使用 */
+  --badge-blue: 64 158 255;      /* #409EFF */
+  --badge-blue-alt: 56 149 255;  /* #3895FF 深一点 */
+  --badge-purple: 155 108 255;   /* #9B6CFF */
+  --badge-green: 74 201 155;     /* #4AC99B 薄荷绿 */
+  --badge-lime: 141 199 63;      /* #8DC73F 偏黄绿（Entry） */
+  --badge-orange: 255 171 25;    /* #FFAB19 */
+  --badge-red: 235 87 87;        /* #EB5757 (Exit / 警示) */
+  --badge-gray: 130 130 130;     /* #828282 中性灰 */
+}
+
+/* ================ 基础结构 ================ */
+.badge {
+  --_c: var(--badge-gray);           /* 主色 RGB 默认灰 */
+  --_bg-a: .16;                      /* 渐变前景层透明度 A */
+  --_bg-b: .06;                      /* 渐变后景层透明度 B */
+  --_txt-alpha: 1;                   /* 文本不透明度 */
+  --_outline-alpha: .35;             /* 外描边 */
+  --_shadow-alpha: .25;              /* 阴影扩散 */
+  --_ring-size: 0px;                 /* 焦点 ring */
+  display: inline-flex;
+  align-items: center;
+  gap: .4em;
+  font-family: var(--vp-font-family-mono, monospace);
+  font-weight: 600;
+  font-size: 12px;
+  line-height: 1.1;
+  padding: 2px 8px;
+  border-radius: 999px; /* pill 默认 */
+  position: relative;
+  white-space: nowrap;
+  user-select: none;
+  cursor: default;
+  border: 1px solid transparent;
+  background: linear-gradient(135deg, rgb(var(--_c) / var(--_bg-a)), rgb(var(--_c) / var(--_bg-b)));
+  color: rgb(var(--_c) / var(--_txt-alpha));
+  box-shadow: 0 0 0 1px rgb(var(--_c) / var(--_outline-alpha)), 0 2px 4px -1px rgb(var(--_c) / var(--_shadow-alpha));
+  backdrop-filter: saturate(160%) blur(8px);
+  -webkit-backdrop-filter: saturate(160%) blur(8px);
+  transition: background .25s ease, box-shadow .25s ease, color .25s ease, border-color .25s ease;
+}
+
+/* ================ 颜色变体（类） ================ */
+.badge--blue      { --_c: var(--badge-blue); }
+.badge--blue-alt  { --_c: var(--badge-blue-alt); }
+.badge--purple    { --_c: var(--badge-purple); }
+.badge--green     { --_c: var(--badge-green); }
+.badge--lime      { --_c: var(--badge-lime); }
+.badge--orange    { --_c: var(--badge-orange); }
+.badge--red       { --_c: var(--badge-red); }
+.badge--gray      { --_c: var(--badge-gray); }
+
+/* ================ 颜色变体（data-variant） ================ */
+.badge[data-variant="blue"]      { --_c: var(--badge-blue); }
+.badge[data-variant="blue-alt"]  { --_c: var(--badge-blue-alt); }
+.badge[data-variant="purple"]    { --_c: var(--badge-purple); }
+.badge[data-variant="green"]     { --_c: var(--badge-green); }
+.badge[data-variant="lime"]      { --_c: var(--badge-lime); }
+.badge[data-variant="orange"]    { --_c: var(--badge-orange); }
+.badge[data-variant="red"]       { --_c: var(--badge-red); }
+.badge[data-variant="gray"]      { --_c: var(--badge-gray); }
+
+/* 自定义 RGB 颜色 (例如 data-rgb="255 105 180") */
+.badge[data-rgb] { --_c: attr(data-rgb); }
+
+/* ================ 外观 appearance  ================ */
+/* soft (默认) 见基础 */
+.badge--solid, .badge[data-appearance="solid"] {
+  --_bg-a: 1; --_bg-b: 1; --_txt-alpha: .12; /* 先将文字设为浅色占位 */
+  background: rgb(var(--_c));
+  color: #fff;
+  box-shadow: 0 0 0 1px rgb(var(--_c) / .9), 0 2px 6px -2px rgb(var(--_c) / .55);
+}
+.badge--outline, .badge[data-appearance="outline"] {
+  --_bg-a: 0; --_bg-b: 0; --_txt-alpha: .95; --_outline-alpha: .55; --_shadow-alpha: .15;
+  background: transparent;
+  border-color: rgb(var(--_c) / .55);
+  box-shadow: 0 0 0 1px rgb(var(--_c) / .55);
+}
+.badge--subtle, .badge[data-appearance="subtle"] {
+  --_bg-a: .10; --_bg-b: .04; --_outline-alpha: .25; --_shadow-alpha: .12;
+}
+.badge--ghost, .badge[data-appearance="ghost"] {
+  --_bg-a: 0; --_bg-b: 0; --_outline-alpha: 0; --_shadow-alpha: 0;
+  background: transparent; box-shadow: none; border-color: transparent;
+}
+.badge--gradient, .badge[data-appearance="gradient"] {
+  background: linear-gradient(120deg, rgb(var(--_c) / .85), rgb(var(--_c) / .55) 55%, rgb(var(--_c) / .85));
+  color: #fff;
+  box-shadow: 0 0 0 1px rgb(var(--_c) / .65), 0 4px 10px -2px rgb(var(--_c) / .45);
+}
+
+/* Hover 交互（非 ghost 时） */
+.badge:not(.badge--ghost):hover,
+.badge:not([data-appearance="ghost"]):hover {
+  --_bg-a: calc(var(--_bg-a) + .10);
+  --_bg-b: calc(var(--_bg-b) + .06);
+  --_outline-alpha: .55;
+  --_shadow-alpha: .40;
+}
+.badge--outline:hover, .badge[data-appearance="outline"]:hover {
+  background: rgb(var(--_c) / .08);
+}
+.badge--ghost:hover, .badge[data-appearance="ghost"]:hover {
+  background: rgb(var(--_c) / .10);
+}
+
+/* ================ 尺寸 size ================ */
+.badge--xs, .badge[data-size="xs"] { font-size: 10px; padding: 1px 5px; }
+.badge--sm, .badge[data-size="sm"] { font-size: 11px; padding: 2px 6px; }
+.badge--md, .badge[data-size="md"] { font-size: 12px; }
+.badge--lg, .badge[data-size="lg"] { font-size: 13px; padding: 4px 10px; }
+
+/* ================ 形状 shape ================ */
+.badge--round, .badge[data-shape="round"] { border-radius: 10px; }
+.badge--square, .badge[data-shape="square"] { border-radius: 6px; }
+.badge--pill, .badge[data-shape="pill"] { border-radius: 999px; }
+
+/* 图标插槽（可放 emoji / svg） */
+.badge__icon { display: inline-flex; align-items: center; font-size: 1em; line-height: 1; }
+/* 若只有图标：紧凑尺寸 */
+.badge:has(.badge__icon):not(:has(:not(.badge__icon))) { padding: 4px; aspect-ratio: 1/1; }
+
+/* ================ 焦点无障碍 ================ */
+.badge:focus-visible { outline: none; box-shadow: 0 0 0 2px var(--vp-c-bg-soft), 0 0 0 4px rgb(var(--_c) / .65); }
+
+/* ================ 深色模式调和 ================ */
+.dark .badge {
+  --_bg-a: .22; --_bg-b: .10; --_txt-alpha: .90; --_outline-alpha: .40; --_shadow-alpha: .38;
+}
+.dark .badge--solid, .dark .badge[data-appearance="solid"] { --_txt-alpha: 1; }
+.dark .badge--ghost:hover, .dark .badge[data-appearance="ghost"]:hover { background: rgb(var(--_c) / .18); }
+
+/* 发光层（仅 soft/subtle/gradient 等强调） */
+.badge::after {
+  content: "";
+  position: absolute; inset: 0; border-radius: inherit; pointer-events: none;
+  background: radial-gradient(circle at 30% 30%, rgb(var(--_c) / .35), transparent 70%);
+  mix-blend-mode: overlay; opacity: .55; transition: opacity .3s ease;
+}
+.dark .badge::after { mix-blend-mode: plus-lighter; opacity: .42; }
+.badge:hover::after { opacity: .85; }
+/* 去除不适合的风格的发光 */
+.badge--outline::after, .badge--ghost::after, .badge[data-appearance="outline"]::after, .badge[data-appearance="ghost"]::after { display:none; }
+
+/* ================ 集合布局辅助 ================ */
+.badges { display: flex; flex-wrap: wrap; gap: 6px; }
+
+/* ================ 高对比度模式 ================ */
+@media (prefers-contrast: more) {
+  .badge { --_outline-alpha: .70; --_shadow-alpha: .55; }
+}
+
+/* ================ 降级（不支持 backdrop-filter） ================ */
+@supports not ((backdrop-filter: blur(4px))) {
+  .badge { backdrop-filter: none; -webkit-backdrop-filter: none; }
+}
+
+/* ================ Markdown 适配 ================ */
+table .badge { white-space: nowrap; }

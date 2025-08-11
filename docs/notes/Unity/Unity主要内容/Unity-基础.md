@@ -452,8 +452,7 @@ Unity 支持多线程，但新线程无法访问 Unity 相关对象的内容。�
 在 Unity 中，新线程无法访问 Unity 相关对象的内容（Unity 的 GameObject、Transform 等对象）。Unity 的 API 主要是单线程的，所有的 Unity 对象和组件都只能在主线程中访问。但我们可以通过新的线程进行计算或处理数据。
 
 ::: danger
-在现代 Unity 开发中，一个普遍且重要的最佳实践是：
-极力避免直接使用 System.Threading.Thread（即 new Thread(...)）。
+在现代 Unity 开发中，一个普遍且重要的最佳实践是：极力避免直接使用 `System.Threading.Thread`（即 `new Thread()`）。
 :::
 
 ### 协程
