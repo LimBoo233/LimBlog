@@ -342,9 +342,10 @@ public class PlayerController_Best : MonoBehaviour
 `Skinning Editor` 是 `2D Animation` 包中的核心工具之一。它的主要用作将角色图片（Skin）与骨骼（Bones）进行绑定，并调整当骨骼活动时，图片应该如何自然地变形。
 
 窗口右侧包含了制作骨骼，网格和权重的全部工具。
-::: info `Skinning Editor` 窗口
+
+如果是 PSB 资源，上方还会出现 `Sprite Sheet` 按钮。
 ![Skinning-Editor-1](./images/Skinning-Editor-1.png)
-:::
+
 
 **Pose**
 
@@ -394,20 +395,74 @@ public class PlayerController_Best : MonoBehaviour
 
 ::: details 常见问题
 
-Bone 的 `Depth` 是做什么用的？
-- 简单来说，`Depth` 用来决定骨骼的渲染层级顺序，也就是哪根骨骼及其关联的“皮肤”应该显示在更前面，哪个应该在更后面。
+**Bone 的 `Depth` 的作用**
+- 简单来说，`Depth` 用来决定骨骼的渲染层级顺序，也就是哪根骨骼及其关联的皮肤应该显示在更前面，哪个应该在更后面。
 
-`Auto Geometry` 参数详解：
+**`Auto Geometry` 参数**
 - `Outline Detail`：这个滑块控制生成的网格轮廓与图片实际边缘的贴合紧密程度。
 - `Alpha Tolerance` (Alpha 透明度容差)：这个值决定了引擎在确定图片边缘时，应该在多大程度上“容忍”半透明的像素。
 - `Subdivide` (细分)：这个滑块用于增加网格内部的顶点密度，它不影响轮廓形状。
 
-权重的 `Normalized` (归一化) 是什么意思？
+**权重的 `Normalized` (归一化)**
 - `Normalized` 是一个复选框，通常默认勾选。它的作用是强制让每一个网格顶点上，所有骨骼影响权重的总和永远等于 100% (或 1.0)。
 
-`Weight Brush/Slider` 的三种 `Mode`
+**`Weight Brush/Slider` 的三种 `Mode`**
 - `AddAndSubtract`（加/减模式）：直接增加你当前所选骨骼的权重值。按住 Shift 键则变为减少当前骨骼的权重。
 - `GrowAndShrink`（增长/缩减模式）：在已有的权重区域边缘进行扩张或收缩。它会自动将边界向外推或向内拉。
 - `Smooth`（平滑模式）：它不增加也不减少权重，而是将你涂抹区域内不同骨骼的权重进行混合和平均化，让权重过渡变得平滑。
 
 :::
+
+### 单图动画
+
+单图的绑定流程非常简单，可以直接在图片上绘制骨骼。遵循流程即可完成绑定：
+
+**添加骨骼**    ➡    **绑定网格**    ➡    **刷权重** 
+
+在绑定后，将图片添加到场景中（`Sprite Render`），并为其添加组件 `Sprite Skin`。`Sprite Skin` 组件能够根据绑定数据生成骨骼以供操作。接下来在 `Animation` 窗口修改骨骼属性即可制作动画。
+
+如果在 Scene 窗口中没有显示骨骼，需要开启 Gizmos。
+
+### 图集动画
+
+图集的绑定流程会略显复杂。我们通过一个例子来说明：
+
+假设有一个起始资源是一个名为 `character_parts_atlas.png`，上面零散地分布着角色的头、身体、四肢等部件。
+
+1. 切割图集
+
+   必须先设置图里的哪一块是头、哪一块是手臂。
+
+   - 将 `character_parts_atlas.png` 拖入 Project 窗口。
+   - 在 Inspector 中，设置 `Texture Type` 为 `Sprite (2D and UI)`，`Sprite Mode` 为 `Multiple`。
+   - 打开 Sprite Editor 进行切片，然后在 Sprite 详情面板中为它起一个有意义的名字，例如 `Head`, `Torso`, `Arm_Upper_L`。
+
+2. 创建统一骨架
+   - 在编辑器的主窗口中，无视部件的零散分布，然后在各个身体零件绘制出完整的骨骼结构。
+   - 从根骨骼（如 `Pelvis`）开始，创建出完整的层级（`Pelvis` -> `Spine` -> `Chest` -> `Shoulder_L` -> `Arm_Upper_L` ...）。记得为骨骼命名。
+
+3. 为每个零件进行蒙皮和权重设置
+
+   这是将零件和骨架关联起来的核心步骤。你需要在同一个 Skinning Editor 窗口中，为每个零件分别进行设置，迭代完成 蒙皮 -> 关联骨骼 -> 分配权重 的循环：
+   - 选择一个零件，从下拉菜单中选择一个零件，为这个零件点击 `Auto Geometry` 生成网格，并按需优化。
+   - 在 `Weight`s 面板中，找到 `Bone Influence` 列表。点击 + 号，从骨骼列表中选择所有应该会影响到这个零件的骨骼。例如，对于左上臂，你应该至少添加 `Arm_Upper_L` 和 `Shoulder_L` 这两根骨骼。
+   - 为这一个零件计算权重。然后，使用 `Weight Brush` 等工具进行微调。
+
+将你在上一步中绑定好的资源文件，从 Project 窗口直接拖拽到 Scene 场景中。Unity 会自动为你生成一个包含所有部件、骨骼以及一个包含`Sprite Skin` 组件的游戏对象。接下来就可以在和单图一样创建动画。
+
+### `PSB`
+
+::: details `PSB` 和 `PSD` 
+`PSD` 和 `PSB` 都是 Adobe Photoshop 的原生文件格式，它们是专业数字图像编辑领域的基石。其核心价值在于完整地记录了创作过程中的每一个可编辑细节，而不仅仅是最终的图像结果。
+
+`PSB` 格式在功能上与 `PSD` 完全相同，它存在的唯一目的就是打破 `PSD` 的尺寸（30,000 x 30,000）和容量限制（2 GB），以应对超大规模的图像处理需求。
+
+Unity 官方推荐使用 `PSB` 格式。
+:::
+   
+
+使用 `PSB` 文件需要导入 `2D PSD Importer` 包。
+
+操作方式类似多图。
+
+## IK

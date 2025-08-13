@@ -24,14 +24,14 @@ Unity 支持多种图片格式，常见格式如下：
 
 | 类型 (Type)                | 主要用途                                                                 |
 |----------------------------|--------------------------------------------------------------------------|
-| Default                    | 最常用、最通用的类型，用于 3D 模型的纹理（如反照率贴图、金属度贴图等）。         |
-| Normal Map                 | 用于存储法线信息，为模型表面增加凹凸细节，模拟高模的视觉效果。                 |
-| Sprite (2D and UI)         | 用于 2D 游戏、UI 元素（如按钮、图标）和粒子系统。                             |
-| Editor GUI and Legacy GUI  | 用于 Unity 编辑器扩展的 GUI 元素或旧版的 IMGUI 系统。                         |
-| Cookie                     | 用作光源的“遮罩”，投射出特定形状或图案的光影，例如窗户透光的效果。             |
-| Lightmap                   | 用于存储预烘焙的光照信息，是光照贴图（Lightmapping）流程的一部分。             |
-| Cursor                     | 用于自定义硬件鼠标光标的图标。                                             |
-| Single Channel             | 当你只需要图片的一个颜色通道（红、绿、蓝或 Alpha）时使用，可以节省内存。        |
+| `Default`                    | 最常用、最通用的类型，用于 3D 模型的纹理（如反照率贴图、金属度贴图等）。         |
+| `Normal Map`                 | 用于存储法线信息，为模型表面增加凹凸细节，模拟高模的视觉效果。                 |
+| `Sprite (2D and UI)`         | 用于 2D 游戏、UI 元素（如按钮、图标）和粒子系统。                             |
+| `Editor GUI and Legacy GUI`  | 用于 Unity 编辑器扩展的 GUI 元素或旧版的 IMGUI 系统。                         |
+| `Cookie`                     | 用作光源的“遮罩”，投射出特定形状或图案的光影，例如窗户透光的效果。             |
+| `Lightmap`                   | 用于存储预烘焙的光照信息，是光照贴图（Lightmapping）流程的一部分。             |
+| `Cursor`                     | 用于自定义硬件鼠标光标的图标。                                             |
+| `Single Channel`             | 当你只需要图片的一个颜色通道（红、绿、蓝或 Alpha）时使用，可以节省内存。        |
 
 **参数说明**
 
@@ -102,6 +102,7 @@ Unity 支持多种图片格式，常见格式如下：
 ::: details 通道
 通道是指图像中每个像素的颜色信息存储方式。例如：aRGB 三个通道，每个通道存储 8 位（0-255），代表不同的颜色信息，Alpha 通道则用于存储透明度信息。
 :::
+
 
 ## `Texture Shape` 纹理形状
 
@@ -347,7 +348,7 @@ ETC 格式下会出现的参数：
     - `Visible Outside Mask`：只在遮罩外可见。   
 - `Sprite Sort Point`：决定了 Unity 使用精灵上的哪个点来计算其与摄像机的距离，从而确定渲染顺序。
 - `Material`：渲染材质，一般使用默认材质即可。如果有特殊需求（如受光照影响的效果），可以自定义材质。
-- `Additional Settings`：可通过 `Sorting Layer` 和 `Order in Layer` 两个属性来控制渲染顺序。
+- `Additional Settings`： `Sorting Layer` 决定图片属于哪个渲染层；`Order in Layer` 决定同 Layer 的渲染顺序。 
     ::: tip
     在 2D 游戏中，摄像机一般是 `Orthographic`（正交投影），因此图片在 Z 轴上不同位置并不会影响显示的大小，但 Z 轴位置仍然会影响哪个物体更靠前。所以其实也可以通过调整 Z 轴位置来控制渲染顺序。`Order in Layer` 对渲染层级的控制强于 `Z` 轴位置。
     :::
@@ -443,7 +444,7 @@ public class MyTest : MonoBehaviour
 
 属性说明：
 - `Sorting Layer`：决定了整个组属于哪个渲染层。
-- `Order in Layer`：这个数字决定了在同一个 Sorting Layer 中，这个组的渲染优先级。
+- `Order in Layer`：这个数字决定了在同一个 `Sorting Layer` 中，这个组的渲染优先级。
 - `Sort at Root`：忽略父级的存在，直接参与到全局的根排序中。
 
 

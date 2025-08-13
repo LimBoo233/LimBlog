@@ -114,7 +114,8 @@ export default defineConfig({
                             { text: 'Untiy-核心-2D', link: '/notes/Unity/Unity主要内容/Unity-核心-2D' },
                             { text: 'Untiy-核心-动画', link: '/notes/Unity/Unity主要内容/Unity-核心-动画' },
                             { text: 'Tilemap', link: '/notes/Unity/Unity主要内容/Tilemap' },
-                           
+                            { text: '2D PSD Importer', link: '/notes/Unity/Unity主要内容/2D PSD Importer' },
+
                         ]
                     },
                     {
