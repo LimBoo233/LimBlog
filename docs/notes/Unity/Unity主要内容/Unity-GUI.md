@@ -415,7 +415,7 @@ GUI.SelectionGrid(rect, _toolbarIndex, _toolbarInfos, 3);
 特性 `[ExecuteAlways]` ：在类名前加上这个特性，可以让类在编辑模式下自动执行生命周期函数。
 
 #### 2. 九宫格布局概念
-![九宫格布局讲解](./images/slicing-explained.png)
+![slicing-explained](./images/slicing-explained.png)
 
 ### 实际设计
 #### 位置信息类
