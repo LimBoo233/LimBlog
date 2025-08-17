@@ -325,6 +325,17 @@ public class PlayerController_Best : MonoBehaviour
 
 在 Unity 中制作 2D 骨骼动画，主要依赖一个官方包：`2D Animation`。
 
+::: details 2D骨骼动画是性能换内存吗？
+
+**并非。**
+
+内存与瓶颈转移：双重优化，非等价交换
+骨骼动画不仅内存占用通常更低（存储部件纹理+轻量骨骼/动画数据 <<< 海量序列帧纹理），其本质是将性能瓶颈从致命的 DC（CPU 提交）转移到高效的 GPU 顶点蒙皮计算。现代GPU对这类计算优化极好，且可通过控制网格复杂度进一步优化，整体性能（尤其关键场景）反而提升。
+
+性能换内存是对技术原理的误读——骨骼动画在动态角色场景下往往同时实现更低内存占用和更高渲染效率。其真正的代价是增加了GPU顶点计算（可控优化），但这与“交换”无关。
+
+:::
+
 ## `2D Animation`
 
 `2D Animation`包是一个强大的内置工具集，能让你直接在 Unity 编辑器中为 2D 精灵（`Sprite`）创建骨骼、添加蒙皮权重并制作复杂的骨骼动画。
@@ -465,4 +476,425 @@ Unity 官方推荐使用 `PSB` 格式。
 
 操作方式类似多图。
 
+
+## Spine
+
+Spine 是一款强大的骨骼动画制作软件，在游戏开发中被广泛使用。Spine 动画通常由美术人员负责，此处仅介绍如何在 Unity 中使用 Spine 动画。
+
+首先需要从官网下载并导入运行库：[spine-unity](https://zh.esotericsoftware.com/spine-unity-download/)
+
+Spine 导出的资源由3个文件组成：
+1. `.json` / `.bytes` 存储骨骼信息和动画数据
+2. `.png` 图片图集
+3. `atlas.txt` 图片在图集中的位置信息
+
+`spine-unity` 运行时在检测到 Spine 资产添加后会自动生成 Unity 所需的资产文件：
+1. 一个代表 `texture atlas`文件（`.atlas.txt`）的 `_Atlas` 资产文件。它包含对 material（材质）和 `.atlas.txt` 文件的引用。
+2. 一个代表各 `texture atlas`页（`.png`）的 `_Material` 资产文件。它包含对着色器和 `.png` texture 的引用。
+3. 一个存储了 skeleton 数据（`.json`, `.skel.bytes`）的 `_SkeletonData` 资产文件。它包含了对 `.json` 或 `.skel.bytes` 文件的引用以及对自动生成的 _Atlas 资产的引用。
+
+使用 Spine 资产
+
+将 `_SkeletonData` 资产拖拽到 Hierarchy 中，Unity 会自动创建一个 `GameObject`，并添加 `SkeletonAnimation` 组件。
+
+拖入时会产生3个选项：
+- `SkeletonAnimation` 使用 Spine 脚本控制
+- `SkeletonGraphic(UI)` 在 UI 中使用
+- `SkeletonMecanim` 使用 `Animator` 控制（如果你熟悉该组件，推荐）
+
+#### Skeleton Data 资产
+
+Skeleton data 资产(名字后缀为 `_SkeletonData`) 存储了 skeleton 的层次结构、槽位、绘制顺序、动画和其他构成 skeleton 的数据信息。spine-unity 运行的其他组件也将会引用并共享 skeleton data 资产, 以显示 skeleton 并播放其动画。 
+
+::: details Inspector 窗口
+![SkeletonData](images/SkeletonData.png)
+:::
+
+Skeleton data 资产重要属性说明：
+| 属性 | 说明 |
+| ---- | ---- |
+| `Skeleton JSON` | 引用 `.json` 骨骼数据文件。 |
+| `Scale` | 缩放大小。 |
+| `Atlas` | 图集资源。 |
+| `Mix Settings` | 混合设置：<br>• `Animation State Data`：动画状态数据。<br>• `Default Mix Duration`：默认混合持续时间。<br>• `Add Custom Mix`：为两个动画指定自定义混合时间。 |
+| `Preview` | 预览：<br>• `Animation`：动画。<br>• `Set Pose`：还原默认姿势。<br>• `Slot`：插槽相关（一个部位由多张图片构成，可在此预览）。 |
+
+
+
+::: details 其余参数
+
+- `Skeleton Data Modifiers`：骨骼数据修改器。
+- `Blend Mode Material`：混合模式材质。
+- `Apply Additive Material`：是否使用叠加材质。
+- `Multiply Material`：相乘材质。
+- `Screen Material`：屏幕材质。
+- `Create Animation Reference Assets`：创建动画参考资产。
+- `SkeletonMecanim`：骨骼机制。可以关联 Unity 的 Animator Controller（非必须）。
+:::
+
+#### `Skeleton Animation` 组件
+
+`Skeleton Animation` 组件是控制 Spine 骨骼动画的核心组件。它负责驱动动画状态（如播放、循环、混合等），管理动画间的过渡逻辑，并更新骨骼层级数据。通常与 `SkeletonRenderer` 协同工作（后者负责实际渲染），共同实现动画的播放与可视化效果。
+
+属性说明：
+- `SkeletonData Assets`：管理的骨骼动画信息。
+- `Initial Skin`：初始蒙皮。
+- `Animation Name`：当前想要播放的动画。
+- `Loop`：是否循环动画。
+- `Time Scale`：播放速度。
+- `Root Motion`：如果你的 Spine 动画包含了根骨骼的平移、旋转或缩放，并且你希望这些运动能够影响到整个 `GameObject`，你可以使用 `Root Motion` 功能。
+
+`Advanced` 属性一般不用修改，详可参考官方文档：[Skeleton Animation](https://zh.esotericsoftware.com/spine-unity-main-components#SkeletonAnimation%E7%BB%84%E4%BB%B6)
+
+`Advanced` 属性里的 Debug 选项可以用于调试。
+
+#### 代码控制
+
+**动画播放**
+
+想要控制动画首先要获取 `SkeletonAnimation` 组件的引用。例如：
+```csharp
+_skeletonAnimation = GetComponent<SkeletonAnimation>();
+```
+
+可以通过直接修改组件属性来播放动画：
+```csharp
+// --- 顺序不可变，否 _skeletonAnimation.loop 的设置不会成功 --- 
+_skeletonAnimation.loop = false;
+_skeletonAnimation.AnimationName = "main";
+```
+
+更通用的播放方法是通过方法 `SetAnimation()`，方法签名是：
+```csharp
+SetAnimation(int trackIndex, string animationName, bool loop)
+```
+参数说明：
+- `trackIndex`：动画轨道索引。Spine 支持多轨道播放动画，比如在 `track 0` 上播放走路动画，在 `track 1` 上播放挥手动画。通常，主动画（如走路、跳跃）使用 `track 0`。
+- `animationName`：动画的名称。
+- `loop`：是否循环播放。
+
+代码示例:
+```csharp
+_skeletonAnimation.AnimationState.SetAnimation(0, "main", true);
+```
+
+如果播放的动画不希望立刻打断当前动画，而是排在后面，可以使用 `AddAnimation()` 方法。该方法所需前三个参数与 `SetAnimation()` 
+完全相同，还需要一个额外的参数用于延迟播放 - `float offset`。
+
+代码示例：
+```csharp
+skeletonAnimation.AnimationState.AddAnimation(0, "blink", false, 0);
+```
+
+**转向**
+
+通过修改属性 `ScaleX` 实现转向，例如：
+```csharp
+_skeletonAnimation.skeleton.ScaleX = -1;
+```
+
+**常用事件**
+
+`Start`：可以向动画开始播放的时候注册事件，其中事件参数 `TrackEntry entry` 包含了正在播放的动画的所有信息：
+```csharp
+_skeletonAnimation.state.Start += entry 
+   => print(_skeletonAnimation.AnimationName);
+```
+
+
+`Complete`：当一个动画在某个轨道上播放完成时会触发 `Complete` 事件。示例：
+```csharp
+skeletonAnimation.state.Complete += entry 
+   => print(_skeletonAnimation.AnimationName)
+```
+::: tip
+注意：循环动画永远不会触发 `Complete` 事件，除非你手动停止它。
+::: 
+
+`End`：会在一个动画在轨道上被清除、被新动画替换或播放完成时触发。与 `Complete` 的区别在于 `End` 在动画因任何原因停止时都会触发（播完了、被别的动画打断了等）。例如：
+```csharp
+skeletonAnimation.state.end += entry 
+   => print(_skeletonAnimation.AnimationName)
+```
+
+**自定义事件**
+
+当动画播放到你在 Spine 编辑器中手动设置的事件关键帧（Event Keyframe）时触发。这是最灵活、最强大的一个事件。
+
+事件参数：
+- `TrackEntry`：正在播放的动画信息。
+- `Spine.Event`：你在 Spine 编辑器中设置的那个事件对象，包含了事件名、整数、浮点数和字符串等自定义数据。
+
+代码示例：
+```csharp {8-9}
+public class SpineEventExample : MonoBehaviour
+{
+   // 骨骼动画组件
+   [SerializeField] public SkeletonAnimation skeletonAnimation;
+
+   private void Start()
+   {
+      // 订阅Event事件
+      skeletonAnimation.state.Event += HandleCustomEvent;
+   }
+
+   private void HandleCustomEvent(TrackEntry trackEntry, Spine.Event e)
+   {
+      // 通过事件名字 (e.Data.Name) 来判断是哪个自定义事件
+      Debug.Log($"在动画 '{trackEntry.Animation.Name}' 中触发了自定义事件: {e.Data.Name}");
+
+      if (e.Data.Name == "footstep")
+      {
+         Debug.Log("播放脚步声！");
+         // 调用音效播放函数
+      }
+      else if (e.Data.Name == "hit")
+      {
+         Debug.Log("攻击帧到达！进行伤害判定！");
+         // 调用伤害判定的函数
+      }
+   }
+}
+```
+
+::: details `TrackEntry`
+`TrackEntry` 代表了当前正在某个轨道（Track）上播放的这一个动画实例。。你可以把这个对象看作是你对那个正在播放的动画的一个句柄。
+
+`TrackEntry` 对象暴露了很多有用的属性和事件，让你可以进行精细化的控制。以下是一些最常用的功能：
+- `entry.Loop (bool)`：控制这个动画是否循环播放。
+   ```csharp
+   TrackEntry entry = skeletonAnimation.state.SetAnimation(0, "attack", false);
+   if (someCondition) 
+      entry.Loop = true; // 将其改为循环播放
+   ```
+- `entry.TimeScale (float)`：控制这个动画实例的播放速度。
+   ```csharp
+   TrackEntry entry = skeletonAnimation.state.SetAnimation(0, "run", true);
+   // 进入慢动作模式
+   entry.TimeScale = 0.5f;
+   ```
+- `entry.Delay (float)`：设置或获取动画开始播放前的延迟时间（秒）。
+   ```csharp
+   // 播放攻击动画，但在0.2秒后才开始
+   TrackEntry entry = skeletonAnimation.state.SetAnimation(0, "attack", false);
+   entry.Delay = 0.2f;
+   ```
+- `entry.TrackTime (float)`：获取或设置动画当前的播放时间。你可以用它来跳转 到动画的特定帧。
+   ```csharp
+   // 跳转到动画的1秒处
+   entry.TrackTime = 1.0f; 
+   ```
+- `entry.Alpha (float)`：控制动画的透明度，用于实现淡入淡出效果。
+
+- `entry.Animation.Name (string)`：获取当前播放的动画的名称。
+- `entry.Animation.Duration (float)`：获取动画的总时长。
+
+我们之前讨论过全局监听 `skeletonAnimation.state` 的事件，比如 `Start`、`Complete` 等。但有时你只想监听某一次特定播放的事件，`TrackEntry` 就可以做到。例如：
+```csharp
+// 播放一个一次性的 "special_attack" 动画
+TrackEntry specialAttackEntry = skeletonAnimation.state.SetAnimation(0, "special_attack", false);
+
+// 只为这一次的播放订阅Complete事件
+specialAttackEntry.Complete += OnSpecialAttackFinished;
+
+// 事件处理函数
+private void OnSpecialAttackFinished(TrackEntry trackEntry)
+{
+    Debug.Log("特殊攻击动画播放完毕！");
+    // 做一些特殊处理，比如角色解除无敌状态
+
+    // 重要：为了防止内存泄漏，处理完后要取消订阅
+    trackEntry.Complete -= OnSpecialAttackFinished;
+}
+```
+这种方式比全局监听更精确，逻辑也更清晰。
+
+:::
+
+**常用特性**
+- `[SpineAnimation]`：当你把它用在一个 `string` 类型的公开变量上时，它会在 Unity 的 Inspector 面板中，把这个变量的输入框变成一个下拉列表。这个列表会自动填充关联的 `SkeletonDataAsset` 中所有可用的动画名称。
+
+   例如：
+   ```csharp
+   public class AnimationSelector : MonoBehaviour
+   {
+       [SpineAnimation] public string animationName;
+   }
+   ```
+   
+   效果：
+   ![SpineAnimation](images/SpineAnimation.png)
+
+- `[SpineBone]`：将 Inspector 面板中的一个 `string` 变量，变成一个可以选择骨骼（Bone）名称的下拉菜单。
+   ::: tip
+   在 `Advance` 的 `Debug` 里勾选 `Show Bone Names` 可以方便地观察骨骼名称。
+   :::
+
+- `[SpineSlot]`：将 Inspector 面板中的一个 `string` 变量，变成一个可以选择插槽（Slot）名称的下拉菜单。
+   ::: details 插槽
+
+   插槽像一个装备栏，每个插槽都附着在某个骨骼上。
+
+   插槽本身是不可见的，它是一个容器，用来装载附件（Attachment），而附件才是我们能看到的图片。
+
+   插槽还控制着绘制顺序，决定了哪些图片在上层，哪些在下层。
+
+   例如，一个角色可能有一个 `eyes` 插槽，这个插槽里可以轮流显示 `eyes-open`（睁眼）附件和 `eyes-closed`（闭眼）附件。它也可能有一个 `weapon` 插槽，里面可以显示 `sword`（剑）附件，也可以显示 `axe`（斧子）附件，或者什么都不显示。
+
+   :::
+
+- `[SpineAttachment]`：将 Inspector 面板中的一个 `string` 变量，变成一个可以选择附件（Attachment）名称的下拉菜单。它通常需要依赖于一个指定的插槽（Slot）。
+
+**获取骨骼**
+
+`FindBone()` 通过骨骼的名字（字符串），在骨架（Skeleton）中找到并返回对应的那个骨骼对象（Spine.Bone）。例如：
+```csharp
+Bone eyesBone = skeleton.FindBone("eyes");
+```
+
+可以通过修改 `Bone` 对象的属性来控制骨骼的位置、旋转和缩放。例如：
+```csharp
+eyesBone.X = 100; 
+eyesBone.Y = 200; 
+eyesBone.Rotation = 45; 
+eyesBone.ScaleX = 1.5f;
+eyesBone.ScaleY = 1.5f; 
+```
+
+**设置插槽**
+
+
+`SetAttachment` 能够在指定的插槽（Slot）中，设置并显示一个指定的附件（Attachment）。例如：
+```csharp
+skeleton.SetAttachment(slotName, attachmentName);
+```
+> 也可以通过插槽实现换装的功能。
+
 ## IK
+
+
+**什么是 FK (Forward Kinematics)**
+
+要理解 IK，最快的方法是先理解它的反面FK (Forward Kinematics - 正向动力学)。
+
+它像一个纯粹的父子关系链条。为了让手移动到某个位置，你必须：
+
+1. 先旋转肩膀。
+
+2. 然后旋转手肘。
+
+3. 最后再旋转手腕。
+
+特点：运动和控制是从根部（如肩膀）开始，逐级传递到末端（如手）的。你通过设定每一个关节的角度来决定最终末端的位置。
+
+**什么是 IK (Inverse Kinematics)**
+
+IK 则完全反过来。你不再关心中间的关节要转多少度，而是直接告诉系统：“我希望手移动到这个杯子的位置上”。然后，系统会自动为你计算出为了让手到达那里，手腕、手肘和肩膀应该各自旋转多少度。
+
+#### 2D IK 包
+
+`2D IK` 包是 Unity 提供的一个官方工具包，它让您能够在您已经创建好的 2D 骨骼上，轻松地应用和管理 IK 系统。现已经被完全整合进 `2D Animation` 包。
+
+它的核心作用就是提供一系列的组件（Components）和解算器（Solvers），让你把 FK 骨骼变成由 IK 控制的智能骨骼链。
+
+假设您已经有了一个绑定好的角色，现在想为他的手臂添加 IK 控制：
+
+1. 添加 IK Manager:
+
+   首先，在您角色 Prefab 的根对象上，添加一个 `IK Manager 2D` 组件。这个组件是该角色所有 IK 系统的总管理者。
+
+2. 创建 IK Solver:
+
+   在 `IK Manager 2D` 组件中，点击 `+`，你会看到一个解算器列表。对于手臂或腿，最常用的是 `Limb`（肢体）解算器，会自动生成长度为 2 的骨骼链。
+
+3. 设置 `Limb` 解算器:
+
+   | 字段 | 作用 |
+   | ---- | ---- |
+   | `Effector`（效应器） | 将骨骼链的最后一根骨骼（如 `Hand`）拖拽到此字段，这是你直接控制的“末端”。 |
+   | `Target` | 新建一个空物体（如 `IK_Target`）并放到你希望末端到达的位置；将其拖入该字段，后续可用脚本驱动。 |
+   | `Create Target` | 可直接点击该按钮，Unity 会自动创建并关联目标物体。 |
+   | `Flip` | 若关节弯曲方向不正确，勾选以反转弯曲方向。 |
+
+
+`2D IK Manager` 提供了三种 solver：
+::: tip
+Inspector 中的大部分参数“了解即可”，按需调整关键项即可上手。
+:::
+
+- <span class="badge badge--green" data-appearance="subtle">Limb</span>
+
+   2D IK 中最常用的解算器。它的效率极高，专门用于解决像手臂和腿这样的简单“两段式”或“三段式”肢体链条。
+
+   | 选项 | 说明 |
+   | ---- | ---- |
+   | `Constrain Rotation` | 约束旋转。 |
+   | `Solve from Default Pose` | 从默认姿势求解计算。 |
+   | `Flip` | 使肢体关节向反方向弯曲。 |
+   | `Weight` | 控制该角色身上所有 IK 解算器的全局权重。`1`代表 IK 完全生效，骨骼会尽力到达目标点；`0` IK 完全失效，骨骼会恢复到其原始动画或绑定姿势；`0.5` IK 效果和原始姿势各占一半。|
+
+- <span class="badge badge--blue" data-appearance="subtle">Chain（CCD）</span> / <span class="badge badge--purple" data-appearance="subtle">Chain（FABRIK）</span>
+
+   更通用、更灵活的解算器，特别适合处理长链条。
+
+   它采用一种迭代（iteration）的方式。在一个循环中，它先从末端（Effector）开始，逐个关节地将链条拉向目标位置；然后再从根部开始，将链条拉回原始位置，同时保持末端尽可能靠近目标。这个过程会重复多次，来寻找一个优解。
+   
+   - CCD 运动和弯曲更集中于靠近链条末端（Effector）的关节，根部的关节会相对懒惰，动得更少。这会产生一种类似挥鞭子的效果。
+
+   - FABRIK 的运动和弯曲会更均匀地分布在整个链条的每一个关节上。这使得它的动作看起来通常更像一条自然的绳索或尾巴。
+
+   | 选项 | 说明 |
+   | ---- | ---- |
+   | `Chain Length`| 定义 IK 链的骨骼数量。 |
+   | `Iterations` | 定义上述“前伸-回拉”的计算循环在一帧内执行的次数。|
+   | `Tolerance`（容差） | 定义 Effector 与 Target 间距离小于该阈值时视为到达目标，并停止当帧迭代。|
+
+## 2D 换肤
+
+无论是把换肤资源放在同一个 `PSB` 文件里，还是拆分成多个文件，整体思路是一致的。
+
+- 导入设置：若是单个 `PSB` 文件且换肤图层为隐藏，请在导入时勾选 `Include Hidden Layers`。
+- 资源管理：使用资产 `Sprite Library Asset` 管理换肤映射。它支持“继承”，便于基于基础皮肤快速派生变体。
+
+| 术语 | 作用 |
+| ---- | ---- |
+| `Sprite Library Asset` | 资产库。定义 `Category`/`Label` 到具体 `Sprite` 的映射关系。|
+| `Sprite Library` | 组件。挂在角色根对象上，引用一个 `Sprite Library Asset`。|
+| `Sprite Resolver` | 组件。挂在具体部位（如 `Head`），选择要使用的 `Category`/`Label`。|
+
+::: tip
+实现换装需要多个换肤资源之间的骨骼信息一致（同一套骨架/权重绑定）。
+:::
+
+**步骤 1：创建主库** 
+
+创建一个 `Sprite Library Asset` 作为主库（父级）。将基础换肤资源（如 `Default_Skin.psb`）拖入该库中，库会根据图层信息自动生成对应的 `Category` 与 `Label`。
+
+提示：`Category` 是分类（如头部、身体、手臂），`Label` 是具体选项（如 头盔 1、头盔 2）。
+
+**步骤 2：创建子库（继承主库）**
+
+右键点击主库（父级）文件 -> Create -> Sprite Library Variant。这样做会自动创建子库并为你链接好 `Main Library`。要覆盖的内容在 `Inherited` 标签页直接替换图片即可；也可在子库中新增自己的 `Category`/`Label`，新增项会出现在 `Local` 标签下。
+
+**步骤 3：配置 Prefab 绑定**
+
+为角色创建 `Prefab`，在根对象添加 `Sprite Library` 组件，并将主库（如 `Default_Skin`）赋给其 `Sprite Library Asset` 字段，作为默认皮肤。
+
+在需要可替换的部位子对象（如 `Head`）添加 `Sprite Resolver` 组件，设置其 `Category` 与 `Label`，即可正确显示皮肤下的图片。此时也可以修改同一 `Category` 下切换不同 `Label` 的图片，例如：
+
+```csharp
+// 1. 找到角色头部游戏对象上的 SpriteResolver 组件
+SpriteResolver headResolver = character.transform.Find("Head").GetComponent<SpriteResolver>();
+
+// 2. 更改它的 Category 和 Label
+//    告诉它去“头盔槽”(Headgear)这个分类里，找到“铁盔”(IronHelmet)这个标签对应的 Sprite
+headResolver.SetCategoryAndLabel("Headgear", "IronHelmet"); 
+```
+
+**步骤 4：整体换肤（运行时/编辑器）**
+
+直接切换 `Sprite Library` 的 `spriteLibraryAsset` 即可实现整套皮肤的切换：
+
+```csharp
+spriteLibrary.spriteLibraryAsset = aNewSkinAsset;
+```
