@@ -1,29 +1,6 @@
 # Unity-核心-动画
 
-::: details 模型的基本制作过程
 
-3D模型的制作通常包括以下几个主要步骤：
-
-1. **建模**  
-   使用三角面片组合，像捏泥人一样拼装出模型的形状。
-
-2. **展UV**  
-   UV 是纹理贴图坐标的简称，具有U轴和V轴，类似于三维坐标系的XYZ轴。纹理坐标中的每一个点都和 3D 模型上的位置信息是相互联系的。展 UI 就像是将 3D 模型的表面“拆开”成一张 2D 图片上，方便后续贴图。
-   > 如果对具体内容很感兴趣的，可以观看[【Kurt】Blender零基础入门教程 | Blender中文区新手必刷教程(已完结)](https://www.bilibili.com/video/BV14u41147YH/?spm_id_from=333.337.search-card.all.click&vd_source=b3c97e3d2220b29b554866d21d02bd09)
-
-3. **材质和纹理贴图**  
-   - **纹理**：一张 2D 图片，包含颜色、细节等信息。
-   - **贴图**：通过 UV 坐标将纹理映射到 3D 模型表面。
-   - **纹理贴图**：为模型提供颜色、细节、UV 等信息。
-   - **材质**：决定模型的表现效果——结合纹理贴图和着色器算法，可呈现金属、塑料、玻璃等不同效果。
-
-4. **骨骼绑定**  
-   为模型添加骨骼结构，定义骨骼控制哪些网格区域，实现后续动画控制。
-
-5. **动画制作**  
-   利用骨骼的旋转、移动等操作，在时间轴上制作关键帧，通过插值规则让模型在关键帧之间平滑过渡，最终形成完整的动画效果。
-
-:::
 
 ## Animation 窗口
 Animation 窗口是 Unity 中用于创建和编辑动画片段（`Animation Clip`）的核心工具。通过该窗口，你可以为对象添加关键帧，调整属性曲线，预览动画效果，实现角色、UI 或场景元素的动态表现。它支持逐帧编辑、曲线调整和事件插入，是动画工作流程的基础。
@@ -348,7 +325,7 @@ public class PlayerController_Best : MonoBehaviour
 
 这3个步骤主要通过 `Sprite Editor` 中的 `Skinning Editor` 来完成。
 
-### `Skinning Editor` 
+#### `Skinning Editor` 
 
 `Skinning Editor` 是 `2D Animation` 包中的核心工具之一。它的主要用作将角色图片（Skin）与骨骼（Bones）进行绑定，并调整当骨骼活动时，图片应该如何自然地变形。
 
@@ -424,7 +401,7 @@ public class PlayerController_Best : MonoBehaviour
 
 :::
 
-### 单图动画
+#### 单图动画
 
 单图的绑定流程非常简单，可以直接在图片上绘制骨骼。遵循流程即可完成绑定：
 
@@ -434,7 +411,7 @@ public class PlayerController_Best : MonoBehaviour
 
 如果在 Scene 窗口中没有显示骨骼，需要开启 Gizmos。
 
-### 图集动画
+#### 图集动画
 
 图集的绑定流程会略显复杂。我们通过一个例子来说明：
 
@@ -461,7 +438,7 @@ public class PlayerController_Best : MonoBehaviour
 
 将你在上一步中绑定好的资源文件，从 Project 窗口直接拖拽到 Scene 场景中。Unity 会自动为你生成一个包含所有部件、骨骼以及一个包含`Sprite Skin` 组件的游戏对象。接下来就可以在和单图一样创建动画。
 
-### `PSB`
+#### `PSB`
 
 ::: details `PSB` 和 `PSD` 
 `PSD` 和 `PSB` 都是 Adobe Photoshop 的原生文件格式，它们是专业数字图像编辑领域的基石。其核心价值在于完整地记录了创作过程中的每一个可编辑细节，而不仅仅是最终的图像结果。
@@ -898,3 +875,350 @@ headResolver.SetCategoryAndLabel("Headgear", "IronHelmet");
 ```csharp
 spriteLibrary.spriteLibraryAsset = aNewSkinAsset;
 ```
+
+## 导入模型
+
+对 Unity 开发者来说，最核心、最常用的格式是 FBX 和越来越流行的 glTF。这里仅介绍 FBX 导入。
+
+::: details 模型的基本制作过程
+
+3D模型的制作通常包括以下几个主要步骤：
+
+1. **建模**  
+   使用三角面片组合，像捏泥人一样拼装出模型的形状。
+
+2. **展UV**  
+   UV 是纹理贴图坐标的简称，具有U轴和V轴，类似于三维坐标系的XYZ轴。纹理坐标中的每一个点都和 3D 模型上的位置信息是相互联系的。展 UI 就像是将 3D 模型的表面“拆开”成一张 2D 图片上，方便后续贴图。
+   > 如果对具体内容很感兴趣的，可以观看[【Kurt】Blender零基础入门教程 | Blender中文区新手必刷教程(已完结)](https://www.bilibili.com/video/BV14u41147YH/?spm_id_from=333.337.search-card.all.click&vd_source=b3c97e3d2220b29b554866d21d02bd09)
+
+3. **材质和纹理贴图**  
+   - **纹理**：一张 2D 图片，包含颜色、细节等信息。
+   - **贴图**：通过 UV 坐标将纹理映射到 3D 模型表面。
+   - **纹理贴图**：为模型提供颜色、细节、UV 等信息。
+   - **材质**：决定模型的表现效果——结合纹理贴图和着色器算法，可呈现金属、塑料、玻璃等不同效果。
+
+4. **骨骼绑定**  
+   为模型添加骨骼结构，定义骨骼控制哪些网格区域，实现后续动画控制。
+
+5. **动画制作**  
+   利用骨骼的旋转、移动等操作，在时间轴上制作关键帧，通过插值规则让模型在关键帧之间平滑过渡，最终形成完整的动画效果。
+
+:::
+
+#### Model 选项卡
+
+详细内容可参阅官方文档：[Model 选项卡](https://docs.unity.cn/cn/2023.2/Manual/FBXImporter-Model.html)
+
+
+
+**Scene**
+- `Scale Factor`：当模型中的比例不符合项目预期时，可以修改此值改变模型的全局比例。
+- `Preserve Hierarchy`：始终创建一个显示预制体根。如果不启用此选项，无法正常导入只包含骨骼动画的模型。
+
+**Meshes**
+- `Mesh Compression`：压缩网格。
+- `Read / Write Enabled`：启用或禁用对网格的读写访问。开启时，CPU 会将网格数据传给 GPU 后仍保留可寻址内存，意味着可以对网格数据进行处理。开启会增加内存占用。
+
+**Geometry**
+- `Weld Vertices`：合并共享相同属性的节点。
+
+#### Rig 选项卡
+
+Rig 选项卡主要是用于设置如何将骨骼映射到导入模型的网格。以便能够使其动画化。对于人形角色，需要分配或创建 Avater（替身信息），对于非人形角色模型，需要在骨骼中确定根骨骼。
+
+简单来说，Rig 选项卡主要是设置骨骼和替身系统相关信息的。
+
+
+`Animation Type` 定义的动画类型说明：
+- `None`：不存在动画。
+- `Humanoid`：人形。人形模型需要使用 Avater 系统绑定人主要关节的映射关系。
+- `Generic`：通用。
+- `Legacy`：旧版（Unity 3.x）动画系统。
+
+人形动画类型属性说明：
+- `Avater Definition`：选取获取 Avatar 定义的位置。
+   - `No Avater`：没有 Avater 信息。
+   - `Create From This Model`：从当前模型创建 Avater 信息。选择 `Configure` 打开配置。
+   - `Copy From Other Avater`：从其他模型复制 Avater 信息。可选择 `Source`。
+
+- `Skin Weights`：设置影响单个顶点的最大骨骼数量。
+- `Optimize Game Objects`：在 Avater 系统和 `Animator` 组件中删除和存储所导入角色的游戏对象骨骼层级信息。如果启用会出现下方 `Extra Transforms To Expose` 选项。角色将使用 Unity 动画系统的内部骨架。
+- `Extra Transforms To Expose`：要公开的骨骼层级。
+
+通用模型额外属性 `Root Node `：选择用于此 Avatar 的根节点的骨骼。`Humanoid` 中臀部（Hips）是隐式的根。
+
+不再赘述 `Legacy` 动画类型。
+
+#### Animation 选项卡
+
+专门用于动画文件的设置。对于模型来说通常无需修改。
+
+#### Material 选项卡
+
+这个标签页的核心作用是决定 Unity 如何处理和创建你在 3D 建模软件（如 Blender, Maya）中为模型设置的材质和贴图。
+
+
+属性说明：
+- `Material Creation Mode`
+
+   决定如何处理模型材质。
+   - `Import via MaterialDescription`：这是目前 Unity 推荐的默认方式。它会读取 `.fbx` 文件中包含的材质信息然后在 Unity 内部为你自动创建一个新的 Unity 材质。
+   - `Standard (Legacy)`：这是旧版本的导入方式。功能上和上面的选项类似，但它使用的材质属性映射规则比较老。
+   - `None`：忽略模型文件中所有的材质信息。当你把这个模型拖到场景里时，它很可能会显示为刺眼的粉红色或品红色。
+
+- `Location`
+   
+   决定了材质要从哪里来，或者存到哪里去。
+
+   - `Use Embedded Materials`：根据模型信息创建的临时材质，在资产内部生成对应的 `Material` 子资产。这个选项不会修改原 `.fbx` 文件（毕竟是只读的）。
+   - `Use External Materials (Legacy)`：把根据模型信息创建的临时材质，储存在外部文件中。
+
+- `Extract Textures` & `Extract Materials`
+
+   在 `Use Embedded Materials` 模式下的选项。导出所有材质和纹理。如果无材质和纹理则显示为灰色。
+
+- `Naming` / `Search`
+
+   在 `Use External Materials (Legacy)` 模式下的选项。用于定于导入材质的命名规则和查找材质的位置。
+
+**Asset PostProcessors 资产后处理器**
+
+这个功能是一个面向程序员的高级自动化脚本功能。
+
+它不是一个让你在这里点击设置的选项，而是一个代码钩子（Code Hook）。它允许你编写 C# 脚本，在 Unity 导入任何资产（模型、贴图、音频等）的前、中、后阶段，自动执行你写的代码，来检查甚至修改这些资产的导入设置。
+
+使用资产后处理器，你需要创建一个 C# 脚本，让它继承自 `AssetPostprocessor` 类，然后实现特定的函数，例如：
+- `void OnPreprocessModel()`：在模型导入之前执行。
+- `void OnPostprocessModel(GameObject model)`：在模型导入之后执行。
+- `void OnPreprocessTexture()`：在贴图导入之前执行。
+
+## Avatar 系统
+
+Avatar 系统是其动画系统的核心部分，它将动画数据（Animation Clip）与具体的模型骨骼解耦。
+
+这个系统的存在，最主要的目的就是为了实现动画重定向 （Animation Retargeting）。简单来说，就是让一套动画可以被无数个不同体型、不同比例的人形角色复用。
+
+可以遵从以下步骤创建 Avatar：
+1. 当你将一个带有骨骼的角色模型（比如 `.fbx` 或 `.blend` 文件）导入到 Unity 中时，选中这个模型文件，在 Inspector 窗口中会看到一个 Rig 标签页。
+2. 当你 `Animation Type` 选择 `Humanoid` 后，Unity 会尝试自动分析你模型的骨骼，并将它们映射到一个标准的、内部定义的人形骨架上。
+3. 你可以点击 `Configure` 按钮进入 Avatar 配置界面。在这里，你会看到一个绿色的人形骨架图。Unity 会将模型的骨骼（例如 `Bip001_L_UpperArm`）拖拽到对应的槽位上（例如 `Left Upper Arm`）。大部分情况下 Unity 的自动映射是准确的，但有时需要你手动进行修正。
+4. 配置完成并点击 Done 后，Unity 会在你的模型文件旁边（或作为其子资产）生成一个新的资产，图标是一个小人，它就是包含了骨骼映射关系的 Avatar。
+
+使用 Avatar：
+1. 将你的角色模型拖到场景中。
+2. 给这个角色对象添加一个 `Animator` 组件。
+3. 在 `Animator` 组件中，有一个 `Avatar` 属性。把你刚刚为这个模型生成的那个 Avatar 资产拖进去。
+4. 再将你的动画逻辑（Animator Controller）赋给 `Animator` 组件的 `Controller` 属性。
+
+Muscles & Settings：
+- Muscles Group Preview：肌肉群预览。
+- Pre-Muscle Settings：肌肉设置，用于设置骨骼在旋转时的限制范围。
+
+::: details Additional Settings
+
+可以在 Additional Settings 中设置手脚的扭转和伸展值。其中 `Translation DoF` 比较重要。默认情况下，Unity 的人形动画重定向系统（就是 Avatar 发挥作用的地方）为了达到最高的兼容性和性能，做了一个简化：它假设所有骨骼的动画都只通过旋转（Rotation）来实现。比如，当一个角色抬起手臂时，系统只关心肩关节旋转了多少度、肘关节旋转了多少度。它不关心骨骼本身有没有发生位置移动（Translation）。这个简化在 95% 的情况下都是非常有效的，因为绝大多数标准的人类动作（跑、跳、走、挥拳）都可以纯粹通过骨骼的旋转来表现。
+
+当你勾选 `Translation DoF` 后，你就告诉 Unity：在处理这个动画时，除了骨骼的旋转，请一并考虑并应用某些特定骨骼的位移信息。有些特殊的、更具表现力的动画（尤其是在卡通或风格化的动画中）会包含骨骼的位移，最经典的例子就是耸肩动作。
+
+:::
+
+## 包含动画的模型
+
+一个 `.fbx` 文件可以包含：
+- 一个静态模型（只有网格、材质）
+- 一个模型 + 一个/多个动画（比如一个角色和待机、走路、跑步、跳跃等多个动画）
+- 一个/多个动画
+
+通常来说，角色的模型和动画会分别储存在不同的文件中，以便动画的复用。
+
+Animation 选项卡是 Unity 的模型导入器的一部分。它的主要功能是：定义和配置此 3D 模型文件中所包含的动画数据。
+
+**导入选项**
+
+重要选项：
+- `Import Constraints`：导入约束。
+
+   - 在3D建模软件（如Maya, Blender）中，动画师可能会使用约束（Constraints）来制作动画，比如IK（反向动力学）约束、目标约束（让一个物体始终朝向另一个）等。勾选此项后，Unity 会尝试将这些约束关系也一并导入，并在运行时进行计算。这通常需要配合 Unity 的 `Animation Rigging` 包来使用。
+   - 通常保持不勾选，因为大部分游戏动画在导出时已经烘焙好了。
+
+- `Import Animation`：从这个模型文件中读取和导入动画数据。如果你的模型文件（例如一个FBX）包含了动画，你就必须勾选它。
+
+- `Import Animated Custom Properties`：允许你导入在3D软件中为模型或材质制作的自定义属性动画。
+
+   - 例如，动画师可以在 Maya 里直接为角色眼睛的材质制作一个发光强度的动画（比如从0变到1）。勾选此项后，Unity 就能读取这个发光强度的动画曲线，让你在游戏里实现角色出招时眼睛发光的效果，而无需写代码控制。
+   - 当你不需要这类高级效果时，可以忽略它。
+
+
+- `Anim Compression`：导入动画时使用的压缩类型。
+   - `Off`：禁用。再导入时不会减少关键帧数量，效果好性能低，文件大内存占用也大，通常不建议。
+   - `Keyframe Reduction`：减少冗余关键帧。仅适用于 `Generic` 动画类型。
+   - `Optimal`：推荐的默认选项。 Unity会自动分析动画曲线，智能地选择最佳的压缩方式（关键帧削减或其他算法），在保证质量和减小体积之间取得一个很好的平衡。
+   - `Rotation / Position / Scale Error`：设置压缩旋转/位置/缩放的容错度。
+
+其余选项：
+- `Bake Animations`：通过反向动力学或模拟创建动画以便推进运动关键帧，仅适用于 Maya、3Dmax 和 Cinema4D 文件。
+
+**动画剪辑选择列表**
+
+一个 `.fbx` 可能包含多个动画剪辑。可以在 Clips 列表中新增，删除，预览或编辑对应的动画剪辑。
+
+![动画剪辑选择列表](images/动画剪辑选择列表.png)
+
+此处的 `Start` 和 `End` 属性标记了动画剪辑的起始和结束时间。
+
+## 动画剪辑 Animation Clip
+
+动画剪辑本质上是一个数据容器，它里面存储了大量的曲线（Curves），每一条曲线都描述了一个属性随时间变化的过程。
+
+获得动画剪辑主要有两种方式：
+1. 从外部3D模型文件导入（最常见）
+2. 在Unity中直接创建和编辑
+
+此处聚焦于第一种方式。
+
+![动画剪辑时间轴](images/动画剪辑时间轴.png)
+
+**`Loop Time`**
+
+勾选则动画循环播放。
+- `Loop Pose`：自动匹配为无缝循环播放。
+- `Loop Match`：无缝循环播放自动匹配程度。绿灯代表能很好匹配。
+- `Cycle Offset`：除第一次循环，播放的周期偏移量。
+
+**Root Transform Rotation**
+
+控制角色旋转的根运动。
+
+- `Bake Into Pose`：从动画中提取出根骨骼的旋转变化，并将其应用到游戏对象的`Transform` 上。
+- `Based Upon`：计算旋转时的参考系或基准。
+   - `Original`：使用动画文件中存储的原始旋转数据。这是最常用、最直观的选项。
+   - `Body Orientation`：仅适用于人形（Humanoid）角色。Unity 会根据角色的上下半身朝向，计算出一个平均的、更稳定的朝向。
+   - `Root Node Rotation`：仅适用于通用（Generic）角色。使用在 Avatar 中被指定为根节点的那个骨骼的朝向作为基准。
+- `Offset`：额外增加一个固定的旋转角度。
+
+::: info 根运动 Root Motion
+
+想象一下角色跑步：
+
+- 方法 A（无根运动）：动画本身是原地跑步，像在跑步机上一样。角色的位置是由代码（比如 `transform.position += ...`）来控制和移动的。动画只负责播放腿部动作。
+
+- 方法 B（有根运动）：动画本身就带有向前移动的信息。美术师在3D软件里制作动画时，角色的根骨骼（Root Bone）真的向前移动了。Unity 会提取这个移动信息，并用它来驱动游戏世界中整个角色游戏对象（`GameObject`）的移动。代码只需要负责播放跑步动画，而不需要负责向前移动这个行为。
+
+根运动就是方法 B，即由动画剪辑来驱动游戏对象的位移和旋转。
+
+:::
+
+**Root Transform Position (Y)**
+
+控制角色在垂直方向的运动。
+- `Bake Into Pose`：提取动画中根骨骼在 Y 轴上的位移，并应用到游戏对象的 `Transform` 上。
+- `Based Upon (at Start)`：决定了计算 Y 轴位置的参考基准。
+   - `Original`：直接使用动画文件中的原始 Y 轴坐标。
+   - `Feet`：仅适用于人形（Humanoid）角色。这是一个非常有用的选项，它会以最低的那只脚的 Y 坐标作为基准点（Y = 0），确保脚底板始终紧贴着 Y = 0 的平面。
+   - `Root Node Position`：仅适用于通用（Generic）角色。使用 Avatar 中指定的根节点的 Y 坐标作为基准。
+- `Offset`：额外增加一个固定的垂直高度偏移。
+
+**Root Transform Position (XZ)**
+
+控制的是角色在水平面（XZ平面）上的运动。
+- `Bake Into Pos`：提取动画中根骨骼在 XZ 平面上的位移，并应用到游戏对象的 `Transform` 上。
+   ::: info
+   勾选此项可以完美解决角色移动时最常见的问题——脚底打滑(Foot Sliding)。
+   :::
+
+-  `Based Upon (At Start)`：决定了计算 XZ 轴位置的参考基准。
+   - `Original`：直接使用动画文件中的原始 XZ 坐标。这是最标准、最常用的选项。它意味着完全相信并采用动画师制作的位移。
+   - `Center Of Mass`：仅适用于人形（Humanoid）角色。使用角色的重心（Center Of Mass）作为基准点。
+   - `Root Node Position`：仅适用于通用（Generic）角色。使用 Avatar 中指定的根节点的 XZ 坐标作为基准。
+
+**相对不重要的参数**
+- `Mirror`：左右镜像反转。仅适用于人形（Humanoid）角色。
+- `Additive Reference Pose`：将动画剪辑当作附加动画来处理。通过属性 `Pose Frame` 设置参考帧。
+
+**Curves**
+
+Curves 允许你在动画剪辑中嵌入自定义的浮点数 （`float`）数据，然后通过代码读取这些数据，从而实现动画与游戏逻辑的同步。实际开发中 Curves 的使用频率较少，更多使用 Events。
+
+使用 Curves：
+1. 点击 + 添加曲线：为其取个合适的名字，之后会通过代码的方式通过这个名字获取对应的值。
+2. 编辑曲线：添加后，你会看到一行新的曲线数据，右边有一个小小的曲线预览图。点击这个预览图，Unity 会打开 Curve Editor (曲线编辑器) 窗口。在这个窗口里，你可以自由地设计你的数据曲线。
+3. 在 `Animator Controller` 中创建参数：打开你的角色的 `Animator Controller`，在 Parameters 标签页中，创建一个与你在 Curves 里创建的曲线名字完全一致新的 `float` 参数。Unity 会自动关联曲线与 `Animator Controller` 当中的参数。
+
+
+![动画剪辑的曲线](images/动画剪辑的曲线.png)
+
+**Events**
+
+Events 功能可以在动画时间轴的某个精确时间点上，调用对应的函数。这是一个非常常用的功能。
+
+对应在 Animation 窗口创建的动画，可以直接在该窗口中添加事件，但对于只读的 `.fbx` 文件，需要在 Inspector 面板添加事件。
+
+点击 + 可以添加事件。在事件触发时会 Unity 会在挂在动画的游戏对象上寻找具有同名函数的脚本并调用，若不存在对于函数则报错。
+
+可以在下方列表中设定函数接受的参数类型。
+![动画剪辑的事件](images/动画剪辑的事件.png)
+
+**Mask**
+
+Mask（遮罩）是一个用于实现动画分层（Animation Layering）的核心功能。利用遮罩可以实现诸如下半身走路上半身攻击的组合动作。
+
+::: details Mask（遮罩）
+**核心思想：规定动画的“管辖范围”**
+
+想象一下画画时用的遮罩胶带或模板：
+- 你先在画布上画了一个完整的背景（比如一个正在跑步的人）。
+- 然后，你拿一个只露出上半身的模板盖在画上。
+- 接着，你在这个模板上画画（比如让角色的手臂挥舞）。
+- 完成之后，你拿开模板，就会看到一个“下半身在跑步，上半身在挥手”的最终效果。
+
+Unity 中的 `Avatar Mask` 就是这个“模板”。它让你能够精确地规定：这个动画剪辑，只允许控制角色的哪些骨骼（身体部位）。
+
+:::
+
+- `Definition`
+
+   这里有三个选项来决定你如何应用遮罩：
+   - `Create From This Model`：直接在这个界面上，为当前这个动画剪辑创建一个内嵌的、一次性的遮罩。
+   - `Copy From Other Mask`：使用一个已经存在的、独立的 `Avatar Mask` 资产。
+   - `None`：默认选项，表示不使用任何遮罩。这个动画剪辑会尝试控制它所包含的所有骨骼动画数据。
+
+- `Humanoid`
+
+   编辑人形角色的遮罩的图形化界面工具。可以选择控制哪些身体部位的动画，哪些不控制。双脚下方的圆为根节点。
+
+- `Transform`
+
+   通用的遮罩编辑工具。可以细致地控制每个骨骼的动画，适用于各种类型的角色。
+
+![模型动画遮罩](images/模型动画遮罩.png)
+
+**Motion**
+
+当导入的动画包含根运动时，手动设置根节点。通常无需更改。
+
+- `<None>`：选择此项会完全禁用根运动。
+- `<Root Transform>`：这会使用模型本身的最顶层级的 `Transform` 作为根运动的来源。
+- `root`（或者列表里的其他骨骼名）：这会使用你指定的特定骨骼作为根运动的来源。这是最常用的选项。
+
+::: info
+这里的 root node 不会与模型的 Avatar 当中的冲突。Avatar 当中根节点用于定义骨架的结构，此处的根节点用于定义根运动的来源。
+
+运动来源带动整个物体的移动，骨架本身的根节点核心作用是定义角色结构。
+:::
+
+**Import Messages**
+
+导入动画时出现黄色警告，可以勾选此选项查看问题的具体信息。
+
+**动画预览窗口**
+
+在动画预览窗口提供了一些方便的工具帮助实时查看动画效果。
+
+- IK 选项：观察 IK（如果有的话）。
+- 2D 选项：启用 2D 视图模式。
+- 箭头：显示轴心和质心辅助图标。
+- <span class="badge badge--blue" data-appearance="subtle">人形图标</span>：可以替换预览模型。但更常用的替换方法是直接把模型拖入预览窗口。
+
+下方蓝色书签标可以给资产分类方便管理，`AssetBundle` 与资产管理的 AB 包相关。
+
+![动画预览窗口](images/动画预览窗口.png)
