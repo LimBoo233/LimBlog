@@ -12,11 +12,15 @@
 
 /* ==================================================================
    写法示例：
-   <span class="badge badge--success">OK</span>
-   <span class="badge" data-variant="warning" data-appearance="outline">Beta</span>
-   <span class="badge" data-variant="danger" data-appearance="solid" data-size="sm">Error</span>
-   <span class="badge" data-rgb="255 105 180" data-appearance="gradient">Custom</span>
- ================================================================== */
+   <span class="badge">默认灰</span>
+   <span class="badge badge--blue">蓝色</span>
+   <span class="badge" data-variant="lime">青柠</span>
+   <span class="badge badge--ivory" data-appearance="subtle">象牙白</span>
+   <span class="badge" data-variant="green" data-size="xs">XS</span>
+   <span class="badge" data-variant="green" data-size="sm">SM</span>
+   <span class="badge" data-variant="green" data-size="lg" data-shape="square">LG</span>
+   <span class="badge badge--blue badge--round">Round</span>
+   <span class="badge badge--blue badge--pill">Pill</span>
 
 /* ================= 基础色板 (RGB) ================= */
 :root {
@@ -29,6 +33,9 @@
   --badge-orange: 255 171 25;    /* #FFAB19 */
   --badge-red: 235 87 87;        /* #EB5757 (Exit / 警示) */
   --badge-gray: 130 130 130;     /* #828282 中性灰 */
+  --badge-black: 0 0 0;          /* 纯黑 (Black variant) */
+  --badge-white: 255 255 255;    /* 纯白 (White variant) */
+  --badge-white-soft: 236 236 236; /* #ECECEC 暗色模式柔和白 */
 }
 
 /* ================ 基础结构 ================ */
@@ -71,6 +78,8 @@
 .badge--orange    { --_c: var(--badge-orange); }
 .badge--red       { --_c: var(--badge-red); }
 .badge--gray      { --_c: var(--badge-gray); }
+.badge--black     { --_c: var(--badge-black); color: #fff; }
+.badge--white     { --_c: var(--badge-white); color: #1d1d1f; }
 
 /* ================ 颜色变体（data-variant） ================ */
 .badge[data-variant="blue"]      { --_c: var(--badge-blue); }
@@ -81,6 +90,176 @@
 .badge[data-variant="orange"]    { --_c: var(--badge-orange); }
 .badge[data-variant="red"]       { --_c: var(--badge-red); }
 .badge[data-variant="gray"]      { --_c: var(--badge-gray); }
+.badge[data-variant="black"]     { --_c: var(--badge-black); color: #fff; }
+.badge[data-variant="white"]     { --_c: var(--badge-white); color: #1d1d1f; }
+
+/* Black 变体在任何外观下统一白字 */
+.badge--black.badge--solid,
+.badge--black[data-appearance="solid"],
+.badge[data-variant="black"].badge--solid,
+.badge[data-variant="black"][data-appearance="solid"] { color:#fff; }
+
+/* White 变体：默认 soft/subtle 场景下做淡投影与描边，solid 用黑字，outline 使用浅灰描边 */
+.badge--white:not(.badge--outline):not(.badge--ghost):not(.badge--gradient),
+.badge[data-variant="white"]:not([data-appearance="outline"]):not([data-appearance="ghost"]):not([data-appearance="gradient"]) {
+  background: linear-gradient(135deg,#ffffff,#f5f5f5);
+  box-shadow: 0 0 0 1px rgba(0,0,0,.08),0 2px 4px -1px rgba(0,0,0,.15);
+  border: 1px solid rgba(0,0,0,.10);
+}
+.badge--white.badge--solid,
+.badge[data-variant="white"][data-appearance="solid"] {
+  background: #fff;
+  box-shadow: 0 0 0 1px rgba(0,0,0,.12),0 2px 6px -2px rgba(0,0,0,.2);
+}
+.badge--white.badge--outline,
+.badge[data-variant="white"][data-appearance="outline"] {
+  background: transparent;
+  border-color: rgba(0,0,0,.25);
+  color: #1d1d1f;
+}
+.badge--white.badge--ghost,
+.badge[data-variant="white"][data-appearance="ghost"] { background: transparent; color:#ececec; }
+.badge--white.badge--ghost:hover,
+.badge[data-variant="white"][data-appearance="ghost"]:hover { background: rgba(255,255,255,.08); color:#fff; }
+
+/* 深色模式下微降白度防刺眼 */
+.dark .badge--white:not(.badge--outline):not(.badge--ghost):not(.badge--gradient),
+.dark .badge[data-variant="white"]:not([data-appearance="outline"]):not([data-appearance="ghost"]):not([data-appearance="gradient"]) {
+  /* 使用柔和白，减低强对比 + 轻磨砂质感 */
+  --_c: var(--badge-white-soft);
+  background: linear-gradient(135deg, rgb(var(--badge-white-soft) / .92), rgb(var(--badge-white-soft) / .82));
+  color:#161616;
+  border: 1px solid rgba(255,255,255,.14);
+  box-shadow: 0 0 0 1px rgba(255,255,255,.07), 0 2px 4px -2px rgba(0,0,0,.55);
+}
+.dark .badge--white:not(.badge--outline):not(.badge--ghost):not(.badge--gradient):hover,
+.dark .badge[data-variant="white"]:not([data-appearance="outline"]):not([data-appearance="ghost"]):not([data-appearance="gradient"]):hover {
+  background: linear-gradient(135deg, rgb(var(--badge-white-soft) / .98), rgb(var(--badge-white-soft) / .88));
+  border-color: rgba(255,255,255,.18);
+}
+.dark .badge--white.badge--solid,
+.dark .badge[data-variant="white"][data-appearance="solid"] {
+  --_c: var(--badge-white-soft);
+  background: linear-gradient(180deg, rgb(var(--badge-white-soft) / .95), rgb(var(--badge-white-soft) / .80));
+  color:#141414;
+  box-shadow: 0 0 0 1px rgba(255,255,255,.10),0 2px 5px -2px rgba(0,0,0,.55);
+}
+.dark .badge--white.badge--solid:hover,
+.dark .badge[data-variant="white"][data-appearance="solid"]:hover { background: linear-gradient(180deg, rgb(var(--badge-white-soft) / .98), rgb(var(--badge-white-soft) / .85)); }
+.dark .badge--white.badge--outline,
+.dark .badge[data-variant="white"][data-appearance="outline"] {
+  color:#e6e6e6;
+  border-color: rgba(255,255,255,.32);
+}
+.dark .badge--white.badge--outline:hover,
+.dark .badge[data-variant="white"][data-appearance="outline"]:hover { background: rgba(255,255,255,.06); }
+.dark .badge--white.badge--ghost,
+.dark .badge[data-variant="white"][data-appearance="ghost"] { color:#cfcfcf; }
+.dark .badge--white.badge--ghost:hover,
+.dark .badge[data-variant="white"][data-appearance="ghost"]:hover { background: rgba(255,255,255,.10); color:#f5f5f5; }
+
+/* 降低发光层对 white 在暗色下的刺眼度 */
+.dark .badge--white::after,
+.dark .badge[data-variant="white"]::after { opacity:.22; }
+
+/* ================= Black 变体美化（soft 默认态） ================= */
+/* 非指定外观 (solid / outline / ghost / gradient) 时走精细黑胶质风格 */
+.badge--black:not(.badge--solid):not(.badge--outline):not(.badge--ghost):not(.badge--gradient),
+.badge[data-variant="black"]:not([data-appearance="solid"]):not([data-appearance="outline"]):not([data-appearance="ghost"]):not([data-appearance="gradient"]) {
+  background: linear-gradient(155deg,#121212 0%,#1c1c1c 55%,#242424 100%);
+  border: 1px solid rgba(255,255,255,.08);
+  box-shadow:
+    0 0 0 1px rgba(255,255,255,.04),
+    0 1px 2px -1px rgba(0,0,0,.7),
+    0 3px 6px -2px rgba(0,0,0,.6),
+    0 0 0 4px rgba(0,0,0,.25) inset,
+    0 0 0 1px rgba(255,255,255,.04) inset;
+  color: #fff;
+}
+.badge--black:not(.badge--solid):not(.badge--outline):not(.badge--ghost):not(.badge--gradient):hover,
+.badge[data-variant="black"]:not([data-appearance="solid"]):not([data-appearance="outline"]):not([data-appearance="ghost"]):not([data-appearance="gradient"]):hover {
+  background: linear-gradient(155deg,#181818 0%,#232323 55%,#2d2d2d 100%);
+  border-color: rgba(255,255,255,.12);
+  box-shadow:
+    0 0 0 1px rgba(255,255,255,.06),
+    0 2px 6px -2px rgba(0,0,0,.75),
+    0 4px 10px -3px rgba(0,0,0,.6),
+    0 0 0 4px rgba(0,0,0,.28) inset,
+    0 0 0 1px rgba(255,255,255,.06) inset;
+}
+
+/* Outline 外观下做轻描边提亮 */
+.badge--black.badge--outline,
+.badge[data-variant="black"][data-appearance="outline"] {
+  border-color: rgba(255,255,255,.28);
+  color: #fff;
+  box-shadow: 0 0 0 1px rgba(255,255,255,.28);
+}
+.badge--black.badge--outline:hover,
+.badge[data-variant="black"][data-appearance="outline"]:hover {
+  border-color: rgba(255,255,255,.4);
+  background: rgba(255,255,255,.04);
+}
+
+/* Ghost 保留极简 */
+.badge--black.badge--ghost,
+.badge[data-variant="black"][data-appearance="ghost"] { color:#fff; }
+.badge--black.badge--ghost:hover,
+.badge[data-variant="black"][data-appearance="ghost"]:hover { background: rgba(255,255,255,.07); }
+
+/* Gradient 使用黑到深灰 + 细亮边 */
+.badge--black.badge--gradient,
+.badge[data-variant="black"][data-appearance="gradient"] {
+  background: linear-gradient(130deg,#0f0f0f,#262626 55%,#1a1a1a);
+  box-shadow: 0 0 0 1px rgba(255,255,255,.08),0 4px 10px -2px rgba(0,0,0,.65);
+}
+
+/* Solid 轻微提升层次 */
+.badge--black.badge--solid,
+.badge[data-variant="black"][data-appearance="solid"] {
+  background: linear-gradient(180deg,#111,#000);
+  box-shadow: 0 0 0 1px rgba(255,255,255,.10),0 2px 6px -2px rgba(0,0,0,.8);
+}
+.badge--black.badge--solid:hover,
+.badge[data-variant="black"][data-appearance="solid"]:hover {
+  background: linear-gradient(180deg,#161616,#050505);
+}
+
+/* ================ 可点击交互 (class 或 data-clickable) ================ */
+.badge--clickable,
+.badge[data-clickable] {
+  cursor: pointer;
+  position: relative;
+  transition: background .25s ease, box-shadow .25s ease, transform .15s ease;
+}
+.badge--clickable:active,
+.badge[data-clickable]:active { transform: translateY(1px); }
+.badge--clickable:focus-visible,
+.badge[data-clickable]:focus-visible { outline:none; box-shadow:0 0 0 2px var(--vp-c-bg-soft),0 0 0 5px rgb(var(--_c)/.55); }
+/* 统一 hover 亮度（不破坏原特例） */
+.badge--clickable:not(.badge--ghost):hover,
+.badge[data-clickable]:not([data-appearance="ghost"]):hover { --_bg-a: calc(var(--_bg-a) + .12); --_bg-b: calc(var(--_bg-b) + .08); }
+/* ghost 点击态背景 */
+.badge--clickable.badge--ghost:active,
+.badge[data-clickable][data-appearance="ghost"]:active { background: rgb(var(--_c)/.18); }
+
+/* 暗色模式下与背景拉开一点层次 */
+.dark .badge--black:not(.badge--solid):not(.badge--outline):not(.badge--ghost):not(.badge--gradient),
+.dark .badge[data-variant="black"]:not([data-appearance="solid"]):not([data-appearance="outline"]):not([data-appearance="ghost"]):not([data-appearance="gradient"]) {
+  background: linear-gradient(155deg,#1e1e1e 0%,#262626 55%,#2f2f2f 100%);
+  border: 1px solid rgba(255,255,255,.10);
+  box-shadow:
+    0 0 0 1px rgba(255,255,255,.05),
+    0 1px 2px -1px rgba(0,0,0,.7),
+    0 3px 6px -2px rgba(0,0,0,.65),
+    0 0 0 4px rgba(0,0,0,.5) inset,
+    0 0 0 1px rgba(255,255,255,.05) inset;
+}
+.dark .badge--black:not(.badge--solid):not(.badge--outline):not(.badge--ghost):not(.badge--gradient):hover,
+.dark .badge[data-variant="black"]:not([data-appearance="solid"]):not([data-appearance="outline"]):not([data-appearance="ghost"]):not([data-appearance="gradient"]):hover {
+  background: linear-gradient(155deg,#232323 0%,#2c2c2c 55%,#363636 100%);
+  border-color: rgba(255,255,255,.16);
+}
 
 /* 自定义 RGB 颜色 (例如 data-rgb="255 105 180") */
 .badge[data-rgb] { --_c: attr(data-rgb); }
@@ -152,6 +331,8 @@
 }
 .dark .badge--solid, .dark .badge[data-appearance="solid"] { --_txt-alpha: 1; }
 .dark .badge--ghost:hover, .dark .badge[data-appearance="ghost"]:hover { background: rgb(var(--_c) / .18); }
+
+/* 暗色模式下 black 仍保持白字，基础逻辑无需额外覆盖 */
 
 /* 发光层（仅 soft/subtle/gradient 等强调） */
 .badge::after {
