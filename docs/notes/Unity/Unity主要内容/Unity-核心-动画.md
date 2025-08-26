@@ -113,13 +113,15 @@ Animation 窗口提供了用于制作单个动画片段的功能，通常位于�
       | `Write Defaults` | • 不勾选：当状态机离开这个状态时，属性的值会保持在它离开时的状态，直到有另一个动画状态来修改它。这是当前 Unity 推荐的做法。<br><br>• 勾选：当状态机离开这个状态时，所有被这个状态的动画修改过的属性都会被重置为它们在进入这个状态之前的默认值。但如果你有多个动画层，控制某个部位的动画可能会强制把其他骨骼重置回默认姿态，覆盖掉其他层的效果。 |
       :::
 
+   - 你可以为状态添加 [StateMachineBehaviour](#statemachinebehaviour) ，可以在状态的不同阶段执行代码。
+
 2. 参数 (Parameters)
 
    参数是您用来从代码中控制状态机逻辑的变量，用于驱动状态过渡。在 Animator 窗口的左侧 Parameters 标签页中可以创建四种参数：
    - `Float`：浮点数类型的参数，通常用于控制动画的速度、强度等。
    - `Int`：整数类型的参数，常用于状态的切换、计数等。
    - `Bool`：布尔类型的参数，用于表示某个条件是否成立，常用于触发动画的开关。
-   - `Trigger`：触发器类型的参数，用于一次性触发某个动画，类似于事件。
+   - `Trigger`：触发器类型的参数，用于一次性触发某个动画，类似于事件。一个 `Trigger` 最好只分配给一个过渡的 `Condition`，避免竞争问题。
    ::: details 为什么 `Float` 参数作为 Condition 时不能设置 `Equal`
 
    `Animator` 的浮点数（float）参数过渡条件里没有等于（Equal），这不是一个疏忽，而是有意为之的设计。主要有两个原因：
@@ -710,7 +712,7 @@ public class SpineEventExample : MonoBehaviour
 }
 ```
 
-::: details `TrackEntry`
+::: tip
 `TrackEntry` 代表了当前正在某个轨道（Track）上播放的这一个动画实例。。你可以把这个对象看作是你对那个正在播放的动画的一个句柄。
 
 `TrackEntry` 对象暴露了很多有用的属性和事件，让你可以进行精细化的控制。以下是一些最常用的功能：
@@ -823,7 +825,7 @@ skeleton.SetAttachment(slotName, attachmentName);
 ```
 > 也可以通过插槽实现换装的功能。
 
-## IK
+## 2D 中的 IK
 
 
 **什么是 FK (Forward Kinematics)**
@@ -842,7 +844,7 @@ skeleton.SetAttachment(slotName, attachmentName);
 
 **什么是 IK (Inverse Kinematics)**
 
-IK 则完全反过来。你不再关心中间的关节要转多少度，而是直接告诉系统：“我希望手移动到这个杯子的位置上”。然后，系统会自动为你计算出为了让手到达那里，手腕、手肘和肩膀应该各自旋转多少度。
+IK 则完全反过来。你不再关心中间的关节要转多少度，而是直接告诉系统：我希望手移动到这个杯子的位置上。然后，系统会自动为你计算出为了让手到达那里，手腕、手肘和肩膀应该各自旋转多少度。
 
 #### 2D IK 包
 
@@ -1213,7 +1215,7 @@ Animation 选项卡是 Unity 的模型导入器的一部分。它的主要功能
 
 **Curves**
 
-Curves 允许你在动画剪辑中嵌入自定义的浮点数 （`float`）数据，然后通过代码读取这些数据，从而实现动画与游戏逻辑的同步。实际开发中 Curves 的使用频率较少，更多使用 Events。
+Curves 允许你在动画剪辑中嵌入自定义的浮点数 （`float`）数据，然后通过代码读取这些数据，从而实现动画与游戏逻辑的同步。实际开发中 Curves 的使用频率会少于 Events，不过我认为都不如状态机行为脚本好用。
 
 使用 Curves：
 1. 点击 + 添加曲线：为其取个合适的名字，之后会通过代码的方式通过这个名字获取对应的值。
@@ -1225,7 +1227,7 @@ Curves 允许你在动画剪辑中嵌入自定义的浮点数 （`float`）数�
 
 **Events**
 
-Events 功能可以在动画时间轴的某个精确时间点上，调用对应的函数。这是一个非常常用的功能。
+Events 功能可以在动画时间轴的某个精确时间点上，调用对应的函数。~~但我感觉 Events 的功能被状态机行为脚本完爆了。~~
 
 对应在 Animation 窗口创建的动画，可以直接在该窗口中添加事件，但对于只读的 `.fbx` 文件，需要在 Inspector 面板添加事件。
 
@@ -1323,11 +1325,11 @@ Unity 中的 `Avatar Mask` 就是这个“模板”。它让你能够精确地�
 
 ## 1D 混合树
 
-1D 混合树（1D Blend Tree）是最简单、最常用的一种混合树。它只使用一个浮点数参数来控制动画的混合。典型的例子是通过速度（`speed`）参数来混合站立、走路和跑步。
+1D 混合树（1D Blend Tree）是最简单、最常用的一种混合树。它只使用一个浮点数参数来控制动画的混合。典型的例子就是通过速度（`speed`）参数来混合站立、走路和跑步。
 
 工作原理：你设定一个参数（比如 `float speed`）。然后，你添加多个动画片段，并为每个动画片段设定一个变化的阈值（Threshold）。当你的 `speed` 参数值变化时，Unity 会根据当前值在这些阈值之间进行插值计算，来决定每个动画的播放权重。
 
-在 Unity 中创建的混合树默认就是 1D 的。在 Inspector 面板中，你可以修改混合树的名称，类型等属性：
+在 Unity 创建的混合树默认就是 1D 的。在 Inspector 面板中，你可以修改混合树的名称，类型等属性：
 ![1D混合树初始.png](images/1D混合树初始.png)
 
 
@@ -1394,3 +1396,422 @@ Direct 混合树允许你为列表中的每一个动画片段（Motion）都指�
 简单来说：一个参数控制一个动画的混合权重。
 
 该功能使用较少，可以用于表情的混合。
+
+## 子状态机
+
+在 `Animator Controller` 中，当你开始为角色添加各种动画状态时，状态和它们之间的连线（过渡）会很快变得非常多，最终形成一张错综复杂、难以管理的网络。
+
+子状态机（Sub-State Machine）就像一个文件夹或一个类（class），它允许你将一组相关的动画状态封装到一个独立的、可折叠的单元中，从而让主状态图保持整洁。
+
+**使用子状态机**
+
+在 Animator 窗口的空白处右键，选择 Create Sub-State Machine，这会创建一个六边形的子状态机节点。双击该节点，就可以进入它的编辑视图。
+
+子状态机编辑视图和主状态机很像，意味着你也可以像编辑父级状态机一样去编辑子状态机。这个视图有一个额外的特殊节点：<span class="badge badge--orange" data-appearance="subtle">(Up) Base Layer</span>
+
+![子状态机视图](images/子状态机视图.png)
+
+<span class="badge badge--orange" data-appearance="subtle">(Up) Base Layer</span> 节点专门用来处理子状态机的回到父状态机的退出。当你将一个状态节点连接到 <span class="badge badge--orange" data-appearance="subtle">(Up) Base Layer</span> 时，你可以选择回到父状态机的状态，通常由两个选项：
+- `State`：回到父状态机的某个指定的状态。
+- `StateMachine`：回到父状态机，将从 <span class="badge badge--lime" data-appearance="subtle">Entry</span> 节点开始播放。
+
+::: tip
+你在父状态机里为子状态机连的退出过渡线不会有效果，必须通过上述方法，在子状态机里的 <span class="badge badge--orange" data-appearance="subtle">(Up) Base Layer</span> 指定退出 `State`。
+:::
+
+需要注意的是，子状态机里 <span class="badge badge--red" data-appearance="subtle">Exit</span> 节点也会直接让整个 `Animator Controller` 停止工作。
+
+## 3D 中的 IK
+
+反向动力学（IK）是一种由果推因的动画技术：你只需要指定骨骼链末端的目标位置，系统就会自动计算出上级骨骼需要旋转的角度来达成这个姿态。
+
+在 Unity 中，实现 IK 控制最直接的方式是利用 `Animator` 组件内置的 IK 功能，该系统主要针对 Humanoid 骨架。
+
+**使用 IK**
+
+使用 IK，首先对象必须有 `Animator` 组件，并且勾选了 Animator 窗口对应层的 `IK Pass` 选项打开了 IK 通道，以通知 Unity 需要进行额外的 IK 计算。
+
+然后我们需要创建一个 C# 脚本来编写 IK 的逻辑。
+
+在你的角色 `GameObject` 上（也就是带有 `Animator` 组件的那个对象），创建一个新的 `MonoBehaviour` 脚本，可以命名为 `CharacterIKController`。
+
+打开这个脚本，我们将使用一个 Unity 的特殊回调函数：`OnAnimatorIK(int layerIndex)`。这个函数继承自 `MonoBehaviour` 中，会在每一帧处理完标准动画（`Update()`）之后、在（`LateUpdate()`）之前被调用，专门用于处理 IK。
+
+控制 IK 的 API 基本上是成对或者成组配合使用的，可以视作控制权重和设置目标两个步骤。
+
+**用于头部朝向的 API**
+
+控制权重：
+
+```csharp
+animator.SetLookAtWeight(
+   float weight,
+   float bodyWeight,
+   float headWeight,
+   float eyesWeight,
+   float clampWeight);
+```
+
+这个函数用来设置 Look At 效果中各个身体部分的权重（影响力）。所有权重值的范围都是 0.0 到 1.0。
+
+| 参数 | 说明 |
+| ---- | ---- |
+| `weight` | 总权重，总开关。0 关闭所有 Look At，1 完全启用。 |
+| `bodyWeight` | 身体权重，胸/上半身朝向参与度。1 扭转明显，0 基本不动。 |
+| `headWeight` | 头部权重，头部朝向参与度。常设 0.9~1.0。 |
+| `eyesWeight` | 眼睛权重，若模型有独立眼球骨骼则可转动；多数模型可设 0。 |
+| `clampWeight` | 限制系数，防止过度扭曲。0 不限制，1 最强限制，常用 0.5。 |
+
+
+设置目标：
+
+直接设置角色要看向的目标点的世界坐标 ⬇
+```csharp
+animator.SetLookAtPosition(Vector3 lookAtPosition);
+```
+
+**用于手脚（Limbs）的 API**
+
+控制权重：
+
+```csharp
+animator.SetIKPositionWeight(AvatarIKGoal goal, float weight)
+```
+该方法用于设置指定肢体（手或脚）的位置 IK 的权重。
+
+`AvatarIKGoal goal` 是一个枚举，用来指定你要控制的身体部位。常用的值有：
+- `AvatarIKGoal.LeftHand`
+- `AvatarIKGoal.RightHand`
+- `AvatarIKGoal.LeftFoot`
+- `AvatarIKGoal.RightFoot`
+
+`float weight`代表权重，范围0 ~ 1。1表示该肢体的末端位置完全由 IK 控制；0表示完全由原始动画控制。
+
+```csharp
+animator.SetIKRotationWeight(AvatarIKGoal goal, float weight)
+```
+
+与上面类似，但这个是用来设置指定肢体的旋转 IK 的权重。
+设置目标：
+
+```csharp
+animator.SetIKPosition(AvatarIKGoal goal, Vector3 goalPosition)
+```
+
+设置指定肢体的 IK 目标位置（世界坐标）。
+- `AvatarIKGoal goal`：指定要控制的手或脚。
+- `Vector3 goalPosition`：你希望这只手或脚到达的世界空间坐标。
+
+```csharp
+animator.SetIKRotation(AvatarIKGoal goal, Quaternion goalRotation)
+```
+设置指定肢体的 IK 目标旋转（世界坐标系下的旋转）。
+- `AvatarIKGoal goal`：指定要控制的手或脚。
+- `Quaternion goalRotation`：你希望这只手或脚最终呈现的世界空间旋转姿态。
+
+::: warning
+旋转 IK 会强制指定肢体末端（手或脚）在世界空间中最终要达成的旋转姿态，错误的使用可能会造成奇怪的肢体扭曲。有时，你可能根本就不需要去旋转肢体，只需要指定位置。
+:::
+
+**`OnAnimatorMove()`**
+
+`OnAnimatorMove()` 是 Unity 动画系统中另一个的回调函数，用来接管和修改角色的根运动（Root Motion），控制角色在世界中的整体移动。
+
+和 `OnAnimatorIK(int layerIndex)` 一样，它也是在 `Update()` 之后 `LateUpdate()` 之前被调用，并且也是在每帧的状态机和动画处理完成后调用。其中，`OnAnimatorIK(int layerIndex)` 的调用时机更靠前。
+
+当然，你也可以在 `Update()` 中进行运动的计算与处理。如果动画本身有移动（根运动），你还添加想额外的运动逻辑时，推荐在 `OnAnimatorMove()` 中进行处理。
+
+::: tip
+有时候多个根运动动画衔接很奇怪，比如一个角色一开始在行走，然后进行跳跃，角色的起跳阶段的根运动吞掉，导致动画完成后角色的高度反而还下降了。如果出现了这个问题，通常是因为动画之间的过渡使用的插值计算导致的。
+
+**解决方案**
+- 取消或缩短过渡时长
+
+   这是最简单粗暴的方法，只需要将 `Transition Duration` 设置为 `0` 或者一个极小的值（比如 `0.05`）。容易导致视觉效果的生硬。
+
+- 使用专门的动画状态
+
+   将动画拆开成多个部分。
+
+   比如将你的跳跃动画拆分成至少两部分：`Jump_TakeOff`（起跳）和 `Jump_Loop/Fall`（空中下落）。设置 `Walk` -> `Jump_TakeOff` 的过渡，时长为 `0`，确保起跳的根运动不被混合。设置 `Jump_TakeOff` -> `Jump_Loop/Fall` 的过渡，可以根据 `Exit Time` 或者其他条件来切换。这个过渡可以有过渡时长，因为这两个状态在空中，根运动影响不大，视觉平滑更重要。
+:::
+
+## 动画目标匹配
+
+动画目标匹配核心作用是：动态地、平滑地调整动画的**根运动**轨迹，以确保在动画播放到某个特定时间点时，角色的某个身体部位（ex：手、脚）能精确地到达你指定的目标位置和旋转。它不会像 IK 一样扭曲身体部位，只是平滑地调整整个角色的位移和旋转。
+
+**前提条件 - 准备好根运动动画**
+
+目标匹配是作用于根运动之上的，所以：
+- 你的动画剪辑必须是包含位移和旋转的根运动动画（不是 In-Place 原地动画）。
+- 你的角色的 Animator 组件上必须勾选了 `Apply Root Motion`。
+
+**编写代码并调用**
+
+核心方法：
+
+```csharp
+public void MatchTarget(
+   Vector3 matchPosition,
+   Quaternion matchRotation,
+   AvatarTarget targetBodyPart,
+   MatchTargetWeightMask weightMask,
+   float startNormalizedTime,
+   float targetNormalizedTime = 1);
+```
+
+`Animator.MatchTarget()` 方法只对当前正在播放（或者即将过渡进入）的动画状态生效。
+
+参数说明：
+- `Vector3 matchPosition`：目标位置。你希望身体部位最终到达的世界空间坐标。
+
+- `Quaternion matchRotation`：目标旋转。你希望身体部位最终达成的世界空间旋转。
+
+- `AvatarTarget targetBodyPart`：目标身体部位。这是一个枚举，用来指定用哪个身体部位去匹配。常用值有：
+
+   - `AvatarTarget.Root`：整个身体的重心。
+
+   - `AvatarTarget.LeftHand`, `AvatarTarget.RightHand`
+
+   - `AvatarTarget.LeftFoot`, `AvatarTarget.RightFoot`
+
+- `MatchTargetWeightMask weightMask`：权重遮罩。一个非常重要的参数，它告诉系统你关心匹配的哪些部分。
+
+   - `new MatchTargetWeightMask(Vector3 positionWeight, float rotationWeight)`
+
+   - `positionWeight`：一个 `Vector3`，可以分别控制 X, Y, Z 三个轴的位置匹配权重 (0-1)。比如 `new Vector3(1, 1, 0)` 表示只匹配 X 和 Y 轴位置，忽略 Z 轴。
+
+   - `rotationWeight`：一个 `float` (0-1)，控制旋转的匹配权重。1 表示完全匹配旋转，0 表示不关心旋转。
+
+- `float startNormalizedTime`：开始匹配的动画时间点。这是一个归一化的值 (0.0 - 1.0)，代表动画时长的百分比。比如 0.25 表示从动画播放了25%时开始调整。
+ - `float targetNormalizedTime`：完成匹配的动画时间点。同样是归一化的值。在这个时间点，`targetBodyPart` 会精确到达 `matchPosition`。
+
+有人可能觉得这个设计不太好：如果能明确指定需要执行动画目标匹配的动画不是可以使代码的健壮性更强吗？Unity 这么设计的目的其实是为了灵活性与可维护性，通过降低耦合度提高健壮性。
+
+::: details 根运动的使用与否
+
+**最流行、最实用的做法是混合模式（Hybrid Model）：**
+
+* 玩家角色的常规移动（走路，跑步，跳跃）：通常使用原地动画 + 代码驱动。
+   * 这样可以保证玩家获得最精准、最灵敏的操控体验。对于玩家来说，操控的响应性永远是第一位的。脚底打滑的问题可以通过精心调节来缓解。
+* 在特定、独立的交互动作时，临时切换到根运动。
+
+这些动作通常是一次性的、带有电影感的交互，例如：
+
+* 翻越障碍物 (Vaulting)
+* 爬梯子 (Ladder Climbing)
+* 打开门 (Opening a Door)
+* 执行终结技/处决动画 (Finishing Moves)
+* 从高处跳下并做出特定的落地动作
+
+在执行这些动作时，程序的逻辑是：
+1. 暂时禁用常规的角色控制器。
+2. 播放根运动动画（通常还会配合我们之前讲的 MatchTarget 来确保位置精准）。
+3. 等待动画播放完毕。
+4. 重新启用常规角色控制器，将控制权交还给玩家。
+
+对于NPC（非玩家角色），使用完全根运动则更为常见，因为它们的行为是预设的，对响应性要求不高，但对视觉真实性的要求很高。一个按照固定路线巡逻的卫兵，用根运动来实现会非常自然。
+:::
+
+## `StateMachineBehaviour`
+
+`StateMachineBehaviour` 是附加在这些状态节点上的小型脚本，让你可以在状态执行到不同阶段时执行对应的代码逻辑。
+
+类似 `MonoBehaviour`，该脚本可以附加在 `Animator Controller` 的某个特定状态或子状态机上，它的生命周期与该状态的激活状态绑定。
+
+![StateMachineBehaviour](images/StateMachineBehaviour.png)
+
+`StateMachineBehaviour` 提供了一系列类似 `MonoBehaviour` 生命周期函数的回调，让你可以在状态的不同阶段执行代码。这些回调函数都需要三个参数，你可以从这些参数获取当前状态的信息：
+- `Animator animator`：当前的 `Animator` 实例。
+- `AnimatorStateInfo stateInfo`：一个包含当前状态信息的结构体。
+- `int layerIndex`：当前状态所在的层级索引。
+
+
+| 回调函数 | 调用时机 |
+| --- | --- |
+| `OnStateEnter()` | 进入状态的第一帧。 |
+| `OnStateExit()` | 退出状态时的那最后一帧。 |
+| `OnStateUpdate()` | 除状态开始的第一帧和最后一帧，每一帧调用。 |
+| `OnStateIK()` | `OnAnimatorIK()` 执行之后。 |
+| `OnStateMove()` | `OnAnimatorMove()` 执行之后。 |
+| `OnStateMachineEnter()` | 进入子状态机的第一帧。 |
+| `OnStateMachineExit()` | 退出子状态机时的那最后一帧。 |
+
+**代码示例**
+```csharp
+public class PlaySoundOnEnter : StateMachineBehaviour
+{
+   [Header("音效设置")]
+   [SerializeField]
+   private AudioClip soundToPlay;
+
+   [Tooltip("音量大小")]
+   [Range(0f, 1f)]
+   [SerializeField]
+   private float volume = 1.0f;
+
+   public override void OnStateEnter(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
+   {
+      // 获取角色身上的 AudioSource 组件。
+      AudioSource audioSource = animator.GetComponent<AudioSource>();
+
+      // 播放音效
+      audioSource.PlayOneShot(soundToPlay, volume);
+   }
+}
+```
+
+## 状态机的复用
+
+`Animator Override Controller` 是一个资产，核心作用是：复用一个现有 `Animator Controller` 的所有逻辑（状态、参数、过渡），但允许你替换掉其中使用的 `Animation Clips`。
+
+![状态机的复用](images/状态机的复用.png)
+
+通过复用状态机，你可以轻松地行为逻辑相同但外形和动作风格迥异的角色（ex：不同风格的敌人、不同种族的角色）创建统一的动画系统。
+
+## `Character Controller`
+
+`Character Controller`（角色控制器） 是 Unity 提供的一个专门用于控制角色（尤其是第一人称或第三人称玩家）移动的组件。
+
+你可以把它想象成一个带有物理特性的胶囊体，但它并不使用标准的刚体（`Rigidbody`）物理。它是一种特殊的、为游戏角色量身定做的移动解决方案。比如，角色不会在斜坡上滑动，不会因为碰撞箱是胶囊体而跌倒。
+
+
+属性说明：
+- `Slope Limit`（坡度限制）
+
+   定义了角色能够走上去的最大斜坡角度。
+
+- `Step Offset`（台阶高度）
+
+   定义了角色能够跨越的最大台阶高度（单位：米）。
+
+- `Skin Width`（皮肤宽度）
+
+   胶囊体内部的一个缓冲层厚度。
+
+   防止角色因为精度问题而卡在墙里或是在地面上抖动。物理引擎在处理碰撞时，允许物体有微小的穿透。通常保持一个较小的值（比如 `Radius` / 10），不要设为0。
+
+   ::: details
+   `Skin Width` 是角色控制器的“悬挂系统”或“减震器”。就像开着一辆车：
+   - 如果没有悬挂系统，路面上的每一颗小石子、每一条细小的裂缝都会让整辆车剧烈颠簸。
+   - 有了悬挂系统，这些微小的颠簸都被吸收了，你感受到的只是平稳的行驶。
+
+   在数字世界里，物理碰撞并不是完美的。因为游戏是按一帧一帧（离散的时间步）来计算的，物体的位置更新也是一步一步的。这会导致两个常见的问题：
+   1. 抖动（Jittering）：当你的角色紧贴着墙壁或站在地面上时，由于浮点数的精度问题，物理引擎可能会在某一帧认为你稍微穿透了墙壁，于是把你推出来；下一帧又可能因为推得稍微多了一点点，再次检测到碰撞...如此反复，角色就会产生高频的、不易察觉的抖动。
+
+   2. 卡住（Getting Stuck）：当你的角色沿着一面由多个部分拼接而成的墙壁滑动时，你可能会在两个墙壁模块的接缝处被卡住。这是因为在滑过接缝的瞬间，角色可能会极微小地穿透进角落里，然后物理引擎试图把它推出来，但推的方向不对，导致角色被卡在那个角落。
+
+   `Character Controller` 为了解决以上问题，实际上有两个边界：
+   - 一个是你在 Scene 视图里看到的那个胶囊体轮廓（我们称之为外边界）。
+   - 另一个是在它内部、缩小了 `Skin Width` 距离的一个看不见的内边界。
+
+   它的碰撞逻辑是这样的：
+
+   - 硬碰撞发生在内边界：角色绝对不会穿透这个内边界。这是保证角色不会穿墙的底线。
+
+   - 软缓冲发生在外边界和内边界之间：这个由 `Skin Width` 创造出来的间隙，就是一个合法的、允许被穿透的缓冲区。
+
+   当角色的外边界接触到墙壁并稍微穿透时，只要没有触及内边界，物理引擎就会认为这是正常的，不会立刻用一个很强的力把你弹出来。它会平滑地解决这个穿透，让你能顺着墙壁继续滑动。
+
+   - 对于抖动问题: 这个缓冲区吸收了那些微小的来回穿透，让角色能稳定地靠在墙上。
+
+   - 对于卡住问题: 当滑过接缝时，角色可以利用这个缓冲区平滑地越过那个微小的角落，而不会让它的硬核内边界被卡住。
+   :::
+
+- `Min Move Distance`（最小移动距离）
+
+   如果 `Move()` 函数计算出的单次移动距离小于这个值，这次移动就会被忽略。
+
+   这是一个性能优化选项。通常保持默认的 `0.001` 即可，很少需要修改。
+
+- `Center` / `Radius` / `Height`（中心 / 半径 / 高度）
+
+   共同定义了角色的碰撞胶囊体的形状和尺寸。
+
+- `Layer Overrides`（图层覆盖）
+
+   更精细地控制碰撞检测。
+
+   默认情况下，`Character Controller` 会遵循项目设置里的物理碰撞矩阵（Physics Collision Matrix）。在这里，你可以覆盖那个全局设置，强制让这个角色包含或排除与特定图层的碰撞。
+
+
+
+代码控制：
+
+`Character Controller` 完全依赖脚本来驱动。最核心的函数就是 `controller.Move()`。这个函数代替了其他位移函数（ex： `Transform.Translate()`），但本身移动的时候不会受重力影响，需要手动处理。
+
+该函数需要接受一个 `Vector3` 类型的参数（世界坐标系），并返回一个 `bool` 代表移动是否成功。例如：
+
+```csharp
+var controller = GetComponent<CharacterController>();
+controller.Move(moveDirection * moveSpeed * Time.deltaTime);
+```
+
+角色控制器还提供了一个 `isGrounded` 属性，用于检测角色是否站在地面上。例如：
+
+```csharp
+if (Input.GetButtonDown("Jump") && controller.isGrounded)
+{
+   // 根据物理公式 v = sqrt(h * -2 * g) 计算起跳速度，此处的 gravity 为负数
+   playerVelocity.y = Mathf.Sqrt(jumpHeight * -2f * gravity);
+}
+```
+
+此外还有可以获取移动信息的属性 `velocity`。这是个只读的 `Vector3`，表示角色在上一帧的实际移动速度，是根据你上一次调用 `Move()` 的结果计算出来的。例如：
+
+```csharp
+private void Update()
+{
+   // ... 移动代码 ...
+
+   // 获取当前速度的大小（速率）
+   float speed = controller.velocity.magnitude;
+   
+   // 将速率传递给 Animator 的 speed 参数
+   animator.SetFloat("Speed", speed);
+}
+```
+
+此外还有一个更简单，用于测试时使用的移动 API `SimpleMove()`。相比 `Move()`，`SimpleMove()` 会自动地、在内部为你施加一个向下的、符合全局物理设置的重力，但它会完全忽略你传入的参数向量的 Y 轴分量，导致不能实现跳跃等功能。
+
+`SimpleMove()` 需要接受一个 `speed` 参数，Unity 会自动帮你处理时间和重力。例如：
+```csharp
+controller.SimpleMove(moveDirection * moveSpeed);
+```
+
+碰撞器回调：
+
+`Character Controller` 可以像正常的 `Rigidbody` 一样使用碰撞器回调，但自身在与其他碰撞器检测时，不会触发 `OnCollisionEnter`，需要替换成 `OnControllerColliderHit`。例如：
+
+```csharp
+private void OnControllerColliderHit(ControllerColliderHit hit)
+{
+   Debug.Log("与 " + hit.gameObject.name + " 碰撞了");
+}
+```
+
+`ControllerColliderHit hit` 参数它包含了丰富的碰撞信息。例如：
+
+- `hit.gameObject`：你撞到的游戏对象。
+
+- `hit.collider`：你撞到的碰撞体组件。
+
+- `hit.point`：碰撞发生的世界坐标点。
+
+像正常的 `Rigidbody` 一样的触发器检测：
+
+```csharp
+private void OnTriggerEnter(Collider other) => print("触发器进入");
+
+private void OnTriggerStay(Collider other) => print("触发器持续");
+
+private void OnTriggerExit(Collider other) => print("触发器退出");
+```
+
+::: tip
+只有当你通过 `CharacterController.Move()` 或 `SimpleMove()` 函数移动角色，并且角色的胶囊体主动撞到其他带 `Collider` 的物体时，该碰撞回调才会被调用。
+
+但 `Collider` 物体的物体碰撞静止的角色控制器时，自身的 `OnCollisionEnter()` 仍会触发。
+
+:::
+

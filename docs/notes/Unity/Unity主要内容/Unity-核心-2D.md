@@ -11,8 +11,8 @@ Unity 支持多种图片格式，常见格式如下：
 | TGA       | 支持不失真压缩，体积小，效果清晰。|
 | BMP       | 几乎不压缩，文件体积大。|
 | TIF       | 基本不损失图片信息，但体积大。|
-| PSD       | Photoshop专用格式，可通过工具导入。|
-| EXR / GIF / HDR / IFF / PIC | Unity也支持这些格式。|
+| PSD       | Photoshop 专用格式，可通过工具导入。|
+| EXR / GIF / HDR / IFF / PIC | Unity 也支持这些格式。|
 
 最常用的格式为 JPG, PNG 和 TGA。
 
