@@ -32,6 +32,8 @@ Markdown 是一种轻量级的标记语言，用于格式化纯文本。它简�
 `行内代码`
 ```
 
+## 代码 icon 测试
+
 ::: code-group
 ```sh [pnpm]
 pnpm -v
@@ -98,4 +100,11 @@ for ($i = 1; $i -le 5; $i++) {
     Write-Host "Hello, World!"
 }
 ```
+## mermaid 图测试
 
+```mermaid
+graph LR
+    A[开始] --> B{判断}
+    B -->|条件1| C[结果1]
+    B -->|条件2| D[结果2]
+```

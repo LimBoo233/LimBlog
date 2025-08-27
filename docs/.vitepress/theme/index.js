@@ -11,7 +11,6 @@ import 'virtual:group-icons.css'
 import giscusTalk from 'vitepress-plugin-comment-with-giscus';
 import { useData, useRoute } from 'vitepress';
 
-
 export default {
   ...DefaultTheme,
   Layout: () => {
@@ -26,6 +25,7 @@ export default {
     app.component('ArticleMetadata' , ArticleMetadata)
   
   },
+
   setup() {
     // Get frontmatter and route
     const { frontmatter } = useData();
@@ -50,6 +50,7 @@ export default {
       //您可以使用“comment:true”序言在页面上单独启用它
       true
     );
-  }
+  },
+
 
 }

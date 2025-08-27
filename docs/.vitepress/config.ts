@@ -1,5 +1,6 @@
 import { defineConfig } from 'vitepress'
 import { groupIconMdPlugin, groupIconVitePlugin } from 'vitepress-plugin-group-icons'
+import { MermaidMarkdown, MermaidPlugin } from 'vitepress-plugin-mermaid';
 
 
 // https://vitepress.vuejs.org/config/app-configs
@@ -41,9 +42,11 @@ export default defineConfig({
             light: 'catppuccin-latte' 
         },
 
-        config: (md) => {
         // This is your existing plugin for code group icons
+        config: (md) => {
         md.use(groupIconMdPlugin);
+         md.use(MermaidMarkdown);
+        
 
         // 自动在 h1 标签后添加表头组件
         md.renderer.rules.heading_close = (tokens, idx, options, env, slf) => {
@@ -75,9 +78,16 @@ export default defineConfig({
                     go: `catppuccin:go`,
                     bash: `catppuccin:bash`,
                     // https://icon-sets.iconify.design/
-        }
-            })
+                    }
+            }),
+            MermaidPlugin(),
         ],
+        optimizeDeps: { // include mermaid
+            include: ['mermaid'],
+        },
+        ssr: {
+            noExternal: ['mermaid'],
+        },
     },
 
 
@@ -160,5 +170,6 @@ export default defineConfig({
 
     sitemap: {
         hostname: 'https://lim-blog-rho.vercel.app'
-    }
+    },
+
 })
