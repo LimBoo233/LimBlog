@@ -466,3 +466,121 @@ public class DoorController : MonoBehaviour
 - `Affected Agents`
 
     设置这个 Modifier 只对特定类型的 Agent 生效。
+
+## 运行时烘焙
+
+运行时烘焙是新版 AI Navigation 包最强大的功能之一，适用于程序化随机生成的关卡（如 Roguelike 游戏）或允许玩家在游戏中建造/破坏地形的场景（如沙盒游戏）。
+
+运行时烘培主要通过 `NavMeshSurface` 组件的 `BuildNavMesh()` 方法来实现。这个方法会使 `NavMeshSurface` 立即根据它当前的设置（如`Collect Objects`, `Include Layers`等）重新扫描指定的物体，并生成一个新的、更新后的 NavMesh。
+
+```csharp
+navMeshSurface.BuildNavMesh()
+```
+
+::: warning
+这是一个同步操作，意味着在它完成之前，游戏主线程会暂停。
+:::
+
+为了流程性，很多时候我们需要将复杂的 NavMesh 计算交给后台线程。
+
+核心 API 有：
+1. `NavMeshSurface.CollectSources()`
+
+    这个辅助方法会根据 `NavMeshSurface` 的设置（收集范围、层等），收集所有需要参与烘焙的物体信息，并返回一个列表。这是异步烘焙的第一步：准备原材料。
+
+2. `NavMeshBuilder.UpdateNavMeshDataAsync()`
+
+    这是执行异步烘焙的关键方法。它接收烘焙所需的各种数据（包括上面收集到的物体列表），然后开始在后台线程中计算 NavMesh。它会返回一个 `AsyncOperation` 对象，我们可以通过这个对象来监控烘焙进度。
+
+3. `AsyncOperation`
+
+    这是 Unity 中处理所有异步操作的标准对象。我们可以通过查询它的 `isDone` 属性来判断操作是否完成，或者通过 `progress` 属性获取当前进度（0~1）。
+
+::: details 代码示例
+```csharp [AsyncNavMeshBuilder.cs]
+using UnityEngine;
+using UnityEngine.AI;
+using System.Collections;
+using System.Collections.Generic;
+
+public class AsyncNavMeshBuilder : MonoBehaviour
+{
+    [SerializeField] private NavMeshSurface navMeshSurface;
+
+    private AsyncOperation navMeshUpdateOperation;
+    // 存储烘焙结果
+    private NavMeshData navMeshData;
+    private List<NavMeshBuildSource> sources = new List<NavMeshBuildSource>();
+
+    void Start()
+    {
+        // 在开始时，为 Surface 创建一个新的 NavMeshData 实例来存储烘焙结果
+        navMeshData = new NavMeshData();
+        navMeshSurface.navMeshData = navMeshData;
+
+        // 在游戏开始时就进行一次初始的异步烘焙
+        StartCoroutine(UpdateNavMesh());
+    }
+
+    // 你可以在任何需要更新NavMesh的时候（比如放置建筑后）调用这个公共方法
+    public void RequestNavMeshUpdate()
+    {
+        StartCoroutine(UpdateNavMesh());
+    }
+
+    // 异步更新 NavMesh 的协程
+    private IEnumerator UpdateNavMesh()
+    {
+        // --- 第1步: 收集需要烘焙的源数据 ---
+        // 参数是烘焙的范围和变换，通常使用组件自身的设置即可
+        var buildSettings = navMeshSurface.GetBuildSettings();
+        var bounds = navMeshSurface.CalculateWorldBounds(sources);
+        navMeshSurface.CollectSources(sources);
+
+        // --- 第2步: 开始异步烘焙操作 ---
+        navMeshUpdateOperation = NavMeshBuilder.UpdateNavMeshDataAsync(
+            navMeshData,      // 要更新的 NavMeshData
+            buildSettings,    // 烘焙设置
+            sources,          // 烘焙源列表
+            bounds            // 烘焙范围
+        );
+
+        // --- 第3步: 监控烘焙过程 ---
+        while (!navMeshUpdateOperation.isDone)
+            yield return null; 
+
+        if (navMeshUpdateOperation.isDone)
+            Debug.Log("异步烘焙完成！");
+    }
+
+}
+```
+:::
+
+## 与动画系统的配合
+
+对于移动动画来说，可以提供通过 `NavMeshAgent` 的速度信息来驱动动画参数：
+```csharp
+animator.SetFloat("Speed", navMeshAgent.velocity.magnitude);
+```
+
+同时使用 `NavMesh Agent` 和带有 `Root Motion` 的 `Animator` 可能会产生竞争条件，因为两者都会尝试在每帧更新中移动 `Transform`。
+
+解决方案有两种，核心原则是信息流应单向传递：要么由 `Agent` 控制角色移动，动画跟随其运动；要么由动画控制角色移动，`Agent` 负责路径模拟。否则会形成难以调试的反馈回路。
+
+## 与物理系统的配合
+
+你无需为 `NavMesh Agent` 添加物理碰撞器也能让它们互相避开。导航系统会模拟 `Agent` 与障碍物及静态世界的交互，该“静态世界”即已烘焙的 `NavMesh`。
+
+如果你希望 `NavMesh Agent` 推动物理对象或触发物理触发器，请执行以下操作：
+
+1.  为代理添加 `Collider` 组件。
+2.  为代理添加 `Rigidbody` 组件。
+3.  启用代理 `Rigidbody` 的 `Is Kinematic` 属性 —— 这一步非常重要，`Kinematic` 意味着刚体的运动由其他系统控制，而非物理模拟本身。
+
+如果 `NavMesh Agent` 的 `Rigidbody` 未启用 `Kinematic`，则会出现竞争条件，代理和刚体可能会同时尝试移动 `Agent`，从而导致难以预测的行为。
+
+你也可以使用 `NavMesh Agent` 驱动玩家角色而不使用物理系统：
+
+*   将玩家 `Agent` 的 `avoidance priority` 设置为较低数值（优先级高），以便玩家能穿过人群。
+*   通过修改 `NavMeshAgent.velocity` 来移动玩家，这样其他 `Agent` 能预测玩家的运动并进行避让。
