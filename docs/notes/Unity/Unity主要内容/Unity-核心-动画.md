@@ -1517,7 +1517,7 @@ animator.SetIKRotation(AvatarIKGoal goal, Quaternion goalRotation)
 
 `OnAnimatorMove()` 是 Unity 动画系统中另一个的回调函数，用来接管和修改角色的根运动（Root Motion），控制角色在世界中的整体移动。
 
-和 `OnAnimatorIK(int layerIndex)` 一样，它也是在 `Update()` 之后 `LateUpdate()` 之前被调用，并且也是在每帧的状态机和动画处理完成后调用。其中，`OnAnimatorIK(int layerIndex)` 的调用时机更靠前。
+和 `OnAnimatorIK(int layerIndex)` 一样，它也是在 `Update()` 之后 `LateUpdate()` 之前被调用，并且也是在每帧的状态机和动画处理完成后调用。只要勾选了 `Apply Root Motion`，该回调就会调用。其中，`OnAnimatorIK(int layerIndex)` 的调用时机更靠前。
 
 当然，你也可以在 `Update()` 中进行运动的计算与处理。如果动画本身有移动（根运动），你还添加想额外的运动逻辑时，推荐在 `OnAnimatorMove()` 中进行处理。
 

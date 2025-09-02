@@ -123,9 +123,10 @@ export default defineConfig({
                             { text: 'Untiy-UGUI', link: '/notes/Unity/Unity主要内容/Unity-UGUI' },
                             { text: 'Untiy-核心-2D', link: '/notes/Unity/Unity主要内容/Unity-核心-2D' },
                             { text: 'Untiy-核心-动画', link: '/notes/Unity/Unity主要内容/Unity-核心-动画' },
-                            { text: 'Unity-导航寻路系统', link: '/notes/Unity/Unity主要内容/Unity-导航寻路系统' },
+                            { text: 'AI Navigation文档翻译', link: '/notes/Unity/Unity主要内容/AI Navigation文档翻译'},
                             { text: 'Tilemap', link: '/notes/Unity/Unity主要内容/Tilemap' },
                             { text: '2D PSD Importer', link: '/notes/Unity/Unity主要内容/2D PSD Importer' },
+                            { text: 'Unity-AI Navigation', link: '/notes/Unity/Unity主要内容/Unity-AI Navigation' },
                         ]
                     },
                     {

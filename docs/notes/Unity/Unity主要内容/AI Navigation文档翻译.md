@@ -1,8 +1,5 @@
-# Unity-导航寻路系统
+# AI Navigation 文档翻译
 
-在游戏中，你经常会看到敌人、NPC 或同伴角色能够智能地绕过障碍物，从 A 点移动到 B 点。它们不是简单地直线行走，而是能找到一条可通行的路径。实现这种行为的核心技术就是导航寻路系统。
-
-Unity 的导航系统主要基于一个叫做导航网格（Navigation Mesh, 简称 NavMesh）的概念。
 
 官方文档：[AI Navigation](https://docs.unity3d.com/Packages/com.unity.ai.navigation@2.0/manual/index.html)
 
@@ -456,7 +453,7 @@ public class MoveTo : MonoBehaviour
 1.  为该对象添加 `NavMesh Obstacle` 组件，让避让系统能够识别并考虑该障碍物。
 2.  如果该游戏对象同时拥有 `Rigidbody` 和 `NavMesh Obstacle`，`Obstacle` 会自动从 `Rigidbody` 获取速度信息，让 `NavMesh Agent` 能预测并避让移动障碍。
 
-### 构建高度网格以精确放置角色
+### 构建高度网格
 
 在导航过程中，`NavMesh Agent` 会被限制在 `NavMesh` 曲面上行走。由于 `NavMesh` 只是可行走空间的近似表示，某些细节（如楼梯）在烘焙后会被简化为斜面。如果你的游戏需要角色在复杂地形上更加精确地放置，可以为 `NavMesh` 添加 `HeightMesh`，或在烘焙 `NavMesh` 时一并构建 `HeightMesh`。
 
@@ -481,3 +478,187 @@ public class MoveTo : MonoBehaviour
 3.  完成后，点击 `Bake`。
 
 烘焙完成后，`NavMesh` 以蓝色覆盖层显示，`HeightMesh` 以粉色覆盖层显示。
+
+### Navigation How-Tos
+
+让 `NavMeshAgent` 移动到目的地
+::: details 带我查看代码
+```csharp [MoveDestination.cs]
+using UnityEngine;
+using UnityEngine.AI;
+
+public class MoveDestination : MonoBehaviour {
+
+    public Transform goal;
+
+    void Start () {
+        NavMeshAgent agent = GetComponent<NavMeshAgent>();
+        agent.destination = goal.position;
+    }
+}
+```
+:::
+
+通过点击移动代理
+::: details 带我查看代码
+```csharp [MoveToClickPoint.cs]
+using UnityEngine;
+using UnityEngine.AI;
+
+public class MoveToClickPoint : MonoBehaviour {
+    NavMeshAgent agent;
+
+    void Start() {
+        agent = GetComponent<NavMeshAgent>();
+    }
+
+    void Update() {
+        if (Input.GetMouseButtonDown(0)) {
+            RaycastHit hit;
+
+            if (Physics.Raycast(Camera.main.ScreenPointToRay(Input.mousePosition), out hit, 100)) {
+                agent.destination = hit.point;
+            }
+        }
+    }
+}
+```
+:::
+
+让 Agent 进行简单的巡逻
+
+::: details 带我查看代码
+```csharp [Patrol.cs]
+using UnityEngine;
+using UnityEngine.AI;
+using System.Collections;
+
+
+public class Patrol : MonoBehaviour {
+
+    public Transform[] points;
+    private int destPoint = 0;
+    private NavMeshAgent agent;
+
+
+    void Start () {
+        agent = GetComponent<NavMeshAgent>();
+
+        // Disabling auto-braking allows for continuous movement
+        // between points (i.e. the agent doesn't slow down as it
+        // approaches a destination point).
+        agent.autoBraking = false;
+
+        GotoNextPoint();
+    }
+
+
+    void GotoNextPoint() {
+        // Returns if no points have been set up
+        if (points.Length == 0)
+            return;
+
+        // Set the agent to go to the currently selected destination.
+        agent.destination = points[destPoint].position;
+
+        // Choose the next point in the array as the destination,
+        // cycling to the start if necessary.
+        destPoint = (destPoint + 1) % points.Length;
+    }
+
+
+    void Update () {
+        // Choose the next destination point when the agent gets
+        // close to the current one.
+        if (!agent.pathPending && agent.remainingDistance < 0.5f)
+            GotoNextPoint();
+    }
+}
+```
+::: 
+
+动画与导航的结合
+
+```csharp [LocomotionSimpleAgent.cs]
+[RequireComponent (typeof (NavMeshAgent))]
+[RequireComponent (typeof (Animator))]
+public class LocomotionSimpleAgent : MonoBehaviour {
+    Animator anim;
+    NavMeshAgent agent;
+    Vector2 smoothDeltaPosition = Vector2.zero;
+    Vector2 velocity = Vector2.zero;
+
+    void Start ()
+    {
+        anim = GetComponent<Animator> ();
+        agent = GetComponent<NavMeshAgent> ();
+        // 不要自动更新位置，手动控制
+        agent.updatePosition = false;
+    }
+
+    void Update ()
+    {
+        Vector3 worldDeltaPosition = agent.nextPosition - transform.position;
+
+        // 将 worldDeltaPosition 映射到局部空间
+        float dx = Vector3.Dot (transform.right, worldDeltaPosition);
+        float dy = Vector3.Dot (transform.forward, worldDeltaPosition);
+        Vector2 deltaPosition = new Vector2 (dx, dy);
+
+        // 对 deltaMove 进行低通滤波，平滑处理
+        float smooth = Mathf.Min(1.0f, Time.deltaTime/0.15f);
+        smoothDeltaPosition = Vector2.Lerp (smoothDeltaPosition, deltaPosition, smooth);
+
+        // 如果时间前进，则更新速度
+        if (Time.deltaTime > 1e-5f)
+            velocity = smoothDeltaPosition / Time.deltaTime;
+
+        bool shouldMove = velocity.magnitude > 0.5f && agent.remainingDistance > agent.radius;
+
+        // 更新动画参数
+        anim.SetBool("move", shouldMove);
+        anim.SetFloat ("velx", velocity.x);
+        anim.SetFloat ("vely", velocity.y);
+
+        GetComponent<LookAt>().lookAtTargetPosition = agent.steeringTarget + transform.forward;
+    }
+
+    void OnAnimatorMove ()
+    {
+        // 将位置更新为代理的位置
+        transform.position = agent.nextPosition;
+    }
+}
+```
+
+如果希望运动主导由动画的根运动主导，可以做以下更改：
+
+```csharp [LocomotionSimpleAgent.cs]
+void OnAnimatorMove ()
+{
+    // 基于动画的运动更新位置，使用导航表面的高度
+    Vector3 position = anim.rootPosition;
+    position.y = agent.nextPosition.y;
+    transform.position = position;
+}
+```
+
+把角色拉向代理，在 `Update()` 的末尾添加：
+```csharp 
+if (worldDeltaPosition.magnitude > agent.radius)
+    transform.position = agent.nextPosition - 0.9f * worldDeltaPosition;
+```
+
+或者把代理拉向角色：
+```csharp
+if (worldDeltaPosition.magnitude > agent.radius)
+    agent.nextPosition = transform.position + 0.9f * worldDeltaPosition;
+```
+
+## Navigation Interface
+
+### Navigation 窗口
+
+该窗口用于配置场景中使用的 `NavMesh` 代理类型和区域类型，是构建 AI 路径系统的核心工具之一。
+
+访问方式：在主菜单中点击 Window > AI > Navigation

@@ -50,6 +50,16 @@ Debug.DrawRay(a, transform.forward, Color.red);
         time += Time.deltaTime;
         result = Mathf.Lerp(start, end, time);
         ```
+    - `Mathf.MoveTowards`
+        - 让一个当前值，以不超过一个固定的最大速度，向一个目标值移动，并且保证不会超过这个目标值。
+        ```csharp
+        public static float MoveTowards(
+            float current, 
+            float target, 
+            float maxDistanceDelta);
+        ```
+        - `float maxDistanceDelta` 它定义了这一步（通常是一帧）最多能移动多少距离，这不是一个百分比，而是一个具体的数值。可以视为速度。
+        -  该方法是匀速移动：每一次调用，它都会使当前值增加或减少一个固定的量（`maxDistanceDelta`）。
 ### 三角函数
 1. 弧度角度相互转化
     ```c#
