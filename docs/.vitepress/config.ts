@@ -127,6 +127,7 @@ export default defineConfig({
                             { text: 'Tilemap', link: '/notes/Unity/Unity主要内容/Tilemap' },
                             { text: '2D PSD Importer', link: '/notes/Unity/Unity主要内容/2D PSD Importer' },
                             { text: 'Unity-AI Navigation', link: '/notes/Unity/Unity主要内容/Unity-AI Navigation' },
+                            { text: 'Unity-InputSystem', link: '/notes/Unity/Unity主要内容/Unity-InputSystem' }
                         ]
                     },
                     {
