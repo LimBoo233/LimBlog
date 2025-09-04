@@ -82,6 +82,12 @@ if (Keyboard.current.anyKey.wasPressedThisFrame)
     | `Value` | 用于表示连续变化的、可以是任意维度的模拟信号。可以代表一个具体的数值。 |
     | `Pass Through` | 类似于 `Value`，区别在于如果有多个设备绑定这个 Action，它会将所有设备的输入都传递给绑定的事件。 |
 
+    ::: details `Pass Through` 不消歧 (No Disambiguation)
+    如果一个 `Pass Through` Action 同时绑定了 W 和 D 键，当你同时按下它们时，这个 Action 的 `.performed` 事件会触发两次：一次由 W 键触发，一次由 D 键触发。它不会像 `Value` 类型那样将它们合并成一个对角线向量。
+
+    当 `Pass Through` 的事件被触发时，它的价值不在于 `ReadValue()`，而在于从 `CallbackContext` 中获取那个触发了事件的物理控件本身。
+    :::
+
 - `Control Type`
 
     输入系统会根据 `Control Type` 筛选出对于的物理控件，并会把从这些控件接收到的信号转换成一种特定的数据格式。
@@ -109,7 +115,7 @@ if (Keyboard.current.anyKey.wasPressedThisFrame)
     此外还有一个 `Initial State Check`。默认情况下，如果在一个 Action 被启用时，它所绑定的某个按键已经处于被按下的状态，那么默认情况下 Action 对此一无所知。开启 `Initial State Check` 后，Action 会在启用时立即检查所有绑定的按键状态，并根据这些状态决定是否触发事件。
 
 ::: info `InputAction` 的事件
-1. `Started`：按键首次被按下时触发。
+1. `Started`：按下时触发。
 2. `Performed`：满足条件时触发。
 3. `Canceled`：总是在用户松开按键等导致当前输入行为结束时触发。
 :::
@@ -197,4 +203,358 @@ Project Settings -> Input System Package 里的这些全局设置会影响项目
     - 注意：从列表中移除设备不会神奇地让你的游戏不支持它，只会让 Input System 主动忽略它。
 
 
-除了可以在 Actions 和 Bindings 覆盖的其他选项，其余未选项通常保持默认即可。（ex：`Scroll Delta Behavior` 滚轮增量行为、`Compensate Orientation` 移动设备传感器方向补偿）
+除了可以在 Actions 和 Bindings 覆盖的其他选项，其余未选项通常保持默认即可。（ex：`Scroll Delta Behavior` 滚轮增量行为、`Compensate Orientation` 移动设备传感器方向补偿）'
+
+## `InputActionAsset`
+
+`InputActionAsset` 是 Unity 新版输入系统的中央枢纽和核心大脑。它是一个独立于代码的资产文件，以一种可视化的方式，定义了您游戏中所有的输入逻辑。
+
+它的核心设计思想是解耦：将玩家的意图（如跳跃）与具体的物理操作（如按下空格键）分离开来，并通过一个可配置的中间层将它们关联起来。
+
+在之前的介绍中，我们也提到过输入配置文件（`.inputactions`）并隐隐提到如何使用，此处会是一个更加完整的介绍。
+
+**创建 `.inputactions` 文件：**
+
+右键单击项目窗口中的任意位置，选择 Create -> Input Actions。双击打开编辑。
+
+> 本质是一个 `.json` 文件。
+
+**解剖 `InputActionAsset` 结构：**
+
+一个 `.inputactions` 文件主要由三个层级构成，从宏观到微观依次是：
+
+1. `Action Maps`
+
+    - `Action` 的集合。每个 `Action Map` 代表一种特定的游戏状态或上下文。
+
+    - 核心用途: 管理游戏状态。你可以创建多个 `Action Map`，例如：
+
+        - `InGame`: 包含所有在实际游戏中（跑、跳、攻击）的 Action。
+
+        - `InMenu`: 包含所有在菜单中（上/下/左/右导航、确认、取消）的 Action。
+
+        - `Driving`: 包含所有在驾驶载具时（油门、刹车、转向）的 Action。
+
+2. `Actions`
+
+    - 代表一个抽象的、与逻辑相关的命令，即玩家的意图。它是游戏代码直接与之交互的对象。
+
+    - 一个 Action 会对应一个 `InputAction` 对象，类似蓝图与实例的关系。
+
+3. `Bindings`
+
+    - 连接抽象操作和物理按键的桥梁。一个 Action 可以有多个 Binding。
+
+**创建和管理 创建和管理这些 `Control Schemes`：**
+
+可以在右上角为特定的设备创建单一的 `Control Scheme`，然后可以在 Binding 里选择包含该 `Control Scheme` 的绑定。
+
+::: info 什么是 ` Control Schemes`
+
+您可以把它想象成一套完整的游玩方”或硬件组合。它将您项目中的输入设备和按键绑定（Bindings）打包成一个个逻辑分组。
+
+常见的 `Control Schemes` 包括：
+- Keyboard&Mouse (键鼠)
+- Gamepad (手柄)
+- Touchscreen (触摸屏)
+- VR (虚拟现实)
+:::
+
+## `PlayerInput` 组件
+
+`PlayerInput` 组件是一个简单的输入管理器，你只需要给它分配一个 `InputActionAsset`，然后在里面添加事件，就可以做到响应用户输入。如果不分配，会自动使用 Project-wide Actions。
+
+::: tip
+通常来说，最常用的方法还是把 `.inputactions` 文件编译成 C# 文件，然后在代码里监听事件。
+:::
+
+
+里面最值得一提的属性就是 `Behavior`，它决定了 `PlayerInput` 组件如何处理输入事件：
+
+| 属性 | 描述 |
+| --- | --- |
+| `Send Messages` | 调用脚本中名为 On[Action名] 的函数 (例如 `OnJump`)。|
+| `Broadcast Messages` | 和上面一样，但也会通知子对象。 |
+| `Invoke Unity Events` | 在 Inspector 中显示事件，让你手动拖拽要调用的函数，类似 UI 按钮。 |
+| `Invoke C# Events` | 暴露 C# 事件，供其他脚本在代码中订阅。 |
+
+`Camera` 属性和 `UI Input Module` 都是与 UI 交互相关的选项。通常不需要手动设置，其会自动将 `Camera` 设为主摄像机，`UI Input Module` 会自动与 `EventSystem` 关联，只你在需要覆盖的时候才需要手动设置。
+
+## 生成 C# 类
+
+使用根据 `InputActionAsset` 生成的 C# 文件来管理输入是最推荐的做法。
+
+你只需要在 Project 窗口中选中 `.inputactions` 文件，然后在 Inspector 里点击 `Generate C# Class` 按钮即可。
+
+| 生成选项 | 描述 | 建议 |
+|---|---|---|
+| C# Class File | 存放路径  | 决定好的脚本目录，如 Assets/Scripts/Input/ |
+| C# Class Name | 生成的 C# 类的名字 | 设置为符合C#命名规范的名字，如 `GameInputs` |
+| C# Class Namespace | 命名空间 | 专业的做法是填上你项目的命名空间，比如 `[游戏名字].Input` |
+
+## 使用生成的 C# 类
+
+我们只需要将生成的 C# 类实例化，然后监听事件就可以了。
+
+**代码示例**
+
+实例化一个 `PlayerControls` 类：
+```csharp
+public class PlayerController : MonoBehaviour
+{
+    // 声明一个私有变量来持有 PlayerControls 的实例
+    private PlayerControls playerControls;
+
+    private void Awake()
+    {
+        // 创建 PlayerControls 类的一个新实例
+        playerControls = new PlayerControls();
+    }
+    
+}
+```
+
+为了让输入系统开始工作，你必须启用（Enable）你想使用的 `Action Map`。同样，为了避免在对象被销毁后还继续监听输入（这会引发错误和内存泄漏），你必须在最后禁用（Disable）它们。例如：
+
+```csharp
+private void OnEnable()
+{
+    // 启用 "Player" Action Map
+    // 这里的 .Player 与你在编辑器里创建的 Action Map 名称完全对应
+    playerControls.Player.Enable();
+}
+
+private void OnDisable()
+{
+    // 禁用 "Player" Action Map
+    playerControls.Player.Disable();
+}
+```
+
+现在，我们可以开始真正地对输入做出响应了。
+
+对于一次性动作（如跳跃、开火），推荐采用事件驱动模式。例如：
+
+```csharp
+// 在 OnEnable 中订阅事件
+private void OnEnable()
+{
+    playerControls.Player.Enable();
+
+    // 订阅 Jump Action 的 performed 事件
+    playerControls.Player.Jump.performed += OnJump; 
+}
+
+// 在 OnDisable 中取消订阅
+private void OnDisable()
+{
+    playerControls.Player.Disable();
+
+    // 取消订阅
+    playerControls.Player.Jump.performed -= OnJump;
+}
+
+// 当 Jump.performed 事件被触发时，系统会自动调用这个方法
+private void OnJump(InputAction.CallbackContext context)
+{
+    // 跳跃逻辑...
+}
+```
+
+对于持续性动作（如移动、观察），我们可以在 `Update()` 或 `FixedUpdate()` 中主动读取它的值。例如：
+
+```csharp
+private Vector2 moveInput;
+
+private void Update()
+{
+    // ReadValue<Vector2>() 会返回一个 Vector2，这是在编辑器里设置的
+    moveInput = playerControls.Player.Move.ReadValue<Vector2>();
+}
+```
+
+## `InputAction.CallbackContext`
+
+每当一个输入事件（`started`, `performed`, `canceled`）被触发时，输入系统就会把与该事件相关的所有上下文信息打包成一个 `CallbackContext` 对象，然后作为参数传递给你的回调方法。
+
+`CallbackContext` 是一个结构体，存储了许多有用的信息：
+| 属性/方法 | 描述 | 实用价值 |
+|---|---|---|
+| `phase` |  一个枚举（`InputActionPhase`），告诉你触发这次回调的是哪个阶段的事件。它的值会是 `Started`, `Performed`, `Canceled` 之一。 | 它允许你用一个方法注册一个 Action 的所有事件，然后用 `switch` 或 `if` 语句来区分处理。 |
+| `ReadValue<T>()` | 用于读取当前 Action 的值，必须与你在编辑器里设置的 `Control Type` 匹配。 | 获取非按钮类型输入的重要方法。 |
+| `interaction` | 一个引用，指向具体是哪个 `Interaction` 成功触发了这次的 `Performed` 事件。 | 实现判断点击长按等复杂逻辑。 |
+| `control` | 触发此次事件的那个具体的物理控件（按键、摇杆、鼠标等）。 | 最典型的应用场景是在制作按键自定义界面时。 |
+| `action` | 一个引用，指回触发这次事件的 `InputAction` 对象本身。 | 当一个回调方法绑定到多个不同 Action 的事件上时，可以区分是哪个 Action 触发了事件。 |
+
+**代码示例**
+
+::: code-group
+
+
+```csharp [Ex1.cs]
+// --- 按下、等待、松开 ---
+private void OnEnable()
+{
+    // 将同一个方法订阅到所有三个事件上
+    playerControls.Player.Fire.started += OnFire;
+    playerControls.Player.Fire.performed += OnFire;
+    playerControls.Player.Fire.canceled += OnFire;
+}
+
+private void OnFire(InputAction.CallbackContext context)
+{
+    switch (context.phase)
+    {
+        case InputActionPhase.Started:
+            // 按下瞬间
+            Debug.Log("开始蓄力..."); 
+            break;
+        case InputActionPhase.Performed:
+            // 满足交互条件（比如长按完成）
+            Debug.Log("开火！");     
+            break;
+        case InputActionPhase.Canceled:
+            // 松开按键
+            Debug.Log("停止开火/取消蓄力。"); 
+            break;
+    }
+}
+```
+
+```csharp [Ex2.cs]
+// --- 点按与长按 ---
+private void OnAttack(InputAction.CallbackContext context)
+{
+    // 为同一个 Action 添加两个相同按键的绑定
+    if (context.interaction is HoldInteraction)
+    {
+        // 执行重攻击
+        HeavyAttack(); 
+    }
+    else 
+    {
+        // 执行轻攻击
+        LightAttack(); 
+    }
+}
+```
+
+```csharp [Ex3.cs]
+// --- 多个 Action 共用一个回调 ---
+private void OnEnable()
+{
+    // 将所有三个事件，全部订阅到同一个“中央处理”方法上
+    playerControls.UI.Submit.performed += OnUIAction;
+    playerControls.UI.Cancel.performed += OnUIAction;
+    // 这里用 started：如果玩家按住了方向键，导航音效只在他最初按下按键的那一刻播放一次。
+    playerControls.UI.Navigate.started += OnUIAction; 
+}
+
+// 这就是我们那个“中央处理”方法
+private void OnUIAction(InputAction.CallbackContext context)
+{
+    // 根据 context.action 返回一个 AudioClip
+    AudioClip clipToPlay = context.action switch
+    {
+        var action when action == playerControls.UI.Submit    => submitSound,
+        var action when action == playerControls.UI.Cancel    => cancelSound,
+        var action when action == playerControls.UI.Navigate  => navigateSound,
+        _ => null 
+    };
+
+    // 如果成功匹配到了一个音效，就播放它
+    if (clipToPlay is not null)
+    {
+        audioSource.PlayOneShot(clipToPlay);
+    }
+}
+
+// 在 OnDisable 中同样取消订阅
+private void OnDisable()
+{
+    playerControls.UI.Submit.performed -= OnUIAction;
+    playerControls.UI.Cancel.performed -= OnUIAction;
+    playerControls.UI.Navigate.started -= OnUIAction;
+}
+```
+
+:::
+
+## `PlayerInputManager`
+
+`PlayerInputManager` 是一个全自动的本地多人游戏管理器。它的核心职责是：
+
+<br>
+
+```mermaid
+graph LR
+    B[等待新玩家加入] --> C[自动创建玩家] --> D[分配输入设备] --> E[管理玩家列表] --> B
+```
+<br>
+
+`PlayerInput` 管理单个玩家的输入，而 `PlayerInputManager` 可以管理多个 PlayerInput 实例的生成和设备分配。
+
+::: tip
+`PlayerInput` 可以单独完成绝大部分场景，但对于部分更复杂的场景，通常会利用 `PlayerInputManager` 同时结合手写代码。例如：
+
+`PlayerInputManager` 的 `Player Prefab` 属性，设置的不是一个完整的、可玩的角色，而是一个非常轻量的、只包含基础逻辑的“玩家配置器（Player Configurator）”对象。这个“玩家配置器”对象的脚本，在 `Start()` 时会接管后续流程，比如激活角色选择 UI。当玩家在 UI 中完成所有选择后，“玩家配置器”脚本才会根据玩家的选择，去实例化真正的角色 Prefab，将输入设备交接过去，然后自我销毁。
+
+当然你也可以完全自己手写本地联机功能。
+:::
+
+属性中最值得注意的是 Joinning 标签下的属性，它决定了新玩家如何加入游戏：
+- `Join Behavior`
+    | 选项 | 描述 |
+    |---|---|
+    | `Join Players When Button Is Pressed` | 按任意键加入游戏。|
+    | `Join Players When Join Action Is Triggered` | 需要指定一个 Action。 |
+    | `Join Players Manually` | 将玩家加入的全部控制权交给你。 |
+
+    手动加入时你需要在你自己的游戏逻辑脚本中，在合适的时机，调用 `PlayerInputManager` 的 API 函数（ex: `JoinPlayer()`）来手动添加玩家。
+
+- `Player Prefab`
+
+    指向带 `PlayerInput` 组件的玩家 Prefab。
+
+    ::: tip
+    很多时候，我们不会使用 `PlayerInput` 组件，而是使用生成的 C# 类来管理输入。此时如果想要使用 `PlayerInputManager`，你的玩家 Prefab 需要同时挂载 `PlayerInput` 组件和你的输入管理脚本，`PlayerInput` 的核心职责转变接受设备和保存玩家信息。
+
+    在你自己的 `PlayerController.cs` 脚本中，你需要做一个小小的改动，来将两者连接起来。
+
+    ::: details 改动示例
+    ```csharp 
+    // 获取同一个游戏对象上的 PlayerInput 组件
+    playerInput = GetComponent<PlayerInput>();
+
+    // 像往常一样，创建我们自己的 PlayerControls 实例
+    playerControls = new PlayerControls();
+
+    // ----------------------------------------------------
+    // --- 这就是连接两者的魔法所在 ---
+    // ----------------------------------------------------
+    // 让 playerControls 不再监听所有设备，
+    // 专门监听 PlayerInputManager 分配给的设备
+    playerControls.devices = playerInput.devices; // [!code highlight]
+    ```
+    :::
+
+    - `Joining Enabled By Default`
+
+        决定了 `PlayerInputManager` 在游戏场景开始时是否应该立即开始工作。
+
+    - `Limit Number of Players`
+
+        限制最大玩家数量。
+
+此外还有一个 Split-Screen 标签用于分屏。使用该标签下的属性有一个重要的前提：你的玩家预制体本身必须包含一个 `Camera` 组件。
+
+场景上往往只有一个 `PlayerInputManager`，且该类包含一个 `instance` 静态属性，可以在代码中随时访问它。例如：
+
+```csharp
+PlayerInputManager.instance.OnPlayerJoined += (playerInput) =>
+{
+    print($"新玩家加入，当前总人数：{PlayerInputManager.instance.playerCount}");
+};
+```
+
+## 与 UGUI
