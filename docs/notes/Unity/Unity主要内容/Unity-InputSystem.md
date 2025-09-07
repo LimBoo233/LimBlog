@@ -558,3 +558,86 @@ PlayerInputManager.instance.OnPlayerJoined += (playerInput) =>
 ```
 
 ## 与 UGUI
+
+
+#### 事件系统
+
+在新版的输入系统中，EventSystem 的输入组件已经被更新为 `Input System UI Input Module` 以适应新的输入系统。
+
+新输入组件的参数大都保持默认即可。这里介绍两个常用的：
+
+1. `Pointer Behavor`
+
+    控制系统如何处理来自不同设备的指针（鼠标、触摸、画笔），尤其是在可能同时存在多种指针的情况下。
+
+    - `Single Mouse Or Pen But Multi Touch And Track`：鼠标和画笔等都视为单一指针，但触摸屏可以有多个指针。
+    - `Single Unified Pointer`：始终单一指针。
+    - `All Pointers As Is`: 所有指针都独立存在。
+
+2. `Actions Asset`
+
+    指定一个 `.inputactions` 文件作为UI输入的唯一来源。可以使用项目默认创建的输入资产。
+
+    - `Point`, `Left Click`, `Move`, `Submit`, `Cancel` 等
+
+        将上面 `Actions Asset` 中的具体 Action 与UI模块需要的基础功能（如移动光标、确认、取消）一一对应起来。
+
+::: details 其他选项
+| 选项 | 描述 | Tip |
+|---|---|---|
+| `Send Pointer Hover To Parent` | 当鼠标指针悬停在一个UI元素上，但该元素本身不处理悬停事件（`IPointerEnterHandler`）时，这个选项决定了是否要将该事件“冒泡”给它的父级对象去处理。 | 保持默认勾选即可。这是一个用于处理复杂嵌套UI的边缘情况的选项，多数情况下你不需要关心它。|
+| `Move Repeat Delay` | 当你按住一个导航键（如键盘方向键或手柄摇杆）时，在开始连续移动UI焦点之前，需要等待的初始延迟时间（秒）。 | 就像在文本框里按住一个字母键，字母会先输入一个，停顿一下，然后才开始连续输入。这个就是那个停顿的时间。 |
+| `Move Repeat Rate` | 在 `Move Repeat Delay` 结束后，UI焦点每秒移动的次数。值越高，在菜单中按住方向键时，光标移动得越快。| - |
+| `XR Tracking Origin` |  仅用于VR/AR应用。它指定了用于UI交互的3D指针的坐标系原点。 | 如果你不是在做VR/AR项目，可以完全忽略这个字段。|
+| `Deselect On Background Click` | 当你点击屏幕上没有任何UI元素的地方时，是否要取消当前被选中的UI元素（比如一个输入框或按钮）的选中状态。 | 建议保持勾选。这符合所有用户的操作习惯。|
+| `Scroll Delta Per Tick` | 这个属性定义了，对于那些以离散的格 (Tick) 为单位来报告滚动的设备（最典型的就是 Windows 系统下的传统鼠标滚轮），滚动一格应该被转换成多大的滚动数值。 | 当 Project Settings 里的 `Scroll Delta Behavior` 设置为 `Uniform Across All Platforms` (跨平台统一) 时，`InputSystemUIInputModule` 就会介入，将来自 Windows 鼠标的那种大数值的滚动信号，转换成更标准化的增量值。`Scroll Delta Per Tick` 就是这个转换过程中的缩放系数”或灵敏度。|
+:::
+
+此外，如果在制作同屏多人游戏，需要将 `EventSystem` 组件替换为 `MultiplayerEventSystem`。它的核心作用是让多个玩家（多个 `PlayerInput`）能够同时、独立地与同一个 UGUI 画布 (`Canvas`) 进行交互。
+
+该组件相比 `EventSystem` 组件多了一个参数 `Player Root`——这是一个性能优化和范围限定的设置，它用来告诉 `MultiplayerEventSystem` 只需要在这个指定的 `GameObject` 下面去寻找玩家（带有 `PlayerInput` 的对象）。
+
+#### On-Screen
+
+On-Screen 组件使你可以非常轻松地制作移动系统的输入系统与 UI 并将其关联起来。
+
+On-Screen 组件会通过将触摸屏的输入模拟为键盘或手柄的按键输入。例如，当点击 Fire 按钮时，On-Screen 组件会模拟按下一个指定的按键（如左键），从而触发游戏中的开火逻辑。
+
+| 组件 | 描述 | 关键属性 |
+|---|---|---|
+| `On-Screen Button` | 让一个 UGUI 元素（如按钮）表现得像一个物理按键。 | `Control Path`：模拟的物理按键。 |
+| `On-Screen Stick` | 让 UGUI 元素表现得像一个物理摇杆，用于控制移动。 | · `Control Path`：模拟的物理摇杆（ex：`<Gamepad>/leftStick`）；<br>· `Movement Range`：摇杆的活动范围。 |
+
+## 输入调试器
+
+你可以使用 Input Debugger 进行输入设备，系统的检测。Input Debugger 是一个独立的编辑器窗口，你的输入不按预期工作时，它就是你寻找问题根源的最重要工具。
+
+在 Unity 编辑器的顶部菜单栏，选择 Window -> Analysis -> Input Debugger 打开它。
+
+这个窗口主要分为几个部分，有几个选项需要游戏运行时才能使用。我们来逐一了解它们的作用。
+
+1. Devices (设备) 列表
+
+    - 一个树状列表，展示了所有当前连接到电脑、并且被 Unity 识别的物理输入设备（键盘、鼠标、手柄、触摸屏等）。
+
+    - 当你点击任何一个设备（比如 Xbox Controller），右侧会实时显示这个设备上所有控件 (Controls) 的当前状态。
+
+2. Actions (操作) 视图
+
+    - 当你的游戏正在运行时，这里会显示所有当前已启用的 `InputActionAsset` 实例。
+
+    - 你可以实时看到这个 Action 的当前阶段 (Phase)：是 `Waiting`, `Started`, `Performed` 还是 `Canceled`。你还能看到它当前的值 (`Value`)，以及是哪个控件 (`Control`) 正在驱动它。
+
+3. Users
+
+    - 显示所有通过 `PlayerInput` 或 `PlayerInputManager` 管理的玩家。
+
+    - 查看每个玩家 (Player #0, Player #1...) 的信息，哪个 Control Scheme (如 "Gamepad") 对该玩家是激活状态，你能看到该玩家具体配对了哪些物理 Device。
+
+4. Metrics
+
+    - 输入系统的性能监视器和数据统计面板。
+
+    - 关于输入系统在运行时各种性能相关的数据，包括：Update Frequency/Time: 输入系统每次更新花费了多长时间；Number of Events: 到目前为止处理了多少个输入事件；Memory Usage (GC Allocs): 输入系统在运行中产生了多少需要被垃圾回收的内存。
+
+其余的 Settings 包含了一些输入的全局设置，和在 Project Settings -> Input System Package 里的数据对应。而 Layouts 包含了 Input System 所知道的每一种设备类型的结构定义，包含了只读的控件结构信息。
