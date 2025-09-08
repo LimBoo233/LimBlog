@@ -262,7 +262,7 @@ Project Settings -> Input System Package 里的这些全局设置会影响项目
 
 ## `PlayerInput` 组件
 
-`PlayerInput` 组件是一个简单的输入管理器，你只需要给它分配一个 `InputActionAsset`，然后在里面添加事件，就可以做到响应用户输入。如果不分配，会自动使用 Project-wide Actions。
+`PlayerInput` 组件是一个简单的输入管理器，你只需要给它分配一个 `InputActionAsset`，然后在里面添加事件，就可以做到响应用户输入。
 
 ::: tip
 通常来说，最常用的方法还是把 `.inputactions` 文件编译成 C# 文件，然后在代码里监听事件。
@@ -641,3 +641,93 @@ On-Screen 组件会通过将触摸屏的输入模拟为键盘或手柄的按键�
     - 关于输入系统在运行时各种性能相关的数据，包括：Update Frequency/Time: 输入系统每次更新花费了多长时间；Number of Events: 到目前为止处理了多少个输入事件；Memory Usage (GC Allocs): 输入系统在运行中产生了多少需要被垃圾回收的内存。
 
 其余的 Settings 包含了一些输入的全局设置，和在 Project Settings -> Input System Package 里的数据对应。而 Layouts 包含了 Input System 所知道的每一种设备类型的结构定义，包含了只读的控件结构信息。
+
+## Project-wide Actions
+
+你可以在代码里通过单例访问到这些 Actions。对于角色可以创建单独的资产文件。
+
+## 代替 `PlayerInput` 组件
+
+如果不想使用 `PlayerInput` 组件，可以单独创建一个 `[InputManager]` 游戏对象并创建同名的脚本（`InputManager`），在该脚本里实例化通过 Input Actions 配置文件生成的 C# 类，然后暴露一些函数事件方便外部触发，相当于自己创建了一个脚本对 `InputSystem` 进行了一次包装
+
+## 重绑定
+
+最常用的方法：使用 `PerformInteractiveRebinding`
+
+
+```csharp
+// 用于管理重新绑定过程的静态变量，确保同一时间只有一个按键在被修改
+private static InputActionRebindingExtensions.RebindingOperation rebindingOperation;
+
+
+ public void StartRebinding()
+{
+    // 禁用所有动作，防止在重新绑定时触发游戏逻辑
+    actionReference.action.actionMap.Disable();
+
+     // 核心：调用 PerformInteractiveRebinding
+        rebindingOperation = actionReference.action.PerformInteractiveRebinding()
+            // 在哪个绑定索引上进行操作。-1 表示自动选择第一个。
+            // 如果你有多个绑定，比如键盘和手柄，需要指定正确的 index。
+            // .WithTargetBinding(0) 
+
+            // 排除某些输入，例如我们不希望鼠标移动被绑定为跳跃键
+            .WithControlsExcluding("<Mouse>/position")
+            .WithControlsExcluding("<Mouse>/delta")
+            
+            // 当操作完成时调用
+            .OnComplete(operation => {
+                // 清理操作，非常重要！
+                operation.Dispose();
+                
+                // 重新启用动作
+                actionReference.action.actionMap.Enable();
+
+                // 更新UI显示
+                UpdateUI();
+
+                // TODO: 在这里调用保存函数
+                SaveBindingOverrides();
+            })
+            // 当操作被取消时（例如按下了 Escape 键）
+            .OnCancel(operation => {
+                // 清理操作
+                operation.Dispose();
+                
+                // 重新启用动作
+                actionReference.action.actionMap.Enable();
+            });
+
+        // 启动重新绑定操作
+        rebindingOperation.Start();
+}
+```
+
+**保存**
+
+```csharp
+public void SaveBindingOverrides()
+{
+    // 将当前所有动作的覆盖绑定保存为 JSON 字符串
+    var overrides = actionReference.action.actionMap.SaveBindingOverridesAsJson();
+    // 使用 PlayerPrefs 保存这个字符串。key 可以是 action map 的名字。
+    PlayerPrefs.SetString(actionReference.action.actionMap.name, overrides);
+    PlayerPrefs.Save();
+}
+
+```
+
+**加载**
+
+```csharp
+
+public void LoadBindingOverrides()
+{
+    // 从 PlayerPrefs 读取 JSON 字符串
+    var overrides = PlayerPrefs.GetString(actionReference.action.actionMap.name);
+    if (string.IsNullOrEmpty(overrides)) return;
+
+    // 加载覆盖绑定
+    actionReference.action.actionMap.LoadBindingOverridesFromJson(overrides);
+}
+```
