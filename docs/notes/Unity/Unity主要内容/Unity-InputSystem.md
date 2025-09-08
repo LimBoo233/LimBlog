@@ -646,9 +646,13 @@ On-Screen 组件会通过将触摸屏的输入模拟为键盘或手柄的按键�
 
 你可以在代码里通过单例访问到这些 Actions。对于角色可以创建单独的资产文件。
 
+```csharp
+InputSystem.actions.FindAction("Move");
+```
+
 ## 代替 `PlayerInput` 组件
 
-如果不想使用 `PlayerInput` 组件，可以单独创建一个 `[InputManager]` 游戏对象并创建同名的脚本（`InputManager`），在该脚本里实例化通过 Input Actions 配置文件生成的 C# 类，然后暴露一些函数事件方便外部触发，相当于自己创建了一个脚本对 `InputSystem` 进行了一次包装
+如果不想使用 `PlayerInput` 组件，可以单独创建一个 `[InputManager]` 游戏对象并创建同名的脚本（`InputManager`），在该脚本里实例化通过 Input Actions 配置文件生成的 C# 类，然后暴露一些函数事件方便外部触发，相当于自己创建了一个脚本对 `InputSystem` 进行了一次包装。
 
 ## 重绑定
 
