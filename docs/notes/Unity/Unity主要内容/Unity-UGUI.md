@@ -1413,6 +1413,7 @@ namespace MyGame.Managers
 此外可以通过`Windows` -> `TextMeshPro` 里的 `Font Asset Creator` 进行更高级的设置和优化。这里暂时先不展开(~~挖坑~~)。
 
 ### 排序文字和图片时减少 DC 
+
 在渲染同一个图集的图片时，如果突然插入渲染一个文字或不同图集的图片，Unity 会先自动切换图集再切换回来，这会导致 Draw Call 增加。因此，尽量在渲染同一图集的图片时保持顺序一致。文字和图片也分开渲染，避免和图片混合渲染增加 Draw Call。
 
 例如:
@@ -1429,6 +1430,10 @@ namespace MyGame.Managers
     > ..
 > EventSystem
 ```
+
+::: tip
+在这种排序下，你需要取消勾选 TMP 组件的 `Raycast Target` 的复选框，防止文字阻挡图片的射线检测。
+:::
 
 当然如果是小型项目，或者图片数量不多，Draw Call 数量也不多，且实现该方法不方便，那么可以不必过于强求。对于大型项目，或者图片数量较多的项目，会有更好的方法，而不是简单通过排序来减少 Draw Call。
 

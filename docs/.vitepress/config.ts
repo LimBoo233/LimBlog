@@ -127,20 +127,24 @@ export default defineConfig({
                             { text: 'Tilemap', link: '/notes/Unity/Unity主要内容/Tilemap' },
                             { text: '2D PSD Importer', link: '/notes/Unity/Unity主要内容/2D PSD Importer' },
                             { text: 'Unity-AI Navigation', link: '/notes/Unity/Unity主要内容/Unity-AI Navigation' },
-                            { text: 'Unity-InputSystem', link: '/notes/Unity/Unity主要内容/Unity-InputSystem' }
-                        ]
+                            { text: 'Unity-InputSystem', link: '/notes/Unity/Unity主要内容/Unity-InputSystem' },
+                        ],
+                        collapsed: true
                     },
                     {
                         text: '其他',
                         items: [
-                            { text: 'Unity小技巧', link: '/notes/Unity/其他/Unity小技巧' }
-                        ]
+                            { text: 'Unity小技巧', link: '/notes/Unity/其他/Unity小技巧' },
+                            { text: 'AudioMixer', link: '/notes/Unity/其他/AudioMixer' },
+                        ],
+                        collapsed: true
                     },
                     {
                         text: 'Unity高级',
                         items: [
-                            { text: 'UniTask', link: '/notes/Unity/Unity高级/UniTask' }
-                        ]
+                            { text: 'UniTask', link: '/notes/Unity/Unity高级/UniTask' },
+                        ],
+                        collapsed: true
                     },
                     
                 ],

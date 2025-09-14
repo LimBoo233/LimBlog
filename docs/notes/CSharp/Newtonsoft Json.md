@@ -14,7 +14,7 @@ description: 猴子也能看懂的 Newtonsoft.Json 使用指南，涵盖基本�
 
 在 Visual Studio 和 Rider 中，直接通过 NuGet 包管理器搜索 `Newtonsoft.Json` 并安装即可。
 
-在 Unity 中，直接通过 Unity Package Manager 在 Unity Registry 搜索 `Newtonsoft Json` 并安装即可。
+在 Unity6 中，在 Package Manager 窗口选择 "Add package by name..."，输入包名 `com.unity.nuget.newtonsoft-json` 安装。在更早的 Unity 版本中，直接在 Unity Registry 中搜索 `Newtonsoft.Json` 并安装。
 
 ## 简单的序列化与反序列化
 
