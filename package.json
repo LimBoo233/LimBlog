@@ -22,5 +22,8 @@
         "@algolia/client-search"
       ]
     }
+  },
+  "dependencies": {
+    "markdown-it-mathjax3": "^4.3.2"
   }
 }

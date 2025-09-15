@@ -37,6 +37,7 @@ export default defineConfig({
 
     markdown: {
         lineNumbers: true, // 显示行号
+        math: true, // 启用数学公式支持
          theme: {
             dark: 'material-theme-ocean',    
             light: 'catppuccin-latte' 
@@ -160,6 +161,19 @@ export default defineConfig({
                     { text: '异步编程', link: '/notes/CSharp/异步编程' },
                 ],
                 collapsed: true
+            },
+
+            { 
+                text: '图形学', 
+                items: [
+                    {
+                        text: 'Games101',
+                        items: [
+                            { text: 'Lec_1 Overview', link: 'notes/图形学/Games101/Lec_1' },
+
+                        ]
+                    }
+                ]
             },
 
 
