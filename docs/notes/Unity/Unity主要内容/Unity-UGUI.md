@@ -1439,7 +1439,14 @@ namespace MyGame.Managers
 
 ### `Aspect Ratio Fitter` 
 
-`Aspect Ratio Fitter` 组件可以帮助我们保持 UI 元素的宽高比，确保在不同分辨率下仍然保持正确的比例。
+`Aspect Ratio Fitter` 的作用就是强制它所在的 UI 元素（`Rect Transform`）保持一个固定的宽高比。无论父容器如何变化，它都会自动调整自身尺寸，确保比例恒定。
+
+`Aspect Mode` 决定了组件如何根据宽高比来调整尺寸，有五种模式： 
+- `None`：无效果
+- `Width Controls Height `：宽度决定高度
+- `Height Controls Width`：高度决定宽度
+- `Fit In Parent`：完整地显示在父物体内部，并且尺寸尽量大
+- `Envelope Parent`：完全填满父物体的区域
 
 **Comming Soon...**
 
