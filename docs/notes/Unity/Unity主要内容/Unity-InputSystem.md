@@ -135,6 +135,8 @@ if (Keyboard.current.anyKey.wasPressedThisFrame)
     | `Axis Deadzone` | 忽略单个轴向的微小输入，会将其视为0。 |
     | `Stick Deadzone` | 忽略摇杆中心的微小输入，会将其视为0。 |
 
+    有一个重要的 `Processor` 是 `Delta Time Scale`，其作用是将输入的增量值（Delta）乘以游戏的 `Time.deltaTime`，主要需要将输入增量转化为平滑、且与帧率无关的移动或旋转的场景。例如，对于鼠标移动转视角的 Action，你就应该使用该处理器。（`transform.rotate(0, rotationSpeed * Time.deltaTime, 0)`）
+
 ## 添加按键绑定
 
 右键 Action 后即可添加绑定。总共有四种类型的绑定：

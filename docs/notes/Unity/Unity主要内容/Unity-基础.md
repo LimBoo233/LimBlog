@@ -241,6 +241,25 @@ Debug.DrawRay(a, transform.forward, Color.red);
     C.position = Vector3.Slerp(startPos, endPos, time);
     ```
 
+7. 转换向量
+
+    Unity 提供了方法将将局部坐标系向量转换:
+
+    ```c#
+    // 1. 转化点
+    Vector3 worldPosition = transformA.TransformPoint(localPointA);
+    Vector3 localPointB = transformB.InverseTransformPoint(worldPosition);
+
+
+    // 2. 转化单位向量
+    Vector3 worldDirection = transformA.TransformDirection(localDirectionA);
+    Vector3 localDirectionB = transformB.InverseTransformDirection(worldDirection);
+
+    // 3. 转化向量（会受缩放影响）
+    Vector3 worldVector = transformA.TransformVector(localVectorA);
+    Vector3 localVectorB = transformB.InverseTransformVector(worldVector);
+    ```
+
 ### 四元数 Quaternion
 - 欧拉角
     - 直观易理解。

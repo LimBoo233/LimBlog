@@ -109,8 +109,12 @@ Animation 窗口提供了用于制作单个动画片段的功能，通常位于�
       | `Motion Time` | 控制当前状态下的动画片段播放到的位置。可以分配一个 `Animator Controller` 中的 `float` 参数。 |
       | `Mirror` | 水平镜像播放。同样，可以由一个 `Bool` 类型的参数来动态控制。 |
       | `Cycle Offset` | 循环动画延迟播放的偏移量。可以分配一个 `Animator Controller` 中的 `float` 参数。 |
-      | `Foot IK` | 允许角色的脚部智能地贴合不平坦的地面。 这项功能只对设置为 Humanoid 的 Rig 有效，并且需要在 `Animator` 的 Layers 设置中启用 `IK Pass`。 |
+      | `Foot IK` | 通过 IK 在一定程度改善骨骼系统转化成肌肉系统后，脚步位置偏移产生的动画不自然。 |
       | `Write Defaults` | • 不勾选：当状态机离开这个状态时，属性的值会保持在它离开时的状态，直到有另一个动画状态来修改它。这是当前 Unity 推荐的做法。<br><br>• 勾选：当状态机离开这个状态时，所有被这个状态的动画修改过的属性都会被重置为它们在进入这个状态之前的默认值。但如果你有多个动画层，控制某个部位的动画可能会强制把其他骨骼重置回默认姿态，覆盖掉其他层的效果。 |
+      :::
+
+      ::: tip
+      当你的动画逻辑表现得很奇怪，却又无从下手时，很有可能是 `Write Defaults` 属性导致的。这是一个默认开启的属性，你需要手动取消它。
       :::
 
    - 你可以为状态添加 [StateMachineBehaviour](#statemachinebehaviour) ，可以在状态的不同阶段执行代码。
@@ -279,6 +283,21 @@ animator.SetBool("<Condition Name>", boolValue)
 animator.SetInteger("<Condition Name>", intValue)
 animator.SetTrigger("<Condition Name>")
 ```
+
+该类型的方法还有一个重载，主要用来平滑过渡混合树种的动画。
+
+该方法需要设置一个 `dampTime` 指明需要完成过渡的时间（该属性是设置一个目标，不会重复设置导致用于无法到达目标），并传入一个 'deltaTime' 来确保帧数无关。
+
+使用该方法时，你需要在每帧调用，例如：
+```csharp
+void Update()
+{
+   // 0.1f 是一个可选的平滑时间
+   animator.SetFloat("<Condition Name>", conditionThreshold, 0.1f, Time.deltaTime)
+}
+```
+
+
 
 此外还可以不通过 `Conditions` 直接播放动画片段，不过这不是推荐的做法：
 ```csharp
@@ -1072,7 +1091,7 @@ Rig 选项卡主要是用于设置如何将骨骼映射到导入模型的网格�
 
 ## Avatar 系统
 
-Avatar 系统是其动画系统的核心部分，它将动画数据（Animation Clip）与具体的模型骨骼解耦。
+Avatar 系统是其动画系统的核心部分，它将动画数据（Animation Clip）与具体的模型解耦，是骨骼结构和肌肉系统这两种概念的结合体。
 
 这个系统的存在，最主要的目的就是为了实现动画重定向 （Animation Retargeting）。简单来说，就是让一套动画可以被无数个不同体型、不同比例的人形角色复用。
 
@@ -1357,37 +1376,56 @@ Unity 中的 `Avatar Mask` 就是这个“模板”。它让你能够精确地�
 
 ## 2D 混合树
 
-2D 混合树（2D Blend Tree）允许你使用两个浮点数参数来混合多个动画片段。它会在一个二维坐标系中对动画进行采样和插值，从而创造出平滑的全向或多向移动动画。
+2D 混合树（2D Blend Tree）允许你使用两个浮点数参数来混合多个动画片段。通过两个参数的组合，Unity 可以混合出向前、向后、向左、向右、向前偏右、向后偏左等所有方向的移动动画。
 
-最经典的应用场景就是：
-- 参数1: 水平输入（`horizontal` 或 `velocityX`），范围通常是-1（左）到1（右）。
-- 参数2: 垂直输入（`vertical` 或 `velocityY`），范围通常是-1（后）到1（前）。
+> 推荐视频: 
+> 1, [Unity 2D Simple Directional混合树（2D Blend Tree）详解](https://www.bilibili.com/video/BV1YB4y1Q7fP)
+> 2. [Unity 2D Freeform Cartesian混合树（2D Blend Tree）的权重分配原理](https://www.bilibili.com/video/BV1Gv4y1g7ko)
 
-通过这两个参数的组合，就可以混合出向前、向后、向左、向右、向前偏右、向后偏左等所有方向的移动动画。
+   
 
 Unity 中创建 2D 混合树主要有三种类型可选：
 - `2D Simple Directional`
 
-   2D 简单定向。适用于所有动画都代表不同方向但速度大小相同的运动。
+   2D 简单定向。性能较好，但不允许用一个方向上有多个动画片段。适用于所有动画都代表不同方向但速度大小相同的运动。
 
-- `2D Freeform Directional`
+   树中位于原点的动画片段至关重要，其会影响动画片段的混合计算。
 
-   2D 自由格式定向。它不仅考虑方向，也考虑速度大小（即向量的长度）。非常适合制作从静止到行走/跑步的全向移动。算法核心是 Angle 和 Magnitude。
+   1. **有中心动画片段**
 
-   当你给它一个 (X, Y) 输入时，它的内部算法会这样做：
+      Unity 会根据红点（采样点）的位置，选择原点和附近的两个动画片点段（范例点）围成一个三角形，再根据红点在三角形种的位置反推出各个动画片段的权重。这个过程会遍历所有的范例点。
 
-   1. 计算向量属性：它首先将 (X, Y) 理解为一个从原点 (0, 0) 出发的向量。然后它会计算这个向量的两个核心属性：
-      - 大小（Magnitude）：√(X² + Y²)。这代表了速度或者说摇杆推动的幅度。
-      - 角度（Angle）：atan2(Y, X)。这代表了方向。
-   2. 进行径向插值（Radial Interpolation）：接下来，它会在你设置的所有动画点中，寻找与当前输入向量的角度和大小最接近的几个点。
+   2. **无中心动画片段**
+
+      Unity 会假设中心存在一个原点，采用与前者相同的三角形加权中心算法，再将原点的权重平分给每一个范例动画。
 
 - `2D Freeform Cartesian`
 
-   2D 自由格式笛卡尔坐标。适用于两个参数不代表方向，而是代表两个独立的、不相关的量。它的混合逻辑不考虑参数构成的方向。它只是简单地把 (X, Y) 作为一个坐标点，然后根据这个点在网格中的位置（双线性插值 Bilinear Interpolation）来混合周围的动画。算法核心是 X 和 Y 的独立比例。
+   2D 自由格式笛卡尔坐标，采用梯度带算法。相比 `2D Simple Directional` 树可以在同一方向上添加多个动画，但在实际应用中存在一定问题，例如：
+   
+   假设我们拥有一个向右跑和向右前方跑的具体动画，当采样点落在这个两个具体动画的范例点之间时，我们肯定希望只有奔跑动画影响采样点，然而实际中还会受到走路/慢跑范例点的影响。
+   
+   因此，当我们需要制作一个包含各个方向的行走和奔跑动画的时候，`2D Freeform Cartesian` 就无法满足需求。
 
-2D 混合树的控制与 1D 混合树类似，不再赘述。
+- `2D Freeform Directional`
+
+   `2D Freeform Cartesian` 的升级版，极坐标系下的梯度带算法（O(n)），更消耗性能。非常适合制作从静止到行走/跑步的全向移动。
+
 
 ![2D混合树](images/2D混合树.png)
+
+Motion 列表下方还提供了两个用于自动调整 Motion 属性的选项：
+
+`Compute Positions`
+
+该选项会依据根动运动信息，自动计算出一套方案分布范例点。
+- `Velocity XZ` 和 `Speed And Angular Speed ` 都会同时设置 x 轴和 y 轴
+- `X Position From >` 和 `Y Position From >` 允许分别为 X 轴和 Y 轴手动选择一个数据源
+
+
+`Adjust Time Scale`
+
+依据根动运动信息，自动计算所有动画的平均速度，并调整每个动画的播放速度(Speed比值)，使它们的最终运动速率趋于一致。
 
 ## Direct 混合树
 
@@ -1513,7 +1551,7 @@ animator.SetIKRotation(AvatarIKGoal goal, Quaternion goalRotation)
 旋转 IK 会强制指定肢体末端（手或脚）在世界空间中最终要达成的旋转姿态，错误的使用可能会造成奇怪的肢体扭曲。有时，你可能根本就不需要去旋转肢体，只需要指定位置。
 :::
 
-**`OnAnimatorMove()`**
+## `OnAnimatorMove()`
 
 `OnAnimatorMove()` 是 Unity 动画系统中另一个的回调函数，用来接管和修改角色的根运动（Root Motion），控制角色在世界中的整体移动。
 
