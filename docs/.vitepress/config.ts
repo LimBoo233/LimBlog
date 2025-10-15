@@ -46,8 +46,8 @@ export default defineConfig({
         // This is your existing plugin for code group icons
         config: (md) => {
         md.use(groupIconMdPlugin);
-         md.use(MermaidMarkdown);
-        
+        md.use(MermaidMarkdown);
+
 
         // 自动在 h1 标签后添加表头组件
         md.renderer.rules.heading_close = (tokens, idx, options, env, slf) => {
@@ -176,8 +176,15 @@ export default defineConfig({
                 ]
             },
 
+            { 
+                text: '其他', 
+                items: [
+                    { text:  '北工大web', link: '/notes/其他/北工大web'},
+                    { text: `Markdown快速指南`, link: '/notes/其他/Markdown快速指南'},
+                ]
+            },
 
-            {text: `Markdown快速指南`, link: '/notes/MyMarkdown/Markdown快速指南'},
+           
 
         ],
 

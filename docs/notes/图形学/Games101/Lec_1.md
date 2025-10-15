@@ -142,9 +142,9 @@ b_1 & b_2 & b_3
 - $\vec{a} \times \vec{b} = -\vec{b} \times \vec{a}$
 - 大小关系：$||\vec{a} \times \vec{b}|| = ||\vec{a}||\cdot||\vec{b}||\sin\theta$
 
-叉乘的结果垂直于两个向量所张成的平面，其方向可以使用右手螺旋法则（right-hand rule）来确定。
+叉乘的结果垂直于两个向量所张成的平面，其方向可以使用右手法则（right-hand rule）来确定。
 
-ex：手指指向 $\vec{a}$ 的方向，以最小角度从 $\vec{a}$ 逆时针转向 $\vec{b}$ 的方向，拇指所指的方向即为 $\vec{a} \times \vec{b}$ 的方向。
+ex：令食指垂直于大拇指和中指，右手大拇指指向 $\vec{a}$ 方向，中指指向 $\vec{b}$ 方向，则食指指向 $\vec{a} \times \vec{b}$ 方向。
 
 利用叉乘，可以在三维空间中搭建一个正交坐标系（orthonormal basis）。
 - 右手系： $\vec{x}\times \vec{y} = \vec{z}$
@@ -340,6 +340,20 @@ $$A = \cos\theta, C = \sin\theta$$
 
 $$B = -\sin\theta, D = \cos\theta$$
 :::
+
+旋转矩阵是正交的（orthogonal），即一个矩阵的转置等于其逆矩阵：$\mathbf{R}^T = \mathbf{R}^{-1}$。
+
+我们可以简单地验证一下：
+$$(\mathbf{R}\mathbf{R}^T) = \begin{bmatrix}
+\cos\theta & -\sin\theta \\
+\sin\theta & \cos\theta
+\end{bmatrix} \begin{bmatrix}
+\cos\theta & \sin\theta \\
+-\sin\theta & \cos\theta
+\end{bmatrix} = \begin{bmatrix}
+1 & 0 \\
+0 & 1
+\end{bmatrix}$$
 
 **Liner Transformation (线性变换)**
 
@@ -617,3 +631,76 @@ b_3
 3. 拍下照片 (projection transformation)
 
 在图形学中，把三维空间转化到二维世界，过程就像拍一张照片，在图形学中叫做 MVP 变换（Model-View-Projection Transformation）。
+
+在进行 View Transformation 时，我们先定义一个相机：
+- Position (位置)：$\vec{e}$
+- Look-at direction (观察方向)：$\vec{g}$
+- Up direction (上方向)：$\vec{t}$ —— 摄像机头顶指向的方向。
+
+约定俗成：
+- 将摄像机永远放置于原点，看向 -z 方向，上方向为 y 轴正方向
+- 相机永远不动，只有其他物体在动
+
+将摄像机移动到原点，需要进行一系列的变换：
+1. 平移摄像机位置 $\vec{e}$ 到原点
+2. 旋转摄像机，使得观察方向 $\vec{g}$ 对其 -z
+3. 旋转摄像机，使得上方向 $\vec{t}$ 对齐 y 
+
+写成一个矩阵形式：
+
+$$\mathbf{M_view} = \mathbf{R_view} \mathbf{T_view}$$
+
+其中 ：
+
+$$\mathbf{T_view} = \begin{bmatrix}
+1 & 0 & 0 & -x_e \\
+0 & 1 & 0 & -y_e \\
+0 & 0 & 1 & -z_e \\
+0 & 0 & 0 & 1
+\end{bmatrix}$$
+
+旋转矩阵不好求解，我们可以考虑其逆变换，比如将 $(0, 0, -1)$ 旋转到 $\vec{g}$ 方向，这就相对好求解了。
+
+我们需要一个矩阵，可以旋转 $\vec{g}$ 到 $-z$，$\vec{t}$ 到 $y$，$\vec{g} \times \vec{t}$ 到 $x$：
+
+$$\mathbf{R_{view}}^{-1} = \begin{bmatrix}
+x_{g \times t}  & x_t & x_{-g} & 0 \\
+y_{g \times t}  & y_t & y_{-g} & 0 \\
+z_{g \times t}  & z_t & z_{-g} & 0 \\
+0 & 0 & 0 & 1
+\end{bmatrix}$$
+
+由于旋转矩阵是正交矩阵，所以 $\mathbf{R_{view}} = (\mathbf{R_{view}}^{-1})^T$：
+$$\mathbf{R_{view}} = \begin{bmatrix}
+x_{g \times t} & y_{g \times t} & z_{g \times t} & 0 \\
+x_t & y_t & z_t & 0 \\
+x_{-g} & y_{-g} & z_{-g} & 0 \\
+0 & 0 & 0 & 1
+\end{bmatrix}$$
+
+
+如此一来，我们变完成了 Camera/View Transformation。
+
+#### Projection Transformation (投影变换)
+
+投影有两种不同方式：
+- Orthographic Projection (正交投影)
+- Perspective Projection (透视投影)
+
+正交投影一般用在工程图中，物体投影到二维平面，其形状不变。高中数学题中的几何图形采用的就是正交投影，长度相同的线段在远处和近处看起来也是相同长度。
+
+透视投影更符合人类的视觉感知，远处的物体看起来更小。ex: 火车轨道看起来在远处最终会汇聚在一点。
+
+![PrespectivePv&OrthographicP](images/PrespectivePv&OrthographicP.png)
+
+::: info
+道理我都懂，但是鸽子为什么这么大？
+:::
+
+**Orthographic Projection (正交投影)**
+
+简单地考虑：
+
+将摄像机位于原点，观察方向为 -z 轴，上方向为 y 轴。在投影平面上，将物体的 z 值扔掉，只剩下 x 和 y 坐标，叠加得到的二维图像就是投影结果。
+
+![Orthographic Projection](images/Orthographic%20Projection.png)
