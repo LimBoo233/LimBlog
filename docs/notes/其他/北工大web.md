@@ -20,14 +20,14 @@
 
 HTML（超文本标记语言 HyperText Markup Language）是一种标记形语言，可以通过标签（Tags）组织出多样的文本页面，定义文本的结构和内容。
 
-标签由一些特殊的字符（比如 &lt; 和 &gt;）和特殊的单词组成 。
+标签由一些特殊的字符（比如 &lt; 和 &gt;）和特殊的单词组成。
 
-这些特殊的单词告诉浏览器这个标记应该做什么 。例如，&lt;p&gt; 标签告诉浏览器："这里面的内容是一个段落"。
+这些特殊的单词告诉浏览器这个标记应该做什么。例如，&lt;p&gt; 标签告诉浏览器："这里面的内容是一个段落"。
 
 **一个 HTML 文档由文本内容和 HTML 元素组成。**
 
 - 元素（Elements）
-    - 一个元素可以包含文本、其他元素，也可以是空的。它是由标签来标识的 。
+    - 一个元素可以包含文本、其他元素，也可以是空的。它是由标签来标识的。
     - 结构通常是这样的：&lt;标签名&gt;内容&lt;/标签名&gt;
 - 属性 (Attributes)
     - 属性可以为 HTML 元素提供更多的信息。
@@ -52,17 +52,17 @@ HTML（超文本标记语言 HyperText Markup Language）是一种标记形语�
 让我们来分解一下这个结构：
 
 - &lt;!DOCTYPE html&gt;
-    - 它不是一个HTML标签，而是一个 文档类型声明 。
-    - 它的作用是告诉浏览器，你接下来要处理的是一个HTML文档 。
+    - 它不是一个 HTML 标签，而是一个 文档类型声明。
+    - 它的作用是告诉浏览器，你接下来要处理的是一个 HTML 文档。
 - &lt;html&gt;, &lt;head&gt;, 和 &lt;body&gt;
-    - &lt;html&gt; 元素是 根元素，它包含了文档中所有其他的HTML元素 。
-    - 一个HTML页面被分为两个主要部分：头部 (&lt;head&gt;) 和身体 (&lt;body&gt;) 。头部包含了页面的元数据（metadata），而身体包含了页面的实际内容（ex：文本、图片等）。
+    - &lt;html&gt; 元素是 根元素，它包含了文档中所有其他的 HTML 元素。
+    - 一个 HTML 页面被分为两个主要部分：头部 (&lt;head&gt;) 和身体 (&lt;body&gt;) 。头部包含了页面的元数据（metadata），而身体包含了页面的实际内容（ex：文本、图片等）。
 
 #### Headings
 
-标题是用来展示文档结构的。&lt;h1&gt;是最高级别的标题（最重要的），&lt;h6&gt;是最低级别的 。这不仅能让读者一目了然，对搜索引擎优化（SEO）也很有帮助。
+标题是用来展示文档结构的。&lt;h1&gt;是最高级别的标题（最重要的），&lt;h6&gt;是最低级别的。这不仅能让读者一目了然，对搜索引擎优化（SEO）也很有帮助。
 
-浏览器会为不同级别的标题提供默认的样式（比如&lt;h1&gt;字号最大、字体最粗） ，不过这些样式后续都可以通过CSS来自由修改 。
+浏览器会为不同级别的标题提供默认的样式（比如&lt;h1&gt;字号最大、字体最粗），不过这些样式后续都可以通过 CSS 来自由修改。
 
 ```html
 <html>
@@ -81,7 +81,7 @@ HTML（超文本标记语言 HyperText Markup Language）是一种标记形语�
 
 段落是 HTML 文档中最基本的文本单位。网页上的绝大部分正文内容，都应该放在&lt;p&gt;标签里。
 
-&lt;p&gt;标签是一个容器，里面除了可以放文字，还可以嵌套包含其他的“内联HTML元素”（比如链接&lt;a&gt;和强调&lt;strong&gt;） 。
+&lt;p&gt;标签是一个容器，里面除了可以放文字，还可以嵌套包含其他的“内联 HTML 元素”（比如链接&lt;a&gt;和强调&lt;strong&gt;） 。
 
 ```html
 <html>
@@ -109,7 +109,7 @@ HTML（超文本标记语言 HyperText Markup Language）是一种标记形语�
 - 触发邮件客户端 
 - 触发执行 JavaScript 函数
 
-在链接到外部网站时，需要使用绝对路径（absolute URL） 。
+在链接到外部网站时，需要使用绝对路径（absolute URL）。
 ```html
 <a href="https://www.baidu.com">百度</a>
 ```
@@ -649,12 +649,12 @@ div {
 
 ## Flask 简介
 
-Flask 是一个用 Python 编写的 “微框架” (micro-framework) 。
+Flask 是一个用 Python 编写的微框架 (micro-framework) 。
 
 “微”意味着它非常轻量、简洁，只提供了 Web 开发最核心的功能。它不包含数据库访问层、用户认证系统等复杂功能，这些都需要我们根据需求自己添加。
 
 ::: tip
-在开始写代码前，需要搭建一个干净、独立的环境。
+在开始写代码前，最好搭建一个干净、独立的环境。
 :::
 
 在激活了的虚拟环境中，使用 Python 的包管理工具 pip 来安装 Flask ：
@@ -814,3 +814,1041 @@ def index():
 ```
 
 :::
+
+## WTForms
+
+当 HTML 提交 `<form>` 表单时，后端需要做很多事：接收数据、检查数据是否有效、若无效则返回错误信息并重新显示表单等。手动处理这些逻辑繁琐又易错，因此我们可以借助 Flask-WTF 扩展来简化这些工作。
+
+**安装 Flask-WTF**
+
+```bash
+pip install flask-wtf
+```
+
+**实现 CSRF 保护**
+
+Flask-WTF 能自动帮我们抵御一种常见的网络攻击——CSRF (跨站请求伪造)。如果不清楚什么是 CSRF，你暂时只需要知道 Flask-WTF 能让表单更加安全。
+
+为了实现 CSRF 保护，Flask-WTF 需要一个加密密钥 (Cryptographic Key)，你可以在应用配置中设置它：
+
+```python [app.py]
+from flask import Flask
+
+app = Flask(__name__)
+app.config['SECRET_KEY'] = '你自己的随机密钥'
+
+# 同级目录下的 routes.py
+from blogapp import routes
+```
+
+你也可以将配置和应用实例代码写在不同的 `.py` 中：
+
+::: code-group
+
+```python [__init__.py]
+from flask import Flask
+from config import Config # 或者： from .config import Config
+
+app = Flask(__name__)
+app.config.from_object(Config)
+
+from blogapp import routes
+```
+
+```python [config.py]
+import os
+
+class Config:
+    # 从环境变量中获取 SECRET_KEY
+    SECRET_KEY = os.environ.get('SECRET_KEY') or '你自己的随机密钥'
+```
+
+:::
+
+**在 Python 中定义表单**
+
+我们通过一个 Python类 来定义表单的结构：
+
+```python [forms.py]
+from flask_wtf import FlaskForm
+from wtforms import StringField, PasswordField, BooleanField, SubmitField
+from wtforms.validators import DataRequired
+
+class LoginForm(FlaskForm):
+    # 每个变量代表一个表单字段
+    username = StringField('Username', validators=[DataRequired()])
+    password = PasswordField('Password', validators=[DataRequired()])
+    remember_me = BooleanField('Remember Me')
+    submit = SubmitField('Sign In')
+```
+
+- `StringField`, `PasswordField` 等定义了输入框的类型。
+- 第一个参数（ex: `'Username'`）是这个字段的标签 (label)。
+- `validators=[DataRequired()]` 是一个 验证器，它告诉 WTForms，这个字段必须被填写，不能为空。
+
+接着我们在在 HTML 模板中渲染表单：
+
+::: code-group
+
+```python [routes.py]
+# 在视图函数（routes.py）中，我们实例化一个 LoginForm 类
+from .forms import LoginForm
+
+@app.route('/login')
+def login():
+    form = LoginForm()
+    return render_template('login.html', form=form)
+```
+
+```html [login.html]
+{% extends "base.html" %}
+
+{% block title %}登录{% endblock %}
+
+{% block content %}
+    <h2>登录</h2>
+    <form action="" method="post" novalidate>
+        {{ form.hidden_tag() }}  {# CSRF 保护 #}
+        <p>
+            {{ form.username.label }}
+            {{ form.username(size=32) }}  {# size 控制输入框宽度 #}
+        </p>
+        <p>
+            {{ form.password.label }}
+            {{ form.password(size=32) }}
+        </p>
+        <p>
+            {{ form.remember_me() }} 
+            {{ form.remember_me.label }}
+        </p>
+        <p>{{ form.submit() }}</p>
+    </form>
+{% endblock %}
+```
+::::
+
+目前表单已经可以显示了，但程序还不能处理用户提交的数据，所以接下来需要修改 `login` 视图函数：
+
+```python [routes.py]
+from flask import flash, redirect
+
+#  1. 允许POST请求
+@app.route('/login', methods=['GET', 'POST']) 
+def login():
+    form = LoginForm()
+
+     # 2. 验证并处理数据  
+    if form.validate_on_submit():
+        flash('Login requested for user {}'.format(form.username.data))
+        return redirect('/index') # 3. 重定向到首页
+
+    # 4. 如果是GET请求或验证失败，则正常显示表单
+    return render_template('login.html', title='Sign In', form=form) 
+```
+
+- `methods=['GET', 'POST']`：默认路由只接受GET请求（即用户访问页面）。加上 POST 使其能接收用户提交的表单数据。
+- `form.validate_on_submit()`
+    - 当用户通过 GET 请求第一次访问 `/login` 页面时，这个函数会直接返回 `False`。
+    - 当用户填写表单并点击提交（发送 POST 请求）时，这个函数会自动运行所有验证器。如果所有数据都有效，返回 `True`。
+- `flash()` 和 `redirect()`：在成功处理数据后，我们使用 `flash()` 来显示一条成功消息，然后使用 `redirect()` 将用户重定向到另一个页面。
+
+如果 `form.validate_on_submit()` 因为数据无效而返回 `False`，WTForms 会自动在 `form` 对象中填充错误信息。我们只需在模板中把它们显示出来：
+
+```html [login.html]
+{% extends "base.html" %}
+
+{% block title %}登录{% endblock %}
+
+{% block content %}
+    <h2>登录</h2>
+    <form action="" method="post" novalidate>
+        {{ form.hidden_tag() }}  {# CSRF 保护 #}
+        <p>
+            {{ form.username.label }}
+            {{ form.username(size=32) }}  {# size 控制输入框宽度 #}
+
+            <!-- <span> 标签是 HTML 中最常用的行内容器元素，
+                用于对文档中的小部分内容进行分组和样式化 -->
+            {% for error in form.username.errors %}  <!-- [!code ++] -->
+            <span style="color: red;">[{{ error }}]</span> <!-- [!code ++] -->
+            {% endfor %} <!-- [!code ++] -->
+        </p>
+        <p>
+            {{ form.password.label }}
+            {{ form.password(size=32) }}
+
+            {% for error in form.password.errors %} <!-- [!code ++] -->
+            <span style="color: red;">[{{ error }}]</span> <!-- [!code ++] -->
+            {% endfor %} <!-- [!code ++] -->
+        </p>
+        <p>
+            {{ form.remember_me() }} 
+            {{ form.remember_me.label }}
+        </p>
+        <p>{{ form.submit() }}</p>
+    </form>
+{% endblock %}
+```
+
+注意到类似于 `return redirect('/login')` 和 `<a href="/index">Home</a>` 会产生硬编码的问题。
+
+::: info ex:
+如果我们想要修改 `/login` 页面的 url 改为 `/auth/signin`，就不得不去项目里的每一个 文件中查找并修改这个链接。
+:::
+
+我们可以使用函数 `url_for()` 来解决这个问题：
+
+::: code-group
+
+```python
+@app.route('/auth/signin', methods=['GET', 'POST'])
+def login():
+    # ...
+    # url_for() 会根据视图函数自动生成 url 地址
+    return redirect(url_for('index'))
+```
+
+```html [.html]
+<a href="{{ url_for('index') }}">Home</a>
+```
+:::
+
+## 在 Flask 中管理静态文件
+
+在 Web 开发中，静态文件指的是那些内容固定、不需要由后端 Python 代码动态生成的文件。它们主要包括：
+
+- CSS 样式表 (`.css` 文件)
+- JavaScript 脚本 (`.js` 文件)
+- 图片 (`.jpg`, `.png`, `.gif` 等)
+- 字体文件
+- 有时也包括一些无需修改的、纯粹展示用的 HTML 文件
+
+**为了更好地组织项目，Flask 框架有一个约定：所有的静态文件，都应该放在一个名为 `static` 的文件夹里。**
+
+接下来，我们就可以通过 `url_for()` 函数链接到静态文件。
+
+基本语法：`url_for('static', filename='文件在static文件夹内的路径')`
+
+1. 在导航栏中添加一个指向静态页面的链接
+
+    假设在 `blogapp/static/` 文件夹下，直接放了一个名为 `plain.html` 的文件。现在想在导航栏里加一个链接指向它。
+
+    ```html
+    <!-- url_for('static', ...): 
+    第一个参数' static' 是一个特殊的指令，它告诉 Flask：
+    我要找一个静态文件，到 static 文件夹里去定位。 -->
+
+    <!-- filename='plain.htm': 
+    第二个参数 filename 告诉 Flask 具体要找哪个文件。 -->
+    <a href="{{ url_for('static', filename='plain.html') }}">Plain Page</a>
+    ```
+
+2. 在 `<head>` 中引入CSS样式表
+
+    通常我们会把 CSS 文件放在 `static` 文件夹内部的一个子文件夹里，比如 `style`，这样结构更清晰。假设 CSS 文件路径是 `blogapp/static/style/mystyle.css`。
+
+    ```html [base.html]
+    <head>
+        <link rel="stylesheet" href="{{ url_for('static', filename='style/mystyle.css') }}">
+    </head>
+    ```
+
+相比硬编码的方式， `url_for()` 函数会自动生成正确的链接，确保您的网站在任何环境下都能正常工作。
+
+## Flask 操作数据库
+
+我们将使用一个流行的 Flask 扩展来操作数据库，叫做 Flask-SQLAlchemy。
+
+其次我们将使用 SQLite 数据库。它的优点是极其简单，因为它不需要运行一个独立的服务器，整个数据库就是一个普通的文件。对于 Python 3 来说，它甚至是内置的，无需额外安装。
+
+**安装 Flask-SQLAlchemy**
+
+```bash
+pip install flask-sqlalchemy
+```
+
+接下来在 `config.py` 中添加数据库配置：
+
+```python [config.py]
+import os
+from pathlib import Path
+
+"""
+Path(__file__) 创建一个指向当前文件 (config.py) 的路径对象。
+resolve() 将其转换为一个绝对路径，解决了所有符号链接等问题。
+parent 直接获取该文件所在的父目录。
+"""
+BASE_DIR = Path(__file__).resolve().parent
+
+class Config:
+    """
+    基础配置类，存放所有环境共用的配置。
+    """
+    SECRET_KEY: str = os.environ.get('SECRET_KEY') or '你自己的随机密钥'
+    
+    # 连接到 SQLite 数据库，先从环境变量中获取 DATABASE_URL
+    # 如果没有设置该环境变量，则使用项目目录下的 blogdb.db 文件
+    SQLALCHEMY_DATABASE_URI: str = os.environ.get('DATABASE_URL') or \
+        f"sqlite:///{BASE_DIR / 'blogdb.db'}"
+
+    # 关闭事件追踪功能节约性能，在新的 Flask-SQLAlchemy 中已被弃用
+    SQLALCHEMY_TRACK_MODIFICATIONS: bool = False
+```
+
+在 `__init__.py` 中进行初始化:
+
+```python [__init__.py]
+from flask import Flask
+from blogapp.config import Config
+from flask_sqlalchemy import SQLAlchemy # 1. 导入
+
+app = Flask(__name__)
+app.config.from_object(Config)
+db = SQLAlchemy(app) # 2. 创建数据库实例
+
+from blogapp import routes, models # 3. 导入自己编写的 models
+```
+
+**ORM：用 Python 类定义数据库结构**
+
+通过 ORM，我们不再需要写 SQL 的 CREATE TABLE 语句，而是通过 Python 类来定义数据表的结构。
+
+```python [models.py]
+from blogapp import db
+
+class User(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    username = db.Column(db.String(64), index=True, unique=True)
+    email = db.Column(db.String(120), index=True, unique=True)
+    password_hash = db.Column(db.String(128))
+    # ... 稍后会添加关系 ...
+
+    def __repr__(self):
+        return '<User {}>'.format(self.username)
+```
+
+- `User(db.Model)`：所有的模型类都必须继承自 `db.Model` 。
+- `db.Column(...)`：类中的每一个 `db.Column` 实例都代表表中的一个字段（一列）。
+- `primary_key=True`：将 `id` 字段设置为主键，它是每一条记录的唯一标识。
+- `unique=True`：保证了 `username` 和 `email` 字段在表中不能有重复值。
+- `index=True`：为该字段创建一个索引，加快查询速度。
+
+::: tip
+`def __repr__(self):` 是 Python 中的一个特殊方法（魔术方法），用于定义对象的官方字符串表示。
+
+相比 `__str__` 方法，`__repr__` 更侧重于为开发者提供调试信息，通常包含更多细节，便于识别对象的状态和属性。
+::::
+
+使用 `db.ForeignKey()` 方法可以建立表之间的关系：
+
+```python [models.py]
+class User(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    username = db.Column(db.String(64), index=True, unique=True)
+    email = db.Column(db.String(120), index=True, unique=True)
+    password_hash = db.Column(db.String(128))
+    # 1. 定义“一对多”关系
+    posts = db.relationship('Post', backref='author', lazy='dynamic') # 懒加载
+
+    def __repr__(self):
+        return '<User {}>'.format(self.username)
+
+class Post(db.Model):
+    id = db.Column(db.Integer, primary_key=True) 
+    body = db.Column(db.String(140))
+    timestamp = db.Column(db.DateTime, index=True, default=datetime.utcnow)
+    # 2. 定义外键
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
+
+    def __repr__(self):
+        return '<Post {}>'.format(self.body)
+``` 
+
+`db.relationship(...)` 不是一个数据库中的真实字段。 它是SQLAlchemy提供的一个高层级关系视图：
+- `posts = db.relationship(...)`：这行代码让我们可以通过一个 `User` 对象，用 `user.posts` 的方式轻松获取该用户发表的所有帖子。
+- `backref='author'`：这是一个反向引用。它会自动为 `Post` 模型添加一个 `.author` 属性，让我们可以通过 `post.author` 的方式轻松获取发表该帖子的 `User` 对象。
+
+**初始化数据库**
+
+现在 `models.py` 里已经定义好了两个模型，但物理的数据库文件（`blogdb.db`）还不存在。我们需要一个命令来根据模型创建这个文件和里面的数据表。
+
+我们使用 `flask shell` 命令进入一个特殊的交互式 Python 环境。这个环境会自动加载我们的 Flask 应用，让我们可以在其中执行命令。
+
+```bash
+(flaskenv) microblog> flask shell
+>>> from blogapp import db
+>>> db.create_all()  # 创建所有数据表
+>>> exit()
+```
+
+发生了什么？
+
+执行 `db.create_all()` 后，Flask-SQLAlchemy 会找到所有继承自 `db.Model` 的类（也就是 `User` 和 `Post`），并在 `config.py` 指定的位置创建一个名为 `blogdb.db` 的 SQLite 文件，同时在文件内根据我们的模型定义创建好 `user` 和 `post` 两张表。
+
+**增加**
+
+操作数据库也需要回到 `flask shell` 环境中进行。
+
+写入操作需要依赖于 Session（会话）执行。
+
+- 会话 (Session) ：您可以把 `db.session` 想象成一个暂存区，做的所有与写入有关的操作（增加、修改、删除）都先被放进这个暂存区。
+
+- 只有当您执行 `db.session.commit()` 时，这些更改才会被一次性地、永久地写入到数据库文件中。
+
+```bash
+(flaskenv) microblog> flask shell
+>>> from blogapp.models import User, Post
+# 创建一个 User 对象
+>>> u1 = User(username='vivek', email='vivek.nallur@ucd.ie') 
+>>> db.session.add(u1)  # 把这个对象添加到会话中
+>>> db.session.commit()  # 提交会话，写入数据库
+```
+
+**读取**
+
+SQLAlchemy 为我们所有的模型类都提供了一个 `query` 属性，它是所有查询的入口点。
+
+| 查询方法 | 说明 |
+| --- | --- |
+| `users = User.query.all()` |  返回一个包含所有 `User` 对象的列表 |
+| `u = User.query.get(1)` | 根据主键获取单个 `User` 对象 |
+| `peter = User.query.filter_by(username='peter').first()` | 简单的过滤查询，返回第一个匹配的 `User` 对象 |
+| `User.query.order_by(User.username).all()` | 按照用户名排序，返回包含所有 `User` 对象的列表 |
+
+**使用关系**
+
+```bash
+(flaskenv) microblog> flask shell
+>>> from blogapp.models import User, Post
+>>> u = User.query.get(1) # 获取 id=1 的用户
+>>> p = Post(body='Flask!', author=u) # 创建一个 Post 对象，并指定作者
+# 添加并提交
+>>> db.session.add(p)
+>>> db.session.commit()
+```
+
+反过来，我们也可以轻松地通过用户找到他的所有帖子：
+
+```python
+# u.posts 就是我们之前定义的 relationship
+for p in u.posts.all():
+    print(p.body)
+```
+
+**删除**
+
+```bash
+>>> u = User.query.get(1)
+>>> db.session.delete(u)  # 删除该用户
+>>> db.session.commit()
+```
+
+## 结合 Flask 表单和数据库
+
+通过一个用户注册的例子，来展示如何将 Flask-WTF 表单和数据库操作结合起来。
+
+首先定义一个表单，包含用户名、邮箱、密码、重复密码和同意规则的字段，并为它们都添加了 `DataRequired()` 验证器，确保用户必须填写所有项目：
+
+```python [blogapp/forms.py]
+# ...
+
+# 在 forms.py 中新增
+class SignupForm(FlaskForm):
+    username = StringField('Username', validators=[DataRequired()])
+    email = StringField('Email', validators=[DataRequired()])
+    password = PasswordField('Password', validators=[DataRequired()])
+    password2 = PasswordField('Repeat Password', validators=[DataRequired()])
+    accept_rules = BooleanField('I accept the site rules', validators=[DataRequired()])
+
+    submit = SubmitField('Register')
+```
+
+接下来，我们需要一个 HTML 页面来向用户展示这个表单：
+
+```html [blogapp/templates/signup.html]
+{% extends "base.html" %}
+{% block content %}
+    <h1>Register a New User</h1>
+    <form action="" method="post">
+        <!-- CSRF 保护 -->
+        {{ form.hidden_tag() }}
+
+        <!-- 用户名 -->
+        <p>
+            {{ form.username.label }}<br>
+            {{ form.username(size=32) }}
+
+            <!-- 错误信息 -->
+            {% for error in form.username.errors %}
+            <span style="color: red;">[{{ error }}]</span>
+            {% endfor %}
+        </p>
+
+        <!-- 省略重复部分 -->
+
+        <!-- 重复密码 -->
+        <p>
+            {{ form.username.label }}<br>
+            {{ form.username(size=32) }}
+
+            {{ form.password2.label }}<br>
+            {{ form.password2(size=35) }}
+
+            <!-- 错误信息 -->
+            {% for error in form.password2.errors %}
+            <span style="color: red;">[{{ error }}]</span>
+            {% endfor %}
+        </p>
+
+        <!-- 同意规则和提交 -->
+        <p>{{ form.accept_rules() }} {{ form.accept_rules.label }}</p>
+        <p>{{ form.submit() }}</p>
+    </form>
+{% endblock %}
+```
+
+我们需要创建一个新的视图函数来处理注册逻辑：
+
+```python [blogapp/routes.py]
+# ...
+
+# 在 routes.py 中新增 (需要先导入 SignupForm, User, db, flash, redirect, url_for)
+@app.route('/signup', methods=['GET', 'POST'])
+def signup():
+    form = SignupForm()
+
+    # 验证表单数据
+    if not form.validate_on_submit():
+        return render_template('signup.html', title='Register a new user', form=form)
+
+    # 检查两次输入的密码是否一致
+    if form.password.data != form.password2.data:
+        flash('Passwords do not match!')
+        return redirect(url_for('signup'))
+
+    # 创建 User 对象并存入数据库
+    user = User(username=form.username.data, email=form.email.data)
+    # (注意：实际应用中需要对密码进行哈希处理，这里为简化省略了)
+    db.session.add(user)
+    db.session.commit()
+
+    # 显示成功消息并重定向到登录页面
+    flash('User registered with username: {}'.format(form.username.data))
+    return redirect(url_for('login'))
+```
+
+最后一步，我们需要在网站的导航栏中添加一个链接，让用户能找到这个新的注册页面。
+
+打开 `base.html`，在导航区添加一个指向 signup 页面的链接：
+```html [blogapp/templates/base.html]
+<nav>
+    <a href="{{ url_for('index') }}">首页</a>
+    <a href="{{ url_for('about') }}">关于我们</a>
+    <a href="{{ url_for('signup') }}">注册</a> <!-- 新增 -->
+</nav>
+```
+
+**结束！**
+
+## Flask 记录用户状态
+
+`session`（会话）是 Flask 提供的一个像字典一样的对象，可以在一次请求中往里面存入数据，然后在后续的该用户的其他请求中，再把这些数据取出来。
+
+Flask 会在后台通过加密的 cookie 来安全地处理这些信息。
+
+```python [blogapp/routes.py]
+from flask import session
+
+# ...
+
+@app.route('/login', methods=['GET', 'POST'])
+def login():
+    form = LoginForm()
+
+    if form.validate_on_submit():
+        # 假设验证通过，记录用户登录状态
+        session['username'] = form.username.data  # 存入用户名
+        flash('Login requested for user {}'.format(form.username.data))
+        return redirect(url_for('index'))
+
+    return render_template('login.html', title='Sign In', form=form)
+```
+
+你可以创建不同的基础面板，给不同用户使用：
+- `base.html`：给未登录的访客使用
+- `base_logged_in.html`：给已登录的用户使用
+
+## JavaScript 基础
+
+JavaScript 是一种轻量级的脚本语言 (scripting language)，其语法类似 Python。JS 直接在用户的浏览器中运行，主要作用是让网页变得可交互 (interactive)，例如：
+- 向 HTML 中插入动态文本
+- 对用户的事件（如点击、鼠标移动）做出反应
+- 在用户的电脑上执行计算
+
+和 CSS 一样，将 JavaScript 代码应用到 HTML 页面主要有三种方式，推荐使用外部 JavaScript 文件：
+
+```html
+<head>
+    <script src="filename.js" type="text/javascript"></script>
+</head>
+```
+
+与从上到下顺序执行的后端脚本不同，前端 JavaScript 大部分时间都在等待等待用户或浏览器触发某个事件。
+
+::: details 嵌入式和内联式
+
+嵌入式：
+```html
+<script type="text/javascript">
+  alert("Hello World!"); 
+</script>
+```
+
+内联式：
+```html
+<button onclick="alert('You clicked me!')">Click me!</button>
+```
+:::
+
+当用户使用对于不支持 JavaScript 的浏览器时，可以使用 `<noscript>` 标签进行提示，此处省略。
+
+#### 变量
+
+在现代 JavaScript中，我们使用 `let` 关键字来声明变量（旧的 JavaScript 代码会使用 `var`）：
+
+```javascript
+let name;
+let age = 10;
+let message = "Hello, World!";
+```
+
+JavaScript 的类型是动态的，像 Python 一样，变量可以随时被赋予不同类型的值：
+
+```javascript
+let myVar = 35;       // 此时 myVar 是一个数字
+myVar = "Bob";        // 现在 myVar 变成了一个字符串
+myVar = true;         // 现在 myVar 又变成了一个布尔值
+```
+
+#### 数据类型
+
+JavaScript 的数据类型分为两大类：
+
+- 原始数据类型 (Primitive Data Types)
+    - `Number`：表示数字，不区分整数和浮点数
+    - `String`：字符串
+    - `Boolean`：布尔值，`true` 和 `false`
+
+- 复合数据类型 (Composite Data Types)
+    - `Array`：一个有序的数据集合
+    - `Object`：一个无序的键值对集合
+
+JavaScript 在处理不同类型数据混合运算时非常灵活，会自动进行类型转换。
+
+#### 运算符
+
+JavaScript 的运算符和大部分编程语言类似，这里只介绍两个特殊的运算符：
+- 严格相等运算符 `===`：不仅比较值是否相等，还比较类型是否相同。
+    ```javascript
+    5 =='5'      // true
+    5 === '5'    // false
+    5 === 5      // true
+    ```
+- 严格不等运算符 `!==`：不仅比较值是否不等，还比较类型是否不同。
+    ```javascript
+    5 !='5'      // false
+    5 !== '5'    // true
+    5 !== 5      // false
+    ```
+
+虽然 `5 == '5'` 返回 `true`，但在对象的判断上，`==` 其实也是根据引用来返回结果而非内容的相等性：
+
+```javascript
+let a = [1, 2, 3];
+let b = [1, 2, 3];
+a == b      // false
+```
+
+#### Array（数组）
+
+JavaScript 的数组类似 Python 的列表，长度可变，可以存放不同类型的数据：
+
+```javascript
+let fruits = ['apple', 'banana', 'orange'];
+let numbers = [1, 2, 3, 4, 5];
+let mixed = ['hello', 42, true];
+
+// 使用构造函数
+let colors = new Array('red', 'green', 'blue');
+```
+
+访问元素也通过：
+
+```javascript
+// 获取长度
+let len = fruits.length;
+
+// 通过索引访问元素
+let firstFruit = fruits[0];
+
+// 添加元素
+fruits.push('kiwi');
+
+// 删除最后一个元素
+fruits.pop();
+
+// 修改元素
+fruits[1] = 'grape';
+
+// 删除指定位置的元素
+// 参数一：起始索引；参数二：删除的数量
+fruits.splice(2, 1); 
+```
+
+#### if 语句 & 循环
+
+**if 语句**
+
+```javascript
+if (condition) {
+    // 条件为真时执行的代码
+} else if (anotherCondition) {
+    // 另一个条件为真时执行的代码
+} else {
+    // 所有条件都不为真时执行的代码
+}
+```
+
+**循环**
+
+```javascript
+// for 循环
+for (let i = 0; i < 5; i++) {
+    console.log(i);
+}
+
+// 遍历一个集合
+let colors = ['red', 'green', 'blue'];
+for (let color of colors) {
+    console.log(color);
+}
+
+// while 循环
+let i = 0;
+while (i < 10) { 
+    // ...
+    i++; 
+}
+```
+
+#### 函数
+
+类似 Python，类型是动态的，函数不需要指定参数和返回类型：
+
+```javascript
+function sum(a, b) {
+    return a + b;
+}
+
+// 或者将函数赋值给一个变量：
+let sum = function(a, b) {
+    return a + b;
+};
+
+// 或者使用箭头函数（ES6 语法）：
+let sum = (a, b) => a + b;
+
+// 调用函数
+let result = sum(5, 10); 
+```
+
+#### 对象
+
+JavaScript 中的对象是一个复合数据类型，由一系列的 “名称:值” (name: value) 对组成 。这些“名称:值”对也被称为对象的属性。
+
+```javascript
+let person = {
+    // 属性
+    name: "Alice",
+    age: 30,
+    // 方法
+    greet: function() {
+        console.log("Hello, " + this.name);
+    },
+    // 或者：
+    sayGoodbye() {
+        console.log("Goodbye, " + this.name);
+    }
+};
+
+// 访问属性 -> 输出 "Alice"
+alert(person.name); 
+
+// 调用方法 -> 输出 "Hello, Alice"
+person.greet();
+```
+
+如果属性名包含空格或特殊字符，必须使用方括号语法访问：
+
+```javascript
+let obj = {
+    "first name": "John",
+    "last-name": "Doe"
+};
+
+// 访问属性
+alert(obj["first name"]); // 输出 "John"
+```
+
+JavaScript 自带了许多非常有用的内置对象，例如:
+- `Date`：处理日期和时间
+- `Math`：提供数学常量和函数
+- `String`：处理字符串
+- `Window`：表示浏览器窗口（其实 `alert()` 就是 `window.alert` 的简写）
+
+## DOM
+
+DOM（文档对象模型）是连接 JavaScript 和 HTML 的桥梁：
+
+- 在 JavaScript 看来，这个文档（HTML）里的每一个部分——从整个 `<html>` 标签，到里面的 `<head>`、`<body>`，再到每一个 `<h1>`、`<p>`、`<div>`，甚至标签里的文字——都是一个对象。一个标签包裹一个标签，形成了一个树状结构。
+
+- DOM是浏览器根据HTML文档创建的一个“实时、可交互的对象树”，它为 JavaScript 提供了一套 API 接口，让 JS 能够读取和修改这个树上的任何部分。
+
+- 当 JavaScript 通过 DOM 修改了这个“对象树”时，浏览器会立刻将这些变化反映到用户看到的页面上。
+
+
+
+浏览器为我们提供了三个重要对象：`Window`，`Navigator` 和 `document`。JS 通过 `document` 全局对象来访问和操作 DOM 树。
+
+
+#### 增删改查
+
+**查找元素**
+
+现代方法：
+
+```javascript
+// （推荐）使用 CSS 选择器语法来查找第一个匹配的元素
+let firstParagraph = document.querySelector('p');
+let specialItem = document.querySelector('.special');
+let mainDiv = document.querySelector('#main');
+```
+
+传统方法：
+
+```javascript
+// 通过 ID 查找单个元素
+let header = document.getElementById('header');
+
+// 通过标签名查找所有匹配的元素，返回一个 HTMLCollection 列表
+let allParagraphs = document.getElementsByTagName('p');
+
+// 使用 CSS 选择器语法来查找所有匹配的元素，返回一个 NodeList 列表
+let allItems = document.querySelectorAll('.item');
+```
+
+::: info
+- `getElementsByTagName()` 返回的是一个实时集合 (live collection) 。这意味着，在获取集合之后，再向页面中添加一个新的同类型标签时，这个集合的长度会自动更新。
+- `querySelectorAll()` 返回的是一个静态集合 (static collection) 。在获取集合之后，即使再向页面添加的新元素，这个静态集合的长度也不会改变 。
+:::
+
+**修改元素内容**
+
+一旦获取到了一个元素对象，就可以对它为所欲为。
+
+```javascript
+// 修改标签内的内容
+// 可以解析 HTML 标签
+element.innerHTML = '<h1>新的HTML内容</h1>';  
+// 更安全，直接成为目标元素的文本内容（忽略 HTML 标签）
+element.textContent = '新的纯文本内容';  
+
+// 修改属性 
+// element.setAttribute('属性名', '属性值');
+imageElement.setAttribute('src', 'new_image.jpg')
+```
+
+不推荐直接在 JS 中修改样式（`element.style.property = 'value';`），更专业的做法是通过添加/切换 CSS 类名来控制样式。
+
+1. 预先定义好 CSS 类：
+
+```css
+.highlight {
+    background-color: yellow;
+    font-weight: bold;
+}
+```
+
+2. 在 JS 中添加/切换类名：
+
+```javascript
+// 获取元素
+let myElement = document.getElementById('myElement');
+// 为它设置class属性为 'highlight'
+myElement.classList.setAttribute('class', 'highlight');
+```
+
+这种做法保持了行为(JS)和表现(CSS)的分离。当你想修改高亮样式时，只需去修改 CSS 文件，而不用动任何 JavaScript 代码，维护起来非常方便。
+
+**创建与添加元素**
+
+```javascript
+// document.createElement('tagName'): 创建一个新的、空的元素对象
+let newParagraph = document.createElement('p');
+
+// 将新元素添加到父元素的子元素列表末尾
+// 如果 newElement 是一个已经存在于 DOM 树中的元素，则会进行移动
+parentElement.appendChild(newElement)；
+
+// 克隆一个元素（包括它的所有子元素）
+let clonedElement = originalElement.cloneNode(true); // true 表示深度克隆
+```
+
+**删除元素**
+
+```javascript
+// 从父元素中删除子元素
+parentElement.removeChild(childElement);
+```
+
+#### 事件处理
+
+JS 可以监听用户在页面上的各种操作（事件），并对这些操作做出反应。例如：
+
+```html
+<h1 id="greeting">Hello!</h1>
+<button id="changeBtn">Change Text</button>
+```
+
+在 JS 中监听：
+
+```javascript
+// 1. 先通过DOM找到我们需要操作的元素
+const greetingElement = document.getElementById('greeting');
+const changeButton = document.getElementById('changeBtn');
+
+// 2. 为按钮添加一个 'click' 事件的监听器
+changeButton.addEventListener('click', function() {
+    // 3. 当按钮被点击时，通过 DOM 修改 h1 元素的内容
+    greetingElement.textContent = 'Goodbye!';
+    greetingElement.style.color = 'blue';
+});
+```
+
+## JavaScript 中级
+
+#### 函数
+
+首先，函数可以在被声明之前调用，这是因为 JavaScript引擎在执行代码前，会先把所有的函数声明提升到作用域的顶部。例如：
+
+```javascript
+sayHello(); 
+
+function sayHello() {
+    console.log("Hello, World!");
+}
+```
+
+但在使用函数表达式时，函数不会被提升：
+
+```javascript
+SayHello();   // 会报错
+
+let SayHello = function() {
+    console.log("Hello, World!");
+};
+```
+
+函数可以作为变量的特性使用变得非常灵活：
+
+```javascript
+// yes 和 no 是回调函数
+function ask(question, yes, no) {
+    if (confirm(question)) {   // confirm 会弹出一个确认框
+        yes();   // 如果用户点“确定”，就回调 yes 函数
+    } else {
+        no();   // 如果用户点“取消”，就回调 no 函数
+    }
+}
+
+function showOk() {
+    alert("You agreed.");
+}
+
+function showCancel() {
+    alert("You canceled the execution.");
+}
+
+// 调用 ask，并把 showOk 和 showCancel 作为回调函数传进去
+ask("Do you agree?", showOk, showCancel);
+```
+
+此外，如果你尝试打印一个函数对象，你会看到它的源代码：
+
+```javascript
+function greet() {
+    alert("Hello!");
+}
+
+// 输出函数的源代码
+alert(greet); 
+```
+
+#### 属性删除
+
+JS 对象的属性是可以被删除的，使用 `delete` 关键字，例如：
+
+```javascript
+let user = {
+    name: "John",
+    age: 30
+};
+
+delete user.age; // 删除 age 属性
+alert(user.age); // undefined
+```
+
+`delete` 方法还具有返回值，如果删除成功则返回 `true`。
+
+#### 字符串
+
+JS 里也有模板字符串，使用反引号 (`` ` ``) 包裹，并且可以通过 `${变量名}` 的方式插入变量：
+
+```javascript
+let name = "Alice";
+let greeting = `Hello, ${name}!`; 
+```
+
+JS 里的字符串是不可变的，如果你想要修改字符串，必须创建一个新的字符串：
+
+```javascript
+let str = "Hello";
+let newStr = str.replace("H", "J"); // newStr 现在是 "Jello"
+```
+
+你可以通过索引访问字符串中的单个字符：
+
+```javascript
+let str = "Hello";
+let firstChar = str[0]; 
+```
+
+此外还有多行字符串：
+
+```javascript
+let multiLineStr = `Hello,
+Amiya!
+o.O
+`;
+
+```
+
+可以使用 `str.match()` 和 `str.test()` 方法进行正则表达式匹配：
+
+```javascript
+let str = "The rain in SPAIN stays mainly in the plain";
+let result = str.match(/ain/gi); // ['ain', 'AIN', 'ain', 'ain']
+
+let pattern = /ain/gi;
+let testResult = pattern.test(str); // true
+```
