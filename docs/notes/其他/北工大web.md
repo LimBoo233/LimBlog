@@ -20,9 +20,9 @@
 
 HTML（超文本标记语言 HyperText Markup Language）是一种标记形语言，可以通过标签（Tags）组织出多样的文本页面，定义文本的结构和内容。
 
-标签由一些特殊的字符（比如 &lt; 和 &gt;）和特殊的单词组成。
+标签由一些特殊的字符（ex: `<` 和 `>` ）和特殊的单词组成。
 
-这些特殊的单词告诉浏览器这个标记应该做什么。例如，&lt;p&gt; 标签告诉浏览器："这里面的内容是一个段落"。
+这些特殊的单词告诉浏览器这个标记应该做什么。例如，`<p>` 标签告诉浏览器：这里面的内容是一个段落。
 
 **一个 HTML 文档由文本内容和 HTML 元素组成。**
 
@@ -32,7 +32,7 @@ HTML（超文本标记语言 HyperText Markup Language）是一种标记形语�
 - 属性 (Attributes)
     - 属性可以为 HTML 元素提供更多的信息。
     - 它是一个 名称=值 的配对，写在元素的开始标签里。
-    - 例如：&lt;a href="https://www.baidu.com"&gt;这是一个链接&lt;/a&gt;
+    - 例如：&lt;a href="https://www.bilibili.com/video/BV1GJ411x7h7"&gt;这是一个链接&lt;/a&gt;
 
 **一个完整HTML页面的基本结构**
 
@@ -51,18 +51,18 @@ HTML（超文本标记语言 HyperText Markup Language）是一种标记形语�
 
 让我们来分解一下这个结构：
 
-- &lt;!DOCTYPE html&gt;
+- `<!DOCTYPE html>`
     - 它不是一个 HTML 标签，而是一个 文档类型声明。
     - 它的作用是告诉浏览器，你接下来要处理的是一个 HTML 文档。
-- &lt;html&gt;, &lt;head&gt;, 和 &lt;body&gt;
-    - &lt;html&gt; 元素是 根元素，它包含了文档中所有其他的 HTML 元素。
-    - 一个 HTML 页面被分为两个主要部分：头部 (&lt;head&gt;) 和身体 (&lt;body&gt;) 。头部包含了页面的元数据（metadata），而身体包含了页面的实际内容（ex：文本、图片等）。
+- `<html>`, `<head>`, 和 `<body>`
+    - `<html>` 元素是 根元素，它包含了文档中所有其他的 HTML 元素。
+    - 一个 HTML 页面被分为两个主要部分：头部 (`<head>`) 和身体 (`<body>`) 。头部包含了页面的元数据（metadata），而身体包含了页面的实际内容（ex：文本、图片等）。
 
 #### Headings
 
-标题是用来展示文档结构的。&lt;h1&gt;是最高级别的标题（最重要的），&lt;h6&gt;是最低级别的。这不仅能让读者一目了然，对搜索引擎优化（SEO）也很有帮助。
+标题是用来展示文档结构的。`<h1>`是最高级别的标题，`<h6>`是最低级别的。除了用于展示，Headings 对搜索引擎优化（SEO）也很有帮助。
 
-浏览器会为不同级别的标题提供默认的样式（比如&lt;h1&gt;字号最大、字体最粗），不过这些样式后续都可以通过 CSS 来自由修改。
+浏览器会为不同级别的标题提供默认的样式（比如`<h1>`字号最大、字体最粗），不过这些样式后续都可以通过 CSS 来自由修改。
 
 ```html
 <html>
@@ -79,9 +79,11 @@ HTML（超文本标记语言 HyperText Markup Language）是一种标记形语�
 
 #### Paragraphs
 
-段落是 HTML 文档中最基本的文本单位。网页上的绝大部分正文内容，都应该放在&lt;p&gt;标签里。
+段落是 HTML 文档中最基本的文本单位。网页上的绝大部分正文内容，都应该放在`<p>`标签里。
 
-&lt;p&gt;标签是一个容器，里面除了可以放文字，还可以嵌套包含其他的“内联 HTML 元素”（比如链接&lt;a&gt;和强调&lt;strong&gt;） 。
+`<p>`标签是一个容器，里面除了可以放文字，还可以嵌套包含其他的内联 HTML 元素（比如链接 `<a>` 和强调 `<strong>`）。
+
+**输入**
 
 ```html
 <html>
@@ -91,6 +93,12 @@ HTML（超文本标记语言 HyperText Markup Language）是一种标记形语�
 </body>
 </html>
 ```
+
+**输出**
+
+<p>这是一个段落。</p>
+<p>这是另一个段落。</p>
+
 
 #### Links
 
@@ -102,12 +110,12 @@ HTML（超文本标记语言 HyperText Markup Language）是一种标记形语�
 <a href="https://www.baidu.com">这是一个链接</a>
 ```
 
-&lt;a&gt;标签功能非常强大，可以创建多种链接 ：
+`<a>` 标签功能非常强大，可以创建多种链接 ：
 - 链接到外部网站 
 - 链接到自己网站内部的其他页面 
 - 链接到当前页面的其他位置（页内跳转） 
 - 触发邮件客户端 
-- 触发执行 JavaScript 函数
+- 触发执行 JavaScript 函数（一种运行在浏览器中的程序，后续会介绍）
 
 在链接到外部网站时，需要使用绝对路径（absolute URL）。
 ```html
@@ -122,16 +130,16 @@ HTML（超文本标记语言 HyperText Markup Language）是一种标记形语�
 
 #### Empty Elements
 
-大部分 HTML 元素都是一个“容器”，可以嵌套其他内容。但有些元素不能嵌套任何东西，它们被称为空元素。
+大部分 HTML 元素都是一个容器，可以嵌套其他内容。但有些元素不能嵌套任何东西，它们被称为空元素。
 
-常见例子：
-- &lt;br&gt;: 强制换行
-- &lt;hr&gt;: 插入一条水平分割线
-- &lt;img&gt;: 插入一张图片
+常见例如：
+- `<br>`: 强制换行
+- `<hr>`: 插入一条水平分割线
+- `<img>`: 插入一张图片
 
 #### Images
 
-当图片是网页的实际内容时（比如产品图、新闻照片，就应该使用&lt;img&gt;标签。如果图片仅仅是为了装饰（比如背景图案）那么更推荐用 CSS 来处理。
+当图片是网页的实际内容时（ex: 产品图、照片）就应该使用`<img>`标签。如果图片仅仅是为了装饰（ex: 背景图案）那么更推荐用 CSS 来处理。
 
 重要属性：
 - `src`: 图片的路径（同样可以是绝对路径或相对路径）
@@ -140,10 +148,11 @@ HTML（超文本标记语言 HyperText Markup Language）是一种标记形语�
 - `width` / `height`: 设置图片的宽度和高度
 
 ```html
-<img src="path/to/image.jpg" alt="描述图片内容" title="图片标题" width="600" height="400">
+<img src="path/to/image.jpg" 
+alt="描述图片内容" title="图片标题" width="600" height="400">
 ```
 
-当你需要为一张图片（或其他插图内容）配上标题说明时，推荐使用&lt;figure&gt;元素把它包裹起来，并用&lt;figcaption&gt;来写标题。这样做语义更清晰。
+当你需要为一张图片配上标题说明时，推荐使用`<figure>`元素把它包裹起来，并用`<figcaption>`来写标题。这样做语义更清晰。
 
 ```html
 <figure>
@@ -153,7 +162,7 @@ HTML（超文本标记语言 HyperText Markup Language）是一种标记形语�
 ```
 
 ::: tip
-不是所有图片都需要用&lt;figure&gt;包裹，只有那些作为独立单元且需要标题说明的内容才适合使用 。
+不是所有图片都需要用 `<figure>` 包裹，只有那些作为独立单元且需要标题说明的内容才适合使用 。
 :::
 
 #### Lists
@@ -162,7 +171,7 @@ HTML（超文本标记语言 HyperText Markup Language）是一种标记形语�
 
 **无序列表 (Unordered Lists)**
 
-整个列表用 &lt;ul&gt; 标签包裹，每个列表项用 &lt;li&gt; 标签。
+整个列表用 `<ul>` 标签包裹，每个列表项用 `<li>` 标签。
 
 
 输入：
@@ -181,7 +190,7 @@ HTML（超文本标记语言 HyperText Markup Language）是一种标记形语�
 
 **有序列表 (Ordered Lists)**
 
-整个列表用 &lt;ol&gt; 标签包裹，每个列表项用 &lt;li&gt; 标签。
+整个列表用 `<ol>` 标签包裹，每个列表项用 `<li>` 标签。
 
 ```html
 <ol>
@@ -253,12 +262,12 @@ HTML 表格用于显示由行和列组成的网格数据。
         <th colspan="2">联系方式</th>
     </tr>
     <tr>
-        <td>张三</td>
+        <td>歼灭型哥布林</td>
         <td>电话</td>
         <td>123456789</td>
     </tr>
     <tr>
-        <td>李四</td>
+        <td>佩佩</td>
         <td>Email</td>
         <td>lisi@example.com</td>
     </tr>
@@ -273,12 +282,12 @@ HTML 表格用于显示由行和列组成的网格数据。
         <th colspan="2">联系方式</th>
     </tr>
     <tr>
-        <td>张三</td>
+        <td>歼灭型哥布林</td>
         <td>电话</td>
         <td>123456789</td>
     </tr>
     <tr>
-        <td>李四</td>
+        <td>佩佩</td>
         <td>Email</td>
         <td>lisi@example.com</td>
     </tr>
@@ -291,13 +300,13 @@ HTML 表格用于显示由行和列组成的网格数据。
 一个表单通常包含各种类型的输入控件，比如文本框、单选按钮、复选框、下拉菜单等。
 
 表单让一个网页变得可以交互 。它包含两个部分：
-- 前端：用HTML写的、用户能看到的表单界面
-- 后端：是一种运行在服务器上的程序（比如用 Python, PHP 等语言编写），负责接收和处理前端发来的数据
+- 前端：用 HTML 写的、用户能看到的表单界面
+- 后端：是一种运行在服务器上的程序（比如用 Python, Java 等语言编写），负责接收和处理前端发来的数据
 
 表单的核心标签：`<form>`
 
 - 所有的表单控件都必须放在 `<form>` 标签内部。
-- `action`属性：这个属性至关重要，它指定了服务器上接收表单数据的程序的URL（地址）。
+- `action` 属性：这个属性至关重要，它指定了服务器上接收表单数据的程序的URL（地址）。
 
 常见的表单控件：
 - 单行文本输入框：`<input type="text">`
@@ -310,7 +319,7 @@ HTML 表格用于显示由行和列组成的网格数据。
 
 - 提交按钮：`<input type="submit">`
 
-    用于提交整个表单的按钮 。当用户点击它时，表单数据就会被发送到action属性指定的地址。
+    用于提交整个表单的按钮。当用户点击它时，表单数据就会被发送到 action 属性指定的地址。
 
     ```html
     <form action="/submit_form">
@@ -327,17 +336,17 @@ HTML 表格用于显示由行和列组成的网格数据。
     可以用 `rows` 和 `cols` 属性来控制它的大小。
 
     ```html
-    <textarea name="comments" rows="4" cols="50">请输入您的评论...</textarea>
+    <textarea name="comments" rows="4" cols="50">输入评论...</textarea>
     ``` 
 
 - 单选按钮：`<input type="radio">`
 
-    用于提供多个选项，但只允许用户 选择其中一个 。
+    用于提供多个选项，但只允许用户选择其中一个 。
 
-    关键点：要让一组单选按钮成为“互斥”的整体，它们必须拥有 完全相同的 `name` 属性。
+    关键点：要让一组单选按钮成为互斥的整体，它们必须拥有 完全相同的 `name` 属性。
 
     ```html
-    <input type="radio" name="gender" value="male"> 男
+    <input type="radio" name="gender" value="male">男
     <input type="radio" name="gender" value="female"> 女
     ```
 
@@ -346,9 +355,9 @@ HTML 表格用于显示由行和列组成的网格数据。
     用于提供多个选项，允许用户 选择零个、一个或多个。
 
     ```html
-    <input type="checkbox" name="hobby" value="reading"> 阅读
-    <input type="checkbox" name="hobby" value="traveling"> 旅行
-    <input type="checkbox" name="hobby" value="sports"> 运动
+    <input type="checkbox" name="hobby" value="reading">阅读
+    <input type="checkbox" name="hobby" value="traveling">旅行
+    <input type="checkbox" name="hobby" value="sports">运动
     ```
 
 - 下拉选择列表：`<select>` 和 `<option>`
