@@ -10,7 +10,7 @@
 - JavaScript
 
 后端：
-- Python
+- Flask (Python web 框架)
 - 数据库访问
 
 进阶：
@@ -124,7 +124,7 @@ HTML（超文本标记语言 HyperText Markup Language）是一种标记形语�
 
 而在链接到自己网站内部的其他页面时，可以使用相对路径（relative URL） 。
 ```html
-<!-- 会链接到同一目录下的 about.html -->
+<!-- 会链接到项目根目录下的 about.html -->
 <a href="/about.html">关于我们</a>
 ```
 
@@ -169,10 +169,9 @@ alt="描述图片内容" title="图片标题" width="600" height="400">
 
 当您需要列出一些项目时，使用列表可以让内容看起来更清晰。HTML 提供了三种类型的列表，我们主要学习最常用的两种。
 
-**无序列表 (Unordered Lists)**
+**无序列表 (Unordered / Bulleted Lists)**
 
 整个列表用 `<ul>` 标签包裹，每个列表项用 `<li>` 标签。
-
 
 输入：
 ```html
@@ -212,9 +211,9 @@ HTML 表格用于显示由行和列组成的网格数据。
 基本结构：一个表格由以下几个核心标签构成：
 
 - `<table>`: 整个表格的容器
-- `<tr>`: 代表 表格中的一行 (Table Row) 
-- `<td>`: 代表 行中的一个单元格 (Table Data)，普通的数据都放在这里
-- `<th>`: 代表 表头单元格 (Table Header)，用于定义列的标题，通常会加粗并居中显示
+- `<tr>`: 代表表格中的一行 (Table Row) 
+- `<td>`: 代表行一个普通的单元格 (Table Data)，普通的数据都放在这里
+- `<th>`: 代表表头单元格 (Table Header)，用于定义列或行ß的标题 ，通常会加粗并居中显示
 
 **输入**
 
@@ -404,14 +403,18 @@ HTML5增加了很多智能的输入类型，它们能提供更好的用户体验
 
 ## CSS
 
-CSS 是一种用来描述HTML元素外观和表现形式 (presentation) 的标准。
+CSS 是一种用来描述 HTML 元素外观和表现形式 (presentation) 的标准。
 
 在 HTML 中使用 CSS 主要使用外部样式表 (External Style Sheet) 的方式：
 - 我们将所有的 CSS 规则写在一个单独的 `.css` 文件里。
-- 然后在 HTML 文件的 `<head>` 部分，使用 `<link>` 标签来引入这个CSS文件。
+- 然后在 HTML 文件的 `<head>` 部分，使用 `<link>` 标签来引入这个 CSS 文件。
 ```html
+
+
 <head>
-    <link rel="stylesheet" type="text/css" href="styles.css">
+    <!-- HTML5 中有 rel 时 type 属性是可以省略的 -->
+    <link rel="stylesheet" href="styles.css">
+    <!-- <link rel="stylesheet" type="text/css" href="styles.css"> -->
 </head>
 ```
 
@@ -509,14 +512,14 @@ p {
 
 
     /* 相邻兄弟选择器 (Adjacent Sibling Selector) */
-    /* 它会选中 紧跟 在某个元素之后的 那一个 同级元素 。*/
+    /* 它会选中紧跟在某个元素之后的那个同级元素 。*/
     /* 选择紧跟在 <h1> 后面的第一个 <p> 元素 */
     h1 + p {
         margin-top: 0;
     }
 
     /* 普通兄弟选择器 (General Sibling Selector) */
-    /* 它会选中 紧跟 在某个元素之后的 所有 同级元素 。*/
+    /* 它会选中     紧跟在某个元素之后的所有同级元素 。*/
     /* 选择所有紧跟在 <h1> 后面的 <p> 元素 */
     h1 ~ p {
         color: green;
@@ -709,7 +712,7 @@ def hello_world():
 
 ## 模板 (Templates)
 
-直接在 Python 函数里返回 HTML 字符串是一种非常糟糕的方式，难以阅读和维护 。为此，Flask 自带了一个强大的模板引擎，叫做 Jinja2 。
+直接在 Python 函数里返回 HTML 字符串是一种非常糟糕的方式，难以阅读和维护 。为此，Flask 自带了一个强大的模板引擎，叫做 Jinja2。
 
 **Jinja2 模板语法**
 
@@ -1649,10 +1652,11 @@ let mainDiv = document.querySelector('#main');
 // 通过 ID 查找单个元素
 let header = document.getElementById('header');
 
-// 通过标签名查找所有匹配的元素，返回一个 HTMLCollection 列表
+// 通过标签名查找所有匹配的元素，返回一个元素节点列表
+// 不包含文本节点 (ex: h1, p) 或注释节点 (ex: <!-- comment -->)
 let allParagraphs = document.getElementsByTagName('p');
 
-// 使用 CSS 选择器语法来查找所有匹配的元素，返回一个 NodeList 列表
+// 使用 CSS 选择器语法来查找所有匹配的元素，返回一个节点列表
 let allItems = document.querySelectorAll('.item');
 ```
 
