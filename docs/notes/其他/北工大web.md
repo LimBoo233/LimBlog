@@ -178,7 +178,8 @@ alt="描述图片内容" title="图片标题" width="600" height="400">
 <ul>
     <li>列表项 1</li>
     <li>列表项 2</li>
-    <li>列表项 3</li>
+    <!-- 对于简单的列表项，可以省略 </li>标签 -->
+    <li>列表项 3
 </ul>
 ```
 
@@ -191,15 +192,18 @@ alt="描述图片内容" title="图片标题" width="600" height="400">
 
 整个列表用 `<ol>` 标签包裹，每个列表项用 `<li>` 标签。
 
+**输入**
+
 ```html
 <ol>
     <li>第一项</li>
     <li>第二项</li>
-    <li>第三项</li>
+    <li>第三项
 </ol>
 ```
 
-输出：
+**输出**
+
 1. 第一项
 2. 第二项
 3. 第三项
@@ -213,7 +217,7 @@ HTML 表格用于显示由行和列组成的网格数据。
 - `<table>`: 整个表格的容器
 - `<tr>`: 代表表格中的一行 (Table Row) 
 - `<td>`: 代表行一个普通的单元格 (Table Data)，普通的数据都放在这里
-- `<th>`: 代表表头单元格 (Table Header)，用于定义列或行ß的标题 ，通常会加粗并居中显示
+- `<th>`: 代表表头单元格 (Table Header)，用于定义列或行的标题 ，通常会加粗并居中显示
 
 **输入**
 
@@ -222,22 +226,24 @@ HTML 表格用于显示由行和列组成的网格数据。
     <tr>
         <th>干员姓名</th>
         <th>干员种类</th>
-        <th>分支</th>
+        <!-- 对于简单的表格，也可以省略结尾 </th>标签 -->
+        <th>分支
     </tr>
     <tr>
         <td>Amiya</td>
         <td>术士</td>
-        <td>本源术士</td>
+        <!-- 同理省略 -->
+        <td>本源术士
     </tr>
     <tr>
-        <td>Exusiai</td>
-        <td>狙击</td>
-        <td>速射手</td>
+        <td>Exusiai
+        <td>狙击
+        <td>速射手
     </tr>
     <tr>
-        <td>Skadi</td>
-        <td>近卫</td>
-        <td>无畏者</td>
+        <td>Skadi
+        <td>近卫
+        <td>无畏者
     </tr>
 </table>
 ```
@@ -258,7 +264,7 @@ HTML 表格用于显示由行和列组成的网格数据。
 <table>
     <tr>
         <th>姓名</th>
-        <th colspan="2">联系方式</th>
+        <th colspan=2>联系方式</th>
     </tr>
     <tr>
         <td>歼灭型哥布林</td>
@@ -278,7 +284,7 @@ HTML 表格用于显示由行和列组成的网格数据。
 <table>
     <tr>
         <th>姓名</th>
-        <th colspan="2">联系方式</th>
+        <th colspan=2>联系方式</th>
     </tr>
     <tr>
         <td>歼灭型哥布林</td>
@@ -371,7 +377,7 @@ HTML 表格用于显示由行和列组成的网格数据。
     <select name="country">
         <option value="us">美国</option>
         <option value="cn">中国</option>
-        <option value="uk">英国</option>
+        <option value="uk">英国
     </select>
     ```
 
@@ -400,6 +406,24 @@ HTML5增加了很多智能的输入类型，它们能提供更好的用户体验
 - 范围滑块: `<input type="range">` 
 - 日期和时间: `<input type="date">`, `<input type="time">` 等
 - 颜色选择器: `<input type="color">` 
+
+#### 为元素赋予 id 和 class
+
+通过给元素添加 `id` 和 `class` 属性，可以在将来使用 CSS 和 JavaScript 更方便地选中和操作这些元素。
+
+```html
+<!-- 使用 id -->
+<div id="header">
+    <h1>欢迎来到我的网站</h1>
+</div>
+
+<!-- 使用 class -->
+<div class="content">
+    <p>这是一些内容。</p>
+</div>
+```
+
+`id` 是元素的唯一标识符，在整个 HTML 文档中只能出现一次。而 `class` 则可以被多个元素共享，用于标记一类元素。
 
 ## CSS
 
@@ -1620,15 +1644,13 @@ JavaScript 自带了许多非常有用的内置对象，例如:
 
 ## DOM
 
-DOM（文档对象模型）是连接 JavaScript 和 HTML 的桥梁：
+DOM（Document Object Model）是连接 JavaScript 和 HTML 的桥梁：
 
 - 在 JavaScript 看来，这个文档（HTML）里的每一个部分——从整个 `<html>` 标签，到里面的 `<head>`、`<body>`，再到每一个 `<h1>`、`<p>`、`<div>`，甚至标签里的文字——都是一个对象。一个标签包裹一个标签，形成了一个树状结构。
 
 - DOM是浏览器根据HTML文档创建的一个“实时、可交互的对象树”，它为 JavaScript 提供了一套 API 接口，让 JS 能够读取和修改这个树上的任何部分。
 
 - 当 JavaScript 通过 DOM 修改了这个“对象树”时，浏览器会立刻将这些变化反映到用户看到的页面上。
-
-
 
 浏览器为我们提供了三个重要对象：`Window`，`Navigator` 和 `document`。JS 通过 `document` 全局对象来访问和操作 DOM 树。
 
