@@ -100,6 +100,18 @@ HTML（超文本标记语言 HyperText Markup Language）是一种标记形语�
 <p>这是另一个段落。</p>
 
 
+#### Division
+
+`<div>` 是一个块级容器元素，它本身不携带任何具体的语义含义，默认默认独占一行，且宽度默认占满父容器，常用于分组和组织内容。
+
+```html
+<div>
+    <p>这是一个段落。</p>
+    <p>这是另一个段落。</p>
+</div>
+```
+
+
 #### Links
 
 链接可以让用户从一个页面跳转到另一个页面，或者跳转到同一页面的不同位置。
@@ -298,6 +310,23 @@ HTML 表格用于显示由行和列组成的网格数据。
     </tr>
 </table>
 
+#### Blockquote
+
+`<blockquote>` 标签可以用来表示一段引用的文字，通常会缩进显示，以区别于普通段落。
+
+**输入**
+
+```html 
+<blockquote>
+    比深渊更加深邃的漆黑，绽放吾之真红吧！
+</blockquote>
+```
+
+**输出**
+<blockquote>
+    比深渊更加深邃的漆黑，绽放吾之真红吧！
+</blockquote>
+
 #### Forms
 
 前面的所有标签都是为了展示信息，而表单则是为了收集信息，是让网页与用户进行交互的桥梁。
@@ -326,6 +355,7 @@ HTML 表格用于显示由行和列组成的网格数据。
 
     用于提交整个表单的按钮。当用户点击它时，表单数据就会被发送到 action 属性指定的地址。
 
+    **输入**
     ```html
     <form action="/submit_form">
         用户名：
@@ -333,6 +363,13 @@ HTML 表格用于显示由行和列组成的网格数据。
         <input type="submit" value="提交">
     </form>
     ```
+
+    **输出**
+    <form action="/submit_form">
+        用户名：
+        <input type="text" name="username" value="default_username">
+        <input type="submit" value="提交">
+    </form>
 
 - 多行文本输入框：`<textarea>`
 
@@ -350,20 +387,39 @@ HTML 表格用于显示由行和列组成的网格数据。
 
     关键点：要让一组单选按钮成为互斥的整体，它们必须拥有 完全相同的 `name` 属性。
 
+
+    **输入**
+
     ```html
-    <input type="radio" name="gender" value="male">男
-    <input type="radio" name="gender" value="female"> 女
+    <!-- checked  关键词使单选按钮为默认选中选项 -->
+    <input type="radio" name="gender" value="male" checked>男 <br>
+    <input type="radio" name="gender" value="female">女
     ```
+
+    **输出**
+    <form>
+        <input type="radio" name="gender" value="male" checked>男 <br>
+        <input type="radio" name="gender" value="female">女
+    </form>
 
 - 复选框：`<input type="checkbox">`
 
     用于提供多个选项，允许用户 选择零个、一个或多个。
+
+    **输入**
 
     ```html
     <input type="checkbox" name="hobby" value="reading">阅读
     <input type="checkbox" name="hobby" value="traveling">旅行
     <input type="checkbox" name="hobby" value="sports">运动
     ```
+
+    **输出**
+    <form>
+        <input type="checkbox" name="hobby" value="reading">阅读
+        <input type="checkbox" name="hobby" value="traveling">旅行
+        <input type="checkbox" name="hobby" value="sports">运动
+    </form>
 
 - 下拉选择列表：`<select>` 和 `<option>`
 
@@ -381,6 +437,38 @@ HTML 表格用于显示由行和列组成的网格数据。
     </select>
     ```
 
+    可以通过 `<optgroup>` 标签来对选项进行分组，使得下拉列表更有层次感。
+
+    **输入** 
+
+    ```html
+    <select name="fruits">
+        <optgroup label="热带水果">
+            <option value="mango">芒果</option>
+            <option value="pineapple">菠萝</option>
+        </optgroup>
+        <optgroup label="温带水果">
+            <option value="apple">苹果</option>
+            <option value="pear">梨</option>
+        </optgroup>
+    </select>
+    ```
+
+    **输出**
+
+    <form>    
+        <select name="fruits">
+            <optgroup label="热带水果">
+                <option value="mango">芒果</option>
+                <option value="pineapple">菠萝</option>
+            </optgroup>
+            <optgroup label="温带水果">
+                <option value="apple">苹果</option>
+                <option value="pear">梨</option>
+            </optgroup>
+        </select>
+    </form>
+
 - 分组控件：`<fieldset>` 和 `<legend>`
 
     `<fieldset>`可以为表单中逻辑相关的一组控件画上一个边框。
@@ -395,8 +483,6 @@ HTML 表格用于显示由行和列组成的网格数据。
     </fieldset>
     ```
 
-    
-
 HTML5新增的输入类型：
 
 HTML5增加了很多智能的输入类型，它们能提供更好的用户体验和内置的数据验证。
@@ -407,6 +493,20 @@ HTML5增加了很多智能的输入类型，它们能提供更好的用户体验
 - 日期和时间: `<input type="date">`, `<input type="time">` 等
 - 颜色选择器: `<input type="color">` 
 
+此外你可以使用 `<label>` 标签来为表单控件提供描述，且当用户点击标签内容时，相关联的输入控件会获得焦点（表现为也被点击），这提升了可用性。
+
+```html
+<!-- 通过 id 显示关联（推荐） -->
+ <label for="usernameInput">Username:</label>
+<input type="text" id="usernameInput" name="username">
+
+<!-- 隐式关联 -->
+ <label>
+  Email:
+  <input type="email" name="email">
+</label>
+```
+
 #### 为元素赋予 id 和 class
 
 通过给元素添加 `id` 和 `class` 属性，可以在将来使用 CSS 和 JavaScript 更方便地选中和操作这些元素。
@@ -414,7 +514,8 @@ HTML5增加了很多智能的输入类型，它们能提供更好的用户体验
 ```html
 <!-- 使用 id -->
 <div id="header">
-    <h1>欢迎来到我的网站</h1>
+    <h1>这是一段文字。</h1>
+    <p>o.0</p>
 </div>
 
 <!-- 使用 class -->
@@ -424,6 +525,7 @@ HTML5增加了很多智能的输入类型，它们能提供更好的用户体验
 ```
 
 `id` 是元素的唯一标识符，在整个 HTML 文档中只能出现一次。而 `class` 则可以被多个元素共享，用于标记一类元素。
+
 
 ## CSS
 
@@ -515,7 +617,7 @@ p {
     }
     ```
 
-2. 关系选择器 (Combinators)
+2. 关系选择器 (Contextual selectors)
 
     这类选择器通过元素之间的层级或兄弟关系来筛选元素，非常强大。
 
@@ -543,7 +645,7 @@ p {
     }
 
     /* 普通兄弟选择器 (General Sibling Selector) */
-    /* 它会选中     紧跟在某个元素之后的所有同级元素 。*/
+    /* 它会选中紧跟在某个元素之后的所有同级元素 。*/
     /* 选择所有紧跟在 <h1> 后面的 <p> 元素 */
     h1 ~ p {
         color: green;
@@ -778,8 +880,8 @@ from flask import render_template
 @app.route('/')
 def index():
     user = {'username': 'Vivek'}
-    # 第一个参数是模板文件名
-    # 后面的参数是想传递给模板的数据
+    # 参数一：文件地址，flask 会使用在 templates 文件夹下对应的 html 文件 
+    # 后续参数：想传递给模板的数据
     return render_template('index.html', title='Home', user=user)
 ```
 
@@ -912,6 +1014,7 @@ from wtforms.validators import DataRequired
 
 class LoginForm(FlaskForm):
     # 每个变量代表一个表单字段
+    # validators 接受一个验证器列表
     username = StringField('Username', validators=[DataRequired()])
     password = PasswordField('Password', validators=[DataRequired()])
     remember_me = BooleanField('Remember Me')
@@ -1624,6 +1727,7 @@ alert(person.name);
 person.greet();
 ```
 
+
 如果属性名包含空格或特殊字符，必须使用方括号语法访问：
 
 ```javascript
@@ -1887,3 +1991,629 @@ let result = str.match(/ain/gi); // ['ain', 'AIN', 'ain', 'ain']
 let pattern = /ain/gi;
 let testResult = pattern.test(str); // true
 ```
+
+## jQuery
+
+jQuery 是一个 JavaScript 库/框架，它提供了一系列工具和简便方法，使得用JavaScript操作HTML DOM、处理事件、创建动画以及执行 AJAX 请求变得更加容易。
+
+通常，jQuery 的语法比等效的原生 JavaScript 代码要短得多。
+
+::: info
+AJAX（Asynchronous JavaScript and XML，异步 JavaScript 和 XML）是一种在不重新加载整个网页的情况下，与服务器交换数据并更新部分网页内容的技术。之后会介绍。
+:::
+
+#### 引入 jQuery
+
+除了从官网下载 jQuery 库文件并放在项目的 `static` 文件夹中外，还可以通过 CDN 引入：
+
+**使用Google CDN**
+
+```html
+<head>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script> 
+</head>
+```
+
+**使用Microsoft CDN**
+
+```html
+<head>
+    <script src="https://ajax.aspnetcdn.com/ajax/jQuery/jquery-3.4.1.min.js"></script> 
+</head>
+```
+
+
+对于大多数项目，尤其是线上项目，使用CDN通常是更推荐的方式。
+
+#### 等待 DOM 就绪
+
+JavaScript 代码（包括 jQuery 代码）通常需要操作页面上的 HTML 元素。但是，如果您的`<script>` 标签放在 HTML 的 `<head>` 里，或者即使放在 `<body>` 里但试图操作它后面的元素，当 JS 代码执行时，那些 HTML 元素可能还没有被浏览器完全加载和解析。这时去操作它们就会出错。
+
+jQuery 提供了一种简便的方法来确保代码在 DOM 完全加载后再执行：
+
+```javascript
+$(document).ready(function() {
+    // 你的所有的 jQuery 代码都应该写在这里面
+    // 这里的代码会安全地等待 HTML 加载完毕后才运行
+});
+```
+
+- `$(document)`：这里我们用 jQuery 选中了整个 HTML  文档。
+- `function() { ... }`：我们传递了一个匿名函数作为参数给 `ready` 方法。这个函数包含了我们想要在 DOM 就绪后执行的所有代码。
+
+::: tip `$()`
+
+在 jQuery 中，`$` 符号实际上是 `jQuery()` 函数的一个简化。因为这个函数用得实在太频繁了，所以 jQuery 提供了一个更短的名字 `$` 来方便使用。
+
+:::
+
+#### jQuery 选择器
+
+当你向 `$()` 函数传递一个字符串参数时，这个字符串通常就是一个 CSS 选择器。jQuery 会使用这个选择器去 HTML 文档中查找所有匹配的元素。
+
+::: tip
+直觉上遍历整个 DOM 树听起来确实效率低下。不过，实际情况比这要复杂一些，也高效得多。
+:::
+
+`$()` 函数返回的是一个特殊的 jQuery 对象。这个 jQuery 对象包含了所有匹配到的 DOM 元素，并提供了一系方法（如 `.css()`、`.click()`、`.hide()` 等）来对这些元素进行批量操作。
+
+```javascript
+// 元素选择器示例：
+let paragraphs = $('p');
+// 类选择器示例：
+let specialItems = $('.special');
+// ID选择器示例：
+let mainDiv = $('#main');
+
+// 选择页面全部元素，使用较少
+let allElements = $('*');
+```
+
+jQuery 的强大之处在于，它几乎支持所有您在 CSS 中学过的选择器。
+
+| 选择器 | 语法 | 说明 |
+| --- | --- | --- |
+| 属性选择器 | 使用方括号 `[]` 来根据元素的属性进行选择 | 选择具有特定属性的元素。`$("img[src^='/artist/']")` 会选中所有 `src` 属性值以 `/artist/` 开头的 `<img>` 元素。 |
+| 伪类选择器 | 使用冒号 `:` 来选择特定状态的元素 | 选择特定状态的元素。`$("li:first")` 会选中第一个 `<li>` 元素，`$("tr:odd")` 会选中所有奇数行的 `<tr>` 元素。 |
+| 关系选择器 (contextual selectors) | 使用空格、`>`、`+` 等符号来表示元素之间的关系 | 选择特定关系的元素。`$("div > p")` 会选中所有直接位于 `<div>` 内的 `<p>` 元素，`$("h1 + p")` 会选中紧跟在 `<h1>` 后面的第一个 `<p>` 元素。 |
+
+**示例**
+
+```html
+<a href="index.html"> </a>
+<a id="second-link"></a>
+<a class="example"></a>
+<a class="example" href="about.html">   
+</a> <span class="example"></span> 
+```
+
+* `$("a")` -> 选中 1, 2, 3, 4
+* `$(".example")` -> 选中 3, 4, 5
+* `$("#second-link")` -> 选中 2
+* `$("[href='index.html']")` -> 选中 1
+
+#### 操作 HTML 属性
+
+**获取属性值**
+
+通过 `attr('attributeName')` 获取属性值，会返回第一个匹配项：
+
+```javascript
+// 获取页面上第一个 <a> 链接的 href 属性值
+var link = $("a").attr("href");
+```
+
+**设置属性值**
+
+当 `attr()` 方法传入两个参数（属性名称和新的值）时，它会为所有匹配到的元素设置该属性的值。
+
+```javascript
+// 将页面上所有 <a> 链接的 href 属性都改为指向 UCD 网站
+$("a").attr("href", "http://www.ucd.ie/");
+
+// 将页面上所有 <img> 图片的 class 属性都设置为 "fancy"
+$("img").attr("class", "fancy"); 
+```
+
+**移除属性**
+
+`removeAttr('attributeName')` 会从所有匹配到的元素中移除指定的属性：
+
+```javascript
+// 移除所有 <a> 链接的 href 属性
+$("a").removeAttr("href");
+```
+
+**操作固有属性 (Properties)**
+
+有些HTML元素的状态并不是通过属性（attribute）来表示的，而是通过元素的固有属性（property）来体现。最典型的例子就是复选框（checkbox）或单选按钮（radio button）的选中状态 (checked)。
+
+::: tip
+Attribute 是初始值，Property 是当前值
+:::
+
+jQuery 推荐使用 `prop()` 方法来获取和设置这些固有属性的值。
+
+```javascript
+var theBox = $(".definition"); 
+
+// 获取 checked 属性（通常返回初始值 "checked" 或 null） - 不推荐
+theBox.attr("checked"); // 结果是 "checked"
+
+// 获取 checked 固有属性（返回 true 或 false） - 推荐
+theBox.prop("checked"); // 结果是 true
+```
+
+::: details HTML
+```html
+<input class="definition" type="checkbox" checked="checked">
+```
+:::
+
+#### 操作 CSS 样式
+
+**获取 CSS 值**
+
+通过 `css('propertyName')`：
+
+```javascript
+// 获取 ID 为 "colourBox" 的元素的背景颜色
+var color = $("#colourBox").css("background-color");
+```
+
+**设置 CSS 值**
+
+
+`css('propertyName', 'value')`  或 `css({ property1: 'value1', property2: 'value2' })`。传入 `{}` 可以同时设置多个属性。
+
+```javascript
+// 将 ID 为 "colourBox" 的元素的背景颜色设置为红色
+$("#colourBox").css("background-color", "#FF0000"); 
+
+// 同时设置多个样式
+$("#myElement").css({
+    "color": "blue",
+    "font-weight": "bold",
+    "padding": "10px" 
+});
+```
+
+#### 事件处理
+
+便捷方法 (Convenience Methods): jQuery为许多常用事件提供了简写方法，如 `.click()`, `.mouseover()`, `.keydown()` 等。
+
+```javascript
+// 为 ID 为 "helloBtn" 的按钮绑定一个点击事件
+$("#helloBtn").click(function(event) {
+    // ..
+});
+```
+
+更现代、更灵活的方法是使用 `.on()` 方法：
+
+```javascript
+// 当类型为 "file" 的 input 元素的值发生改变时，调用 alertFileName 函数
+// 参数一：事件类型；参数二：处理函数
+$(":file").on("change", alertFileName);
+
+function alertFileName() {
+    console.log("The file selected is: " + this.value);
+}
+```
+
+::: tip
+`this` 关键字在 JavaScript 总是指向当前的上下文。
+
+在此处 DOM 事件处理函数中，`this` 指向触发事件的元素（ex: `<input type="file">`）。
+:::
+
+移除事件监听器需要使用 `.off()` 方法，刚好是和 `.on()` 方法对应： 
+
+```javascript
+// 移除事件监听器
+$(":file").off("change", alertFileName);
+// 全部移除：$("#myButton").off("click");
+```
+
+::: tip
+必须将事件绑定代码放在 `$(document).ready()` 函数内部
+:::
+
+#### DOM 遍历与过滤
+
+之前的 `$()` 选择器是从整个文档中查找元素，这里的遍历和过滤方法，通常是在一个已经选中的 jQuery 对象（可能包含一个或多个元素）上调用的，以缩小范围或查找相关元素。
+
+**常用的遍历方法**
+
+向上查找:
+- `.parent()`: 获取当前元素的直接父元素。
+- `.parents()`: 获取当前元素的所有祖先元素，可以选择性地传入一个选择器进行过滤。
+- `.closest('selector')`: 从当前元素开始向上查找，返回第一个匹配指定选择器的祖先元素。
+
+向下查找:
+- `.children()`: 获取当前元素的直接子元素，可以选择性地传入一个选择器进行过滤。
+- `.find('selector')`: 获取当前元素内部所有匹配指定选择器的后代元素（无论嵌套多深）。
+
+同级查找:
+- `.next()`: 获取当前元素的下一个紧邻的兄弟元素。
+- `.prev()`: 获取当前元素的上一个紧邻的兄弟元素。
+
+**常用的过滤方法**
+
+- `.filter('selector')`: 筛选出当前集合中匹配指定选择器的元素。
+
+- `.not('selector')`: 筛选出当前集合中不匹配指定选择器的元素。
+
+- `.eq(index)`: 获取当前集合中指定索引位置的那个元素（索引从0开始）。
+
+- `.first()`: 获取当前集合中的第一个元素。
+
+- `.last()`: 获取当前集合中的最后一个元素。
+
+- `.has('selector')`: 筛选出当前集合中，那些包含匹配指定选择器的后代元素的元素。
+
+## AJAX
+
+AJAX 代表 Asynchronous JavaScript and XML (异步的 JavaScript 和 XML)，不过现在 XML 用得少了，更多的是用 JSON 格式。
+
+AJAX 允许网页中的 JavaScript 在不打断用户操作、不重新加载整个页面的情况下，在后台向服务器发送请求，并接收服务器返回的数据。
+
+**AJAX 的工作流程**
+
+```mermaid
+sequenceDiagram
+    participant BI as Browser Interface
+    participant JS as JavaScript
+    participant WS as WebService (Server)
+
+    Note over BI: 1. Browser parses HTML, builds DOM,<br/>renders page, runs JS.
+    Note over BI: 2. Waiting for user event (e.g., click).
+
+    BI->>JS: User event occurs (e.g., click)
+    activate JS
+    Note over JS: Browser synchronously<br/>handles event in JS.
+    JS-->>WS: 3. Asynchronous Request initiated
+    Note right of JS: Returns control to browser immediately.
+    deactivate JS
+
+    Note over BI: 4. Browser remains responsive<br/>while server processes.
+    activate WS
+    Note over WS: Server processing request...
+    WS-->>JS: Server sends Response
+    deactivate WS
+
+    activate JS
+    Note over JS: 5. JavaScript processes the response.
+    JS->>BI: 6. Updates the user interface (DOM)
+    deactivate JS
+```
+
+::: tip
+AJAX 并非框架/库，而是技术的组合 - HTML、CSS、JS、DOM、XMLHttpRequest
+:::
+
+jQuery 提供了多种方法来简化 XMLHttpRequest 的使用，以便我们实现 AJAX 功能。
+
+#### 向服务器请求数据 - `$.get()`
+
+**函数定义**
+
+```javascript
+$.get(url [, data ] [, successCallback ] [, dataType ])
+```
+
+**参数说明**
+
+- `url`：请求的服务器资源的地址。
+- `data`（可选）：要发送给服务器的数据。可以是一个普通对象（如 `{ name: "John", location: "Boston" }`）或一个查询字符串。
+- `successCallback`（可选）：请求成功时的回调函数。它通常接收三个参数：
+
+  - `data`：服务器返回的响应主体，通常是字符串或 JSON 对象。
+  - `textStatus`：请求的状态（ex: "success"）。
+  - `jqXHR`：jQuery XMLHttpRequest对象。
+
+- `dataType`（可选）：预期从服务器接收的数据类型，如 "json", "xml", "html"。
+
+#### `jqXHR` 对象
+
+像 `$.get()` 这样的 jQuery AJAX 方法会返回一个特殊的对象，称为 jqXHR (jQuery XMLHttpRequest) 对象，可以把它想象成代表了这次异步请求本身。
+
+这个 jqXHR 对象提供了一些方法来代替回调函数 `successCallback`，可以组织出更清晰，功能更强的代码。例如：
+
+```javascript
+ // 发起请求并获取 jqXHR 对象
+var jqxhr = $.get("example.php");
+
+// 请求成功
+jqxhr.done(function(data) {
+    alert("Success! Data received: " + data);
+});
+
+// 请求失败
+jqxhr.fail(function(jqXHR, textStatus) {
+    alert("Request Failed: " + textStatus);
+});
+
+// 请求完成，无论成败
+jqxhr.always(function() {
+    alert("AJAX request finished (either success or failure).");
+});
+```
+
+#### 发起 POST 请求 - `$.post()`
+
+相比 GET 请求，POST 请求发送的数据量没有限制且支持更复杂的数据类型，还更加安全（发送的数据不会显示在 URL 中）。
+
+**函数定义**
+
+基本与 `$.get()` 一致：
+
+```javascript
+$.post(url [, data ] [, successCallback ] [, dataType ])
+```
+
+#### 通用方法 - ``$.ajax()``
+
+这是 jQuery AJAX 功能中最底层、最灵活的方法。如果您需要对请求进行非常精细的控制（比如设置请求头、指定请求超时时间、处理各种HTTP状态码等），就会用到 `$.ajax()`。
+
+该方法接收一个包含各种配置选项的对象作为参数，例如：
+
+```javascript
+$.ajax({
+    type: "POST", // 请求类型 (GET, POST, PUT, DELETE etc.）
+    url: "server.url", // 请求地址
+    data: { someData: true }, // 要发送的数据
+    statusCode: { // 可以为特定的HTTP状态码指定处理函数
+        404: function() { /* 处理 404 Not Found */ },
+        503: function() { /* 处理 503 Service Unavailable */ }
+    }
+})
+.done(function(data) { /* 请求成功处理 */ })
+.fail(function(jqXHR, textStatus) { /* 请求失败处理 */ })
+.always(function() { /* 请求完成处理 */ });
+```
+
+#### 加载 HTML 片段 - `$.load()`
+
+可以从服务器加载一段 HTML 内容，并直接将其注入到您选定的 DOM 元素内部，替换该元素原有的内容。
+
+**函数定义**
+
+```javascript
+$(selector).load(URL [, data ] [, callback ]);
+```
+
+**参数说明**
+
+- `URL`: 要加载的 HTML 内容的地址。
+- `data` (可选): 发送给服务器的数据。
+- `callback` (可选): 当加载完成（成功或失败）后执行的回调函数。
+
+::: details 示例
+
+**目标**：当用户点击按钮时，从服务器加载 `result.html` 文件的内容，并将其显示在 `id="stage"` 的 `<div>` 元素中。
+
+```html [result.html]
+<div id="stage" style="background-color:cc0;">STAGE</div>
+<button id="driver">Load Data</button>
+```
+
+注册点击事件：
+
+```javascript
+$(document).ready(function() {
+    // 当按钮被点击时，加载 result.html 到 #stage div 中
+    $("#driver").click(function(event){
+        $('#stage').load('/jquery/result.html'); 
+    });
+});
+```
+:::
+
+#### 获取JSON数据 - `$.getJSON()`
+
+**函数定义**
+
+```javascript
+$.getJSON( URL [, data ] [, callback ] );
+```
+
+**参数说明**
+
+参数于 `$.load` 类似，但此处的 `callback` 请求成功时的回调函数是必须的。这个函数通常接收一个参数，即已经被 jQuery 解析好的 JavaScript 对象。
+
+::: details 示例
+**目标**：点击按钮后，从服务器加载 `result.json` 文件，解析其内容，并将数据显示在 `#stage` div 中。
+
+```json [result.json]
+{
+    "name": "Amiya",
+    "age": 16,
+    "class": "Caster"
+}
+```
+
+获取 JSON 数据并显示：
+
+```javascript
+$(document).ready(function() {
+    $("#driver").click(function(event){
+        // 发起 GET 请求获取 JSON 数据
+        $.getJSON('/jquery/result.json', function(jd) {
+            // 请求成功后，jd 参数就是解析好的 JavaScript 对象
+            // 使用 jQuery 的 .html() 和 .append() 方法更新 #stage div 的内容
+            $('#stage').html('<p> Name: ' + jd.name + '</p>');
+            $('#stage').append('<p>Age : ' + jd.age + '</p>');
+            $('#stage').append('<p> Class: ' + jd.class + '</p>');
+        });
+    });
+});
+```
+:::
+
+
+#### 序列化表单数据 - `$.serialize()`
+
+> 这个方法在课程 pdf 只有短短的不到两行的介绍，而且我个人感觉使用 WTForms 处理表单以足够方便好用，所以也不打算细说了，感兴趣就自行去了解吧=v=。
+
+它可以将一个 HTML 表单中的所有输入元素的值，自动收集并转换成一个适合在 URL 中传输的查询字符串 (query string) 格式。
+
+语法：`$(formSelector).serialize();`
+
+> 顺便一提，Flask 会自动解序列化。
+
+## AJAX 结合 Flask
+
+通过实现一个动态的、无需刷新的实时检查用户名是否可用的功能，我们来了解一下如何将 AJAX 和 Flask 结合使用。
+
+```mermaid
+sequenceDiagram
+    participant User
+    participant Browser as Browser (Client: JS/HTML)
+    participant Server as Server (Flask)
+
+    User->>Browser: Enters username
+    User->>Browser: Leaves username field (e.g., Tab)
+    Browser->>Server: AJAX Request: Check username availability? (Sends username)
+    activate Server
+    Note over Server: Checks if username exists...
+    Server-->>Browser: AJAX Response: Username available / Username taken
+    deactivate Server
+    activate Browser
+    alt Username Available
+        Browser->>Browser: Display success message next to input (e.g., "Username is available")
+    else Username Taken
+        Browser->>Browser: Display error message next to input (e.g., "Username is already taken")
+        Browser->>User: (Optional) Clear input field, focus back
+    end
+    Note over Browser: Page does not reload.
+    deactivate Browser
+```
+
+**后端 Flask (routes.py) - 提供检查接口**
+
+```python [routes.py]
+from flask import request, jsonify
+import time # 用于模拟延迟
+# ...
+
+@app.route('/checkuser', methods=['POST'])
+def check_username():
+    # 模拟服务器处理延迟
+    time.sleep(5) 
+
+    # 1. 从 AJAX 请求中获取用户名
+    chosen_name = request.form['username'] 
+
+    # 2. 查询数据库
+    user_in_db = User.query.filter(User.username == chosen_name).first()
+
+    # 3. 根据查询结果，返回 JSON 响应
+    if not user_in_db:
+        # 用户名不存在 (可用)
+        return jsonify({'text': 'Username is available', 'returnvalue': 0})
+    else:
+        # 用户名已存在 (不可用)
+        return jsonify({'text': 'Sorry! Username is already taken', 'returnvalue': 1})
+
+```
+
+**jQuery - 发送 AJAX 请求**
+
+```javascript [myjs.js]
+$(document).ready(function() {
+    console.log("Adding event handlers");
+    // 监听 username 输入框的 change 事件
+    $("#username").on("change", check_username); 
+    console.log("functions registered");
+});
+
+function check_username() {
+    console.log("check_username called");
+    // 获取用户输入的用户名
+    var chosen_user = $(this); // 'this' 指向触发事件的 input 元素
+    console.log("User chose: " + chosen_user.val());
+
+    // 发起 AJAX POST 请求
+    $.post('/checkuser', {
+        // 将用户名作为数据发送
+        'username': chosen_user.val() 
+    })
+    .done(function(response) { 
+        // 请求成功的回调
+        var server_response = response['text'];
+        var server_code = response['returnvalue'];
+
+    
+        if (server_code == 0) { 
+            // 用户名可用
+            feedbackElement.html('<span>' + server_response + '</span>');
+             // 添加成功样式 (ex: 绿色)
+            feedbackElement.addClass("success");
+            // (可选) 将焦点移到下一个输入框 (密码)
+            $("#password").focus(); 
+        } else { 
+            // 用户名已被占用
+            feedbackElement.html('<span>' + server_response + '</span>');
+            feedbackElement.addClass("failure"); // 添加失败样式 (ex: 红色)
+            // (可选) 清空输入框并重新聚焦
+            chosen_user.val(""); 
+            chosen_user.focus(); 
+        }
+    })
+    .fail(function() { 
+        // 请求失败的回调 (网络错误等)
+        feedbackElement.html('<span>Error contacting server</span>');
+        feedbackElement.addClass("failure");
+    });
+}
+```
+
+**HTML 模板 引入JS并提供反馈区域**
+
+1. 在 `base.html` 的 `<head>` 中，确保引入了 jQuery 库文件。
+2. 在 `signup.html` 中（通常在 `{% block content %}` 内部，或者在 `</body>` 之前），引入我们刚编写的 `myjs.js` 文件。
+3. 在 `signup.html` 的用户名输入框旁边，添加一个空的 `<span>` 或 `<div>` 元素，并给它一个 ID（比如 `id="checkuser"`），用于显示服务器返回的反馈信息。
+```html [signup.html]
+<p>
+     {{ form.username.label }}<br>
+     {# 确保 input 有 id="username" #}
+     {{ form.username(size=32, id="username") }} 
+     <span id="checkuser"></span> {# 用于显示反馈信息 #}
+
+     {% for error in form.username.errors %}
+        <span style="color: red;">[{{ error }}]</span>
+     {% endfor %}
+ </p>
+```
+
+## 补充：jQuery 修改 HTML 内容
+> 之所以叫补充，是因为课程 pdf (week 7a) 里并没有提到这个内容，但是之后的 AJAX 结合 Flask 章节里有用到这个功能，为了完整性，我在此补充。
+
+**修改元素内部 HTML 内容的常用方法**
+
+| 方法 | 说明 |
+| --- | --- |
+| `.html()`  | 获取或设置元素的内部 HTML 内容 |
+| `.text()`  | 获取或设置元素的内部"纯文本"内容 |
+| `.append()`  | 在元素的内部末尾追加新的 HTML 内容或元素 |
+| `.prepend()`  | 在元素的内部开头添加新的 HTML 内容或元素 |
+| `.before()`  | 在元素的外部之前插入新的 HTML 内容或元素 |
+| `.after()`  | 在元素的外部之后插入新的 HTML 内容或元素 |
+
+## 补充：Flask 接受 jQuery 请求
+> 同上啊同上 o.0
+
+当浏览器（或者 JavaScript 代码）向 Flask 应用发送一个 HTTP 请求时（无论是 GET、POST 还是其他类型），Flask 会创建一个特殊的 `request` 对象。
+
+这个 `request` 对象携带着这次请求的所有信息，包括：
+- 请求的 URL 路径 (`request.path`)
+- 请求的方法 (`request.method`，比如 'GET' 或 'POST')
+- 请求头 (`request.headers`
+- 以及最重要的——用户发送过来的数据。
+
+`request.form:`
+
+用于访问在请求体 (Request Body) 中，以标准 HTML 表单提交的默认方式编码的数据。jQuery的 `$.post()` 方法 在发送普通 JavaScript 对象时也会使用这种编码方式。
+
+如果前端通过一个标准表单或 `$.post({'username': 'test'})` 发送数据，那么在 Flask 后端，`request.form['username']` 或 `request.form.get('username')` 就会得到 'test'。这就是之前 AJAX 结合 Flask 章节中使用的方式。
