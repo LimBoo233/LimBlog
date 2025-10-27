@@ -1824,7 +1824,7 @@ imageElement.setAttribute('src', 'new_image.jpg')
 // 获取元素
 let myElement = document.getElementById('myElement');
 // 为它设置class属性为 'highlight'
-myElement.classList.setAttribute('class', 'highlight');
+myElement.setAttribute('class', 'highlight');
 ```
 
 这种做法保持了行为(JS)和表现(CSS)的分离。当你想修改高亮样式时，只需去修改 CSS 文件，而不用动任何 JavaScript 代码，维护起来非常方便。
@@ -2237,6 +2237,9 @@ $(":file").off("change", alertFileName);
 同级查找:
 - `.next()`: 获取当前元素的下一个紧邻的兄弟元素。
 - `.prev()`: 获取当前元素的上一个紧邻的兄弟元素。
+
+遍历每一个元素：
+- `.each(function(start_index) { ... })`: 对当前集合中的每一个元素执行指定的函数。索引为可选项，`this` 指向对应元素。
 
 **常用的过滤方法**
 
