@@ -2547,6 +2547,11 @@ function check_username() {
         var server_response = response['text'];
         var server_code = response['returnvalue'];
 
+        // 假设有一个 span/div 用于显示反馈
+        var feedbackElement = $("#checkuser"); 
+        feedbackElement.removeClass();
+        feedbackElement.html("");
+
     
         if (server_code == 0) { 
             // 用户名可用
