@@ -836,6 +836,20 @@ def hello_world():
 
 3. 打开浏览器，访问[http://127.0.0.1:5000/](http://127.0.0.1:5000/)，你就能看到 "Hello, World!" 了。
 
+## Flask 路由参数
+
+在 Flask 中，你不仅可以定义固定的 URL 路径（ex: `/`），还可以定义包含可变部分的 URL 来处理动态内容。
+
+在 `@app.route()` 装饰器中，你可以使用尖括号 `< >` 来标记 URL 中的可变部分。 例如：
+
+```python
+@app.route("/user/<username>")
+def show_user_profile(username):
+    return f"User: {username}"
+```
+
+当用户访问 `/user/Amiya` 时，`username` 参数会被设置为 `"Amiya"`，函数会返回 `User: Amiya`。
+
 ## 模板 (Templates)
 
 直接在 Python 函数里返回 HTML 字符串是一种非常糟糕的方式，难以阅读和维护 。为此，Flask 自带了一个强大的模板引擎，叫做 Jinja2。
