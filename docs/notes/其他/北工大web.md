@@ -360,6 +360,13 @@ HTML 表格用于显示由行和列组成的网格数据。
     <form action="/submit_form">
         用户名：
         <input type="text" name="username" value="默认用户名">
+        <br>
+        email：
+        <input type="text" name="email" placeholder="请输入邮箱">
+        <br>
+        密码：
+        <input type="password" name="password">
+        <br>
         <input type="submit" value="提交">
     </form>
     ```
@@ -367,7 +374,14 @@ HTML 表格用于显示由行和列组成的网格数据。
     **输出**
     <form action="/submit_form">
         用户名：
-        <input type="text" name="username" value="default_username">
+        <input type="text" name="username" value="默认用户名">
+        <br>
+        email：
+        <input type="text" name="email" placeholder="请输入邮箱">
+        <br>
+        密码：
+        <input type="password" name="password">
+        <br>
         <input type="submit" value="提交">
     </form>
 
@@ -535,8 +549,6 @@ CSS 是一种用来描述 HTML 元素外观和表现形式 (presentation) 的标
 - 我们将所有的 CSS 规则写在一个单独的 `.css` 文件里。
 - 然后在 HTML 文件的 `<head>` 部分，使用 `<link>` 标签来引入这个 CSS 文件。
 ```html
-
-
 <head>
     <!-- HTML5 中有 rel 时 type 属性是可以省略的 -->
     <link rel="stylesheet" href="styles.css">
@@ -850,6 +862,21 @@ def show_user_profile(username):
 
 当用户访问 `/user/Amiya` 时，`username` 参数会被设置为 `"Amiya"`，函数会返回 `User: Amiya`。
 
+默认情况下，`<username>` 中的变量被视为字符串。但你可以明确指定期望的类型，Flask 会自动进行类型转换和验证。例如：
+
+```python
+@app.route("/post/<int:post_id>")
+def show_post(post_id):
+    return f"Post ID: {post_id}"
+```
+
+常用的转换器还有：
+- `string`：默认类型，匹配除斜杠 `/` 之外的任意文本
+- `int`：匹配整数
+- `float`：匹配浮点数
+- `path`：类似于 `string`，但可以匹配包 `/`
+- `uuid`：匹配 UUID 字符串
+
 ## 模板 (Templates)
 
 直接在 Python 函数里返回 HTML 字符串是一种非常糟糕的方式，难以阅读和维护 。为此，Flask 自带了一个强大的模板引擎，叫做 Jinja2。
@@ -1092,7 +1119,7 @@ def login():
 
      # 2. 验证并处理数据  
     if form.validate_on_submit():
-        flash('Login requested for user {}'.format(form.username.data))
+        flash(f'Login requested for user {form.username.data}')
         return redirect('/index') # 3. 重定向到首页
 
     # 4. 如果是GET请求或验证失败，则正常显示表单
@@ -1277,7 +1304,7 @@ class User(db.Model):
     # ... 稍后会添加关系 ...
 
     def __repr__(self):
-        return '<User {}>'.format(self.username)
+        return f'<User {self.username}>'
 ```
 
 - `User(db.Model)`：所有的模型类都必须继承自 `db.Model` 。
@@ -1304,7 +1331,7 @@ class User(db.Model):
     posts = db.relationship('Post', backref='author', lazy='dynamic') # 懒加载
 
     def __repr__(self):
-        return '<User {}>'.format(self.username)
+        return f'<User {self.username}>'
 
 class Post(db.Model):
     id = db.Column(db.Integer, primary_key=True) 
@@ -1314,7 +1341,7 @@ class Post(db.Model):
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
 
     def __repr__(self):
-        return '<Post {}>'.format(self.body)
+        return f'<Post {self.body}>'
 ``` 
 
 `db.relationship(...)` 不是一个数据库中的真实字段。 它是SQLAlchemy提供的一个高层级关系视图：
@@ -1486,7 +1513,7 @@ def signup():
     db.session.commit()
 
     # 显示成功消息并重定向到登录页面
-    flash('User registered with username: {}'.format(form.username.data))
+    flash(f'User registered with username: {form.username.data}')
     return redirect(url_for('login'))
 ```
 
@@ -1521,7 +1548,7 @@ def login():
     if form.validate_on_submit():
         # 假设验证通过，记录用户登录状态
         session['username'] = form.username.data  # 存入用户名
-        flash('Login requested for user {}'.format(form.username.data))
+        flash(f'Login requested for user {form.username.data}')
         return redirect(url_for('index'))
 
     return render_template('login.html', title='Sign In', form=form)
@@ -1821,7 +1848,7 @@ element.textContent = '新的纯文本内容';
 imageElement.setAttribute('src', 'new_image.jpg')
 ```
 
-不推荐直接在 JS 中修改样式（`element.style.property = 'value';`），更专业的做法是通过添加/切换 CSS 类名来控制样式。
+不推荐直接在 JS 中修改样式（ex: `element.style.color = 'red';`），更专业的做法是通过添加/切换 CSS 类名来控制样式。
 
 1. 预先定义好 CSS 类：
 
@@ -2631,7 +2658,7 @@ function check_username() {
 这个 `request` 对象携带着这次请求的所有信息，包括：
 - 请求的 URL 路径 (`request.path`)
 - 请求的方法 (`request.method`，比如 'GET' 或 'POST')
-- 请求头 (`request.headers`
+- 请求头 (`request.headers`)
 - 以及最重要的——用户发送过来的数据。
 
 `request.form:`
