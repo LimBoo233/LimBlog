@@ -550,9 +550,7 @@ CSS 是一种用来描述 HTML 元素外观和表现形式 (presentation) 的标
 - 然后在 HTML 文件的 `<head>` 部分，使用 `<link>` 标签来引入这个 CSS 文件。
 ```html
 <head>
-    <!-- HTML5 中有 rel 时 type 属性是可以省略的 -->
     <link rel="stylesheet" href="styles.css">
-    <!-- <link rel="stylesheet" type="text/css" href="styles.css"> -->
 </head>
 ```
 
@@ -711,7 +709,7 @@ p {
     background-position: center; /* 背景图片居中 */
     ```
 
-    背景简写 (Shorthand)：为了方便，我们可以把所有背景相关的属性写在一个 `background `属性里 。
+    背景简写 (Shorthand)：为了方便，我们可以把所有背景相关的属性写在一个 `background `属性里。
 
     ```css
     background: lightblue url('path/to/image.jpg') no-repeat center/cover;
@@ -783,7 +781,7 @@ p {
 
 - `inline`：内联元素。
 
-    特点：不会独占一行，会和其他内联元素在同一行内从左到右排列，直到排不下为止 。`<span>` 和 `<a>` 都是典型的内联元素。
+    特点：不会独占一行，会和其他内联元素在同一行内从左到右排列，直到排不下为止。`<span>` 和 `<a>` 都是典型的内联元素。
 
 
 ```css
