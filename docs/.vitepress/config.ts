@@ -180,6 +180,7 @@ export default defineConfig({
                 text: '其他', 
                 items: [
                     { text:  '北工大web', link: '/notes/其他/北工大web'},
+                    { text: '北工大安卓开发', link: '/notes/其他/北工大安卓开发'},
                     { text: `Markdown快速指南`, link: '/notes/其他/Markdown快速指南'},
                 ]
             },
