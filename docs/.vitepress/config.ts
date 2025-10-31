@@ -78,6 +78,7 @@ export default defineConfig({
                     cpp: `catppuccin:cpp`,
                     go: `catppuccin:go`,
                     bash: `catppuccin:bash`,
+                    xml: `catppuccin:xml`,
                     // https://icon-sets.iconify.design/
                     }
             }),
