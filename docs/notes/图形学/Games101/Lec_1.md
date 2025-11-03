@@ -623,7 +623,9 @@ b_3
 
 此外还有四元数（quaternion）表示旋转的方法，更善于做插值（interpolation），但不在本课程范围内。
 
-#### View / Camera Transformation (视图/相机变换)
+## Viewing Transformation
+
+### View / Camera Transformation
 
 想象拍一张照片：
 1. 找个好地方安置好人 (model transformation)
@@ -681,7 +683,7 @@ x_{-g} & y_{-g} & z_{-g} & 0 \\
 
 如此一来，我们变完成了 Camera/View Transformation。
 
-#### Projection Transformation (投影变换)
+### Projection Transformation
 
 投影有两种不同方式：
 - Orthographic Projection (正交投影)
@@ -699,8 +701,39 @@ x_{-g} & y_{-g} & z_{-g} & 0 \\
 
 **Orthographic Projection (正交投影)**
 
-简单地考虑：
+<!-- 简单地理解：
 
-将摄像机位于原点，观察方向为 -z 轴，上方向为 y 轴。在投影平面上，将物体的 z 值扔掉，只剩下 x 和 y 坐标，叠加得到的二维图像就是投影结果。
+将摄像机位于原点，观察方向为 -z 轴，上方向为 y 轴。将物体的 z 值扔掉，获得只剩下 x 和 y 坐标的物体。然后，无论物体的 x 和 y 值多大，都把它们映射到 $[-1, 1]^2$ 的小正方形内。
+    
+![Orthographic Projection](images/Orthographic%20Projection.png) -->
 
-![Orthographic Projection](images/Orthographic%20Projection.png)
+我们定义一个空间中的立方体 $[x_{min}, x_{max}] \times [y_{min}, y_{max}] \times [z_{min}, z_{max}]$，试图将其映射到 canonical (正则/标准/规范) cube  $[-1, 1]^3$ 中。
+
+
+我们先将立方体平移到原点，然后再缩放到 $[-1, 1]^3$，该过程可以写成两个矩阵的乘积：
+
+$$\mathbf{M} = \begin{bmatrix}
+\frac{2}{x_{max} - x_{min}} & 0 & 0 & 0 \\
+0 & \frac{2}{y_{max} - y_{min}} & 0 & 0 \\
+0 & 0 & \frac{2}{z_{max} - z_{min}} & 0 \\
+0 & 0 & 0 & 1
+\end{bmatrix} \begin{bmatrix}
+1 & 0 & 0 & -\frac{x_{min} + x_{max}}{2} \\
+0 & 1 & 0 & -\frac{y_{min} + y_{max}}{2} \\
+0 & 0 & 1 & -\frac{z_{min} + z_{max}}{2} \\
+0 & 0 & 0 & 1
+\end{bmatrix}$$
+
+<br>
+
+由于相机的观察方向为 -z 轴，所以其实近大于远，即越靠近物体的 z 值越大。而如果采用右手系，则会产生远大于近的效果，这是一种更直观的方式，也是为什么像 OpenGL 采用右手系的原因。
+
+::: tip
+物体确实会被拉伸，但之后还会在 Viewport Transformation (视口变换) 再进行一次拉伸以调整。
+:::
+
+**Perspective Projection (透视投影)**
+
+透视投影是应用更加广泛，更符合人类视觉感知，也相对复杂一些的投影方式。在透视投影中：
+- 物体近大远小
+- 平行线会汇聚到一个点（消失点，vanishing point）
