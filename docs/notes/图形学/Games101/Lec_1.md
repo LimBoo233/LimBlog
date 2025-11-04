@@ -684,7 +684,7 @@ x_{-g} & y_{-g} & z_{-g} & 0 \\
 如此一来，我们变完成了 Camera/View Transformation。
 
 ### Projection Transformation
-
+ 
 投影有两种不同方式：
 - Orthographic Projection (正交投影)
 - Perspective Projection (透视投影)
@@ -737,3 +737,214 @@ $$\mathbf{M} = \begin{bmatrix}
 透视投影是应用更加广泛，更符合人类视觉感知，也相对复杂一些的投影方式。在透视投影中：
 - 物体近大远小
 - 平行线会汇聚到一个点（消失点，vanishing point）
+
+先回忆一下齐次坐标，对于点 $(x, y, z, 1)$，在所有坐标乘上 $w$ 后，仍代表同一个点 $(wx, wy, wz, w)$。
+
+ex: $(1, 0, 0, 1)$ 和 $(2, 0, 0, 2)$ 都表示同一个点。
+
+在透视投影中，我们从一个点（相机位置）出发，向外延伸出一个视锥体（frustum）。视锥体有两个平面，分别是近平面（near clipping plane）和远平面（far clipping plane）。我们要做的，就是将远平面映射到近平面上。
+
+![Frustum&Cuboid](images/Frustum&Cuboid.png)
+
+投射投影矩阵非常复杂，很多教材都会直接给出结果矩阵，但不好理解。我们给出一个更好理解的方式。
+
+考虑远平面的那四个点往里挤，挤到和近平面一样大，这样远处的点只要做一个正交投影就可以投影到近平面上。“挤” 的描述很模糊，我们先来规定这个“挤”所必须遵循的规则：
+- 近平面在“挤”后不会变化
+- 远平面上点的 $z$  值在“挤”后不会改变
+- 远屏幕中心点在“挤”后位置不会改变，即仍在远平面中心
+
+那我们接下来理清一下任意一个点 $(x, y, z)$ 在“挤”后的位置 应该如何计算。首先我们从这个 frustum 的侧面来看，其中 $(x', y', z')$ 是近平面上的点，$n$ 是近平面到相机的距离：
+
+![Frustum侧面](images/Frustum侧面.png)
+
+
+
+点 $(x, y, z)$ 最后会移动到和 $(x', y', z')$ 同一个高度（$y_{after} = y'$）。此外，我们很容易看出来近平面分割出了一对相似三角形。根据相似三角形的性质，我们可以得到：
+
+$$y' = \frac{n}{z}y$$
+
+从而我们得到了任意一个点的 $y$ 值会被如何挤压，同理，得到 $x$ 和 $x'$ 的关系：
+
+$$x' = \frac{n}{z}x$$
+
+那现在我们就得到了任意点 $x$ 和 $y$ 会如何变化的，对于 $z$ 值，我们暂时还不知道。不过我们是可以先写出变化后的齐次坐标：
+
+$$
+\begin{pmatrix}
+x \\
+y \\
+z \\
+1
+\end{pmatrix}
+\Rightarrow
+\begin{pmatrix}
+\frac{nx}{z} \\
+\frac{ny}{z} \\
+\text{unknown} \\
+1
+\end{pmatrix}
+\quad
+\substack{\text{mult.} \\ \text{by z} \\ ==}
+\quad
+\begin{pmatrix}
+nx \\
+ny \\
+\text{still unknown} \\
+z
+\end{pmatrix}
+$$
+
+通过目前推导信息，我们已经可以写出投影矩阵的大部分内容了。投影矩阵 $M_{persp \to ortho}$ 应该满足：
+
+$$
+M_{persp \to ortho}^{(4 \times 4)}
+\begin{pmatrix}
+x \\
+y \\
+z \\
+1
+\end{pmatrix}
+=
+\begin{pmatrix}
+nx \\
+ny \\
+\text{unknown} \\
+z
+\end{pmatrix}
+$$
+
+很直观的，这个矩阵大致是这样：
+
+$$
+M_{persp \to ortho} =
+\begin{pmatrix}
+n & 0 & 0 & 0 \\
+0 & n & 0 & 0 \\
+? & ? & ? & ? \\
+0 & 0 & 1 & 0
+\end{pmatrix}
+$$
+
+接下来唯一剩下的难题就是这个矩阵的第三行了，但我们实际只知道任意点 $x$ 和 $y$ 会在挤压后如何变化，并不清楚任意点的 $z$ 值在投影后会会如何变化。我们只清楚近平面和远平面上的点 $z$ 值会不会变化，而这也就足够了，我们把这两个关键信息利用起来。
+
+根据近平面点不变：
+
+$$
+M_{persp \to ortho}^{(4 \times 4)}
+\begin{pmatrix}
+x \\
+y \\
+z \\
+1
+\end{pmatrix}
+=
+\begin{pmatrix}
+nx \\
+ny \\
+\text{unknown} \\
+z
+\end{pmatrix}
+\quad
+\xrightarrow{\text{replace z with n}}
+\quad
+\begin{pmatrix}
+x \\
+y \\
+n \\
+1
+\end{pmatrix}
+\Rightarrow
+\begin{pmatrix}
+x \\
+y \\
+n \\
+1
+\end{pmatrix}
+==
+\begin{pmatrix}
+nx \\
+ny \\
+n^2 \\
+n
+\end{pmatrix}
+$$
+
+所以，矩阵的第三行一定满足 (0 0 A B) 的形式：
+
+$$
+\begin{pmatrix}
+0 & 0 & A & B
+\end{pmatrix}
+\begin{pmatrix}
+x \\
+y \\
+n \\
+1
+\end{pmatrix}
+= n^2
+\quad
+
+
+\quad \Rightarrow \quad
+An + B = n^2
+$$
+
+接下来我们利用一下远平面点不变的性质。远平面中心的点 $(0, 0, f, 1)$  在变化任然是 $(0, 0, f, 1)$ 上，同样道理：
+
+$$
+\begin{pmatrix}
+0 \\
+0 \\
+f \\
+1
+\end{pmatrix}
+\Rightarrow
+\begin{pmatrix}
+0 \\
+0 \\
+f \\
+1
+\end{pmatrix}
+==
+\begin{pmatrix}
+0 \\
+0 \\
+f^2 \\
+f
+\end{pmatrix}
+\quad \Rightarrow \quad
+Af + B = f^2
+$$
+
+联立两个结论可得 $A$ 和 $B$：
+
+$$\begin{cases}
+An + B = n^2 \\
+Af + B = f^2
+\end{cases}
+
+\quad \Rightarrow \quad
+    
+\begin{cases}
+A = f + n \\
+B = -nf
+\end{cases}
+$$
+
+终于啊终于，我们得以窥见投影矩阵的全貌：
+$$
+M_{persp \to ortho} =
+\begin{pmatrix}
+n & 0 & 0 & 0 \\
+0 & n & 0 & 0 \\
+0 & 0 & f + n & -nf \\
+0 & 0 & 1 & 0
+\end{pmatrix}
+$$
+
+> 这应该可能是整节课设计到最复杂的推导了，如果你能理解的话那真的很了不起哦，希望我能讲清楚吧 QAQ。
+
+~~至于在变化后，中间点的 $z$ 值会如何变化，我邀请读者们把它作为一个小练习。~~
+
+
+
