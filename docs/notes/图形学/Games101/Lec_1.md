@@ -6,7 +6,7 @@
 
 课程主页：https://sites.cs.ucsb.edu/~lingqi/teaching/games101.html
 
-闫令琪老师推荐的书：Steve Marschner and Peter Shirley, *Fundamentals of Computer Graphics* 。第三版或更新版本。
+闫令琪老师推荐的书：Steve Marschner and Peter Shirley, *Fundamentals of Computer Graphics*。第三版或更新版本。
 
 ## Overview
 
