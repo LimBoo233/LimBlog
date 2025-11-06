@@ -79,6 +79,7 @@ export default defineConfig({
                     go: `catppuccin:go`,
                     bash: `catppuccin:bash`,
                     xml: `catppuccin:xml`,
+                    kotlin: `catppuccin:kotlin`,
                     // https://icon-sets.iconify.design/
                     }
             }),
