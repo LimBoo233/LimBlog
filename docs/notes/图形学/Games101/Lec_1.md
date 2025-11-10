@@ -587,7 +587,7 @@ $$\mathbf{R_z} = \begin{bmatrix}
 \end{bmatrix}$$
 
 ::: tip
-注意到此处只有绕 y 轴旋转时 $\sin\theta$ 前面是正号，其他两个轴都是负号。这是因为循环对称性：$x \times y = z，y \times z = x，z \times x = y 而不是 x \times z。
+注意到此处只有绕 y 轴旋转时 $\sin\theta$ 前面是正号，其他两个轴都是负号。这是因为循环对称性： $x \times y = z，y \times z = x$，$z \times x = y$ 而不是 $x \times z$。
 ::::
 
 考虑任意一个旋转，我们都可以将其拆解为为绕 x, y, z 轴旋转的复合变换：
