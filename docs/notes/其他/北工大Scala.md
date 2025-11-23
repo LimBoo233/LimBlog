@@ -1,4 +1,4 @@
-# 北工大Scala3
+# 北工大Scala
 
 ## 速览
 
@@ -39,12 +39,12 @@
 **基本数据类型**
 | 类型 |  声明 | 
 | ---- | ---- |
-| `Int` |  `val x = 10` |
-| `Long` |  `val x = 10L` |
-| `Double` |  `val y = 3.14` |
-| `Float` |  `val y = 3.14f` |
-| `String` |  `val s = "Hello"` |
-| `Boolean` |  `val b = true` |
+| Int |  `val x = 10` |
+| Long |  `val x = 10L` |
+| Double |  `val y = 3.14` |
+| Float |  `val y = 3.14f` |
+| String |  `val s = "Hello"` |
+| Boolean |  `val b = true` |
 
 **if 语句**
 
@@ -76,6 +76,23 @@ var x = 0
 while (x < 10) do
   println(x)
   x += 1
+```
+
+**for 循环**
+
+语法：for (变量 <- 范围) do ...
+
+```scala
+for i <- 1 to 10 do
+  println(i)
+```
+
+遍历一个集合：
+
+```scala
+val fruits = List("apple", "banana", "cherry")
+for fruit <- fruits do
+  println(fruit)
 ```
 
 **简单的模式匹配**
@@ -131,6 +148,18 @@ val add = (a: Int, b: Int) => a + b
 // 使用 calculate 函数进行加法运算
 val sum = calculate(add, 5, 10)
 println(s"Sum: $sum")  // 输出: Sum: 15
+```
+
+**变长参数**
+
+定义一个接受变长参数的函数，使用 `*` 符号：
+
+```scala
+def sumAll(nums: Int*): Int =
+  var total = 0
+  for num <- nums do
+    total += num
+  total
 ```
 
 **字符串**
@@ -273,3 +302,348 @@ catch
 finally
   // 关闭资源
 ```
+
+## 对象
+
+Scala 的类定义非常简洁，你可以非常轻松地定义一个类的属性和构造函数。例如，下面定义了一个 `Person` 类，有两个属性 `name` 和 `age`：
+
+::: code-group
+
+```scala
+class Person(val name: String, var age: Int):
+
+  def greet(): Unit =
+    println(s"Hello, my name is $name and I am $age years old.")
+```
+
+```java
+// 在 Java 中实现同样的功能
+class Preson {
+    private final String name;
+    private int age;
+
+    public Person(String name, int age) {
+        this.name = name;
+        this.age = age;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public int getAge() {
+        return age;
+    }
+
+    public void setAge(int age) {
+        this.age = age;
+    }
+
+    public void greet() {
+        System.out.println("Hello, my name is " + name + " and I am " + age + " years old.");
+    }
+}
+```
+
+:::
+
+Scala 中成员默认是 `public` 的，需要手动指定为 `private` 或 `protected`。
+
+```scala
+class Time(private var hours: Int)
+```
+
+在实例化对象时，你可以省略 `new` 关键字:
+
+```scala
+val person = Person("Alice", 30)
+```
+
+调用方法的方式和 Java 一样，但在 Scala 中如果一个方法无需参数，你可以省略括号，就像是在访问一个属性一样：
+
+```scala
+person.greet() 
+person.greet
+```
+
+## 泛型
+
+Scala 中使用 `<>` 来定义范性。例如：
+
+```scala
+class Box[T](var content: T):
+  def getContent(): T = content
+
+val intBox = Box[Int](10)
+```
+
+在编程语言中这种写法是不被允许的：
+
+```scala
+val animals: List[Animal] = List[Dog]()
+```
+
+这是因为编译器会将 `animals` 视为 `List[Animal]` 类型，如果你尝试向其中添加一个 `Cat` 对象，就会导致类型不匹配的错误。
+
+但如果我们只是从 `animals` 中读取数据，而不进行写入操作，这样的类型转换是安全的。
+
+**类型边界**
+
+有时候你可能希望限制泛型类型的范围，例如只允许某个类的子类作为泛型参数。Scala 提供了类型边界来实现这一点。
+- 上界：使用 `<:` 符号表示，表示泛型类型必须是指定类型的子类或实现类。
+- 下界：使用 `>:` 符号表示，表示泛型类型必须是指定类型的父类或超类。
+
+```scala
+class Cage[T <: Animal](animal: T):
+  def getAnimal(): T = animal
+```
+
+**协变 Covariant**
+
+如果你能保证一个泛型类在使用时只会读取数据而不会修改数据，那么你可以将这个泛型类声明为协变的。协变使用 `+` 符号表示。例如：
+
+```scala
+class CovariantList[+T](elements: List[T]):
+  def get(index: Int): T = elements(index)
+
+val dogs: CovariantList[Dog] = CovariantList(List(new Dog()))
+val animals: CovariantList[Animal] = dogs
+```
+
+**逆变 Contravariant**
+
+如果一个泛型类在使用时只会修改数据而不会读取数据，那么你可以将这个泛型类声明为逆变的。逆变使用 `-` 符号表示。例如：
+
+```scala
+class ContravariantPrinter[-T]:
+  def print(item: T): Unit =
+    println(item.toString())
+
+val animalPrinter: ContravariantPrinter[Animal] = ContravariantPrinter()
+val dogPrinter: ContravariantPrinter[Dog] = animalPrinter
+```
+
+::: tip Limb 注
+你可能是第一次听说协变和逆变的概念，这其实是一个非常复杂的主题。如果你将来不去写一写非常解藕的框架代码，可能一辈子都不会去用到它们，所以这里我就额外解释了协变和逆变可以做到什么，但不会深入，你也可以先不去理解它们，记住有这么个东西就行。
+:::
+
+
+## 数据结构
+
+Scala 的集合分为两大类：可变集合（mutable）和不可变集合（immutable）。默认情况下，Scala 使用不可变集合。如果你尝试修改一个不可变集合，会得到一个新的集合，而不是修改原有的集合。
+
+- 既有可变版本也有不可变版本的集合：`Set`, `Map`
+- 只有不可变版本的集合：`List`
+- 只有可变版本的集合：`ListBuffer`, `ArrayBuffer`
+
+Scala 中的数组是可变的，使用 `Array` 类型，其长度固定内容可变，通过 `(index)` 来访问和修改元素：
+
+```scala
+val arr: Array[Int] = Array(1, 2, 3)
+arr(0) = 10 
+// 指定长度必须用到 new 关键字
+val names = new Array[String](10)
+```
+
+## 简单 FP
+
+函数式编程 FP 的核心原则：
+- 声明式 (Declarative): 告诉计算机要什么结果，而不是怎么做。
+- 确定性 (Deterministic): 相同的输入总是产生相同的输出，没有副作用。
+- 无副作用 (No Side-Effects): 函数不修改外部状态，也不进行 I/O，只依赖输入参数。
+- 纯函数 (Pure Functions): 既确定又没有副作用的函数。
+- 头等函数 (First-Class Functions): 函数可以像数据一样被赋值给变量、作为参数传递、或者作为返回值返回。
+- 不可变数据 (Immutable Data): 数据一旦创建就不能修改，这有助于保证函数是纯函数。
+- 递归 (Recursion): 用递归代替循环，因为循环通常依赖可变变量（如 `i++`）。
+
+**尾递归**
+
+每次函数的调用都会创建一个新的栈帧 (Stack Frame)，如果递归调用过深，可能会导致栈溢出 (Stack Overflow)。
+
+尾递归是一种特殊的递归形式，允许编译器优化递归调用，避免栈溢出。如果递归调用是函数执行的最后一个动作且递归调用回来后不再做任何运算 ，就叫尾递归。
+
+```scala
+// 尾递归
+def factorialTailRec(n: Int, accumulator: Int = 1): Int =
+  if n <= 1 then accumulator
+  else factorialTailRec(n - 1, n * accumulator)
+
+// 非尾递归
+def factorial(n: Int): Int =
+  if n <= 1 then 1
+  else n * factorial(n - 1)
+```
+
+上面这个例子其实也展示了一个常见的技巧：使用累加器 (Accumulator) 来保存中间结果，从而实现尾递归。
+
+在 Scala 中，如果你为函数标记 `@tailrec`，编译器不仅会检查你的函数是不是真的尾递归，还会自动把尾递归优化成类似 `while` 循环的高效代码，保证不会爆栈。
+
+```scala
+import scala.annotation.tailrec
+
+@tailrec
+def factorialTailRec(n: Int, accumulator: Int = 1): Int =
+  if n <= 1 then accumulator
+  else factorialTailRec(n - 1, n * accumulator)
+```
+
+## 高阶函数
+
+函数是头等公民 (First-Class Citizens)，这意味着函数不再只是代码，而是可以像数据一样被传递和操作的实体。函数可以作为参数传递给其他函数，也可以作为返回值返回。
+
+- 函数作变量： 你可以把函数赋值给一个 `val`。
+
+  ```scala
+  val plusFive = (num: Int) => num + 5
+  ```
+
+- 函数作参数： 你可以把一个函数传给另一个函数。
+
+  ```scala
+  val ans = someFunction(plusFive, 100.15)
+  ```
+
+Sclala 非常喜欢简化代码：
+1. 类型省略：如果编译器能猜出类型，就可以省略。
+2. 括号省略：如果函数只有一个参数，可以省略括号。
+3. 下划线 `_`: 如果参数在函数体里只出现一次，并且顺序对应，可以直接用 `_` 代替参数名。
+    ```scala
+    val addTen = x => x + 10
+    val addTenSimplified = _ + 10
+    ```
+
+## 集合操作
+
+
+
+集合操作函数 HOFs 可以让我们很方便地对集合进行各种操作，而不需要手动编写循环。
+
+- `filter`：保留集合中返回值为 `true` 的元素。
+
+  ```scala
+  iL.filter(_ > 50)  // 保留大于50的数
+  ```
+
+- `map`：把集合里的每个元素映射成另一个元素，会返回一个新的集合。
+
+  ```scala
+  iL.map(_ * 2). // 每个数字乘 2
+  SL.map(_.toUpperCase)  // 变成大写
+  ```
+
+- `foreach`：对集合中的每个元素作为参数，传入一个指定的单参数函数。
+
+  ```scala
+  iL.foreach(println)
+  ```
+
+你可以使用类似的方式对集合进行排序：
+
+- `sorted`：按照自然顺序排列。
+
+  ```scala
+  val sortedList = nums.sorted
+  ```
+
+- `sortBy`：指定按对象的哪个属性排序。
+
+  ```scala
+  val newPersons = persons.sortBy(_.age)
+  ```
+
+- `sortWith`：自定义排序，需要提供一个比较函数。
+
+  ```scala
+  val newPersons = persons.sortWith((p1, p2) => p1.age < p2.age)
+  ```
+
+## 柯里化
+
+柯里化（Currying）在数学上是将一个接受多个参数的函数，转换成一连串接受单个参数的函数的技术 。
+
+有三种方式可以实现柯里化：
+
+- 手动闭包
+
+    ```scala
+    // 普通函数
+    val sum = (a: Int, b: Int) => a + b
+    // 柯里化
+    val sumCurried = (a: Int) => (b: Int) => a + b
+    ```
+
+- `.curried` 方法
+
+    ```scala
+    val sumCurried = sum.curried
+    ```
+
+- 多参数列表语法糖
+
+    ```scala
+    def sumCurried(a: Int)(b: Int): Int = a + b
+    ```
+
+在 Scala 里使用柯里化可以突破可变参数的限制：
+
+```scala
+def foo(as: Int*)(bs: Int*) = as.sum / bs.sum
+```
+
+## 函数组合
+
+**组合与配对**
+
+组合和配对用于将多个函数连接在一起，形成一个新的函数。
+
+- `compose`：组合函数
+
+    ```scala
+    f.compose(g)  // 相当于 f(g(x))
+    ```
+
+- `andThen`：与 `compose` 的运行顺序相反
+
+    ```scala
+    f.andThen(g)  // 相当于 g(f(x))
+    ```
+
+- `zip`：配对函数，将两个集合的对应元素配对成元组。
+
+    ```scala
+    val a = List(1, 2, 3)
+    val b = List("a", "b", "c")
+    val zipped = a.zip(b)  
+    // 结果是 List((1, "a"), (2, "b"), (3, "c"))
+    ```
+
+**折叠与归约**
+
+用于把一个集合中的元素压缩成一个值。
+
+- `reduce`：直接把集合里的元素两两操作。
+
+    ```scala
+    val nums = List(1, 2, 3, 4)
+    val sum = nums.reduce(_ + _) 
+    ```
+  
+- `fold`：和 `reduce` 类似，但可以指定一个初始值。
+
+    ```scala
+    val sum = nums.fold(0)(_ + _) 
+    ```
+
+- `foldLeft`/`foldRight`：此方法可以明确 `fold` 的执行顺序，通常使用 `foldLeft`。
+
+    ```scala
+    val resultLeft = nums.foldLeft(0)(_ + _)  
+    ```
+
+- `scan`：类似于 `fold`，但返回的是每一步的中间结果组成的集合。
+
+    ```scala
+    val scanResult = nums.scan(0)(_ + _)  
+    // 结果是 List(0, 1, 3, 6, 10)
+    ```
+
