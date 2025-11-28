@@ -647,3 +647,154 @@ def foo(as: Int*)(bs: Int*) = as.sum / bs.sum
     // 结果是 List(0, 1, 3, 6, 10)
     ```
 
+## 面向对象
+
+**接口/特质**
+
+Scala 使用 `trait` 来定义接口/特质。
+
+```scala
+trait Animal:
+  def makeSound(): Unit
+  def sleep(): Unit =
+    println("Zzz...")
+```
+
+实现特质：
+
+```scala
+class Dog extends Animal, Guard:
+  def makeSound(): Unit =
+```
+
+**抽象类**
+
+使用 `abstract class` 来定义抽象类：
+
+```scala
+abstract class Shape:
+  def area(): Double
+```
+
+如果你要实现父类中的非抽象方法，必须使用 `override` 关键字。
+
+```scala
+
+实现抽象类：
+
+```scala
+class Circle(val radius: Double) extends Shape:
+  def area(): Double = Math.PI * radius * radius
+  override def toString: String = s"Circle(radius=$radius)"
+```
+
+**case class**
+
+case class 是专门专门用于存储数据的一种类，可以帮忙减少许多模板代码：
+- 自动实现 `toString`, `equals`, `hashCode` 等有用方法。
+- 构造参数默认是 public 且 immutable (val) 的。
+
+定义一个 case class：
+
+```scala
+case class Point(x: Int, y: Int)
+```
+
+## `Object`
+
+**单例对象**
+
+Scala 使用 `object` 关键字来定义单例对象，这可以说是对单例模式的语法糖。而且通过 `Object` 关键词定义的单例是惰性的，你不需要担心线程安全问题。
+
+```scala
+object BookService:
+  private val books = scala.collection.mutable.ListBuffer[String]()
+
+  def addBook(book: String): Unit =
+    books += book
+
+  def listBooks(): List[String] =
+    books.toList
+```
+
+**`apply` 方法**
+
+`apply` 方法允许你像调用函数一样调用对象。它通常用于工厂方法，简化对象的创建过程。
+
+```scala
+object MathUtils:
+  def apply(x: Int): Int = x * x
+
+// 相当于 MathUtils.apply(5)
+val square = MathUtils(5)  
+```
+
+**`unapply` 方法**
+
+`unapply` 方法用于模式匹配，允许你从对象中提取值。它通常与 `case class` 一起使用，但也可以在普通对象中定义。
+
+```scala
+class Email(val address: String)
+
+object Email:
+  def apply(address: String): Email =
+    new Email(address)
+
+  def unapply(email: String): Option[(String, String)] =
+    val parts = email.split("@")
+    if parts.length == 2 then Some((parts(0), parts(1)))
+    else None
+
+val email = "user@example.com" match
+  case Email(user, domain) => s"User: $user, Domain: $domain"
+  case _ => "Invalid email"
+```
+
+**Companion Object**
+
+如果一个 `class` 和一个同名 `object` 在同一个文件里，它们互为伴生，可以互相访问对方的 private 成员。
+
+```scala
+class Counter(private var count: Int):
+  def increment(): Unit =
+    count += 1
+
+object Counter:
+  def apply(): Counter = Counter(0)
+```
+
+## 运算符
+
+**列表运算符**
+
+列表运算符允许你使用类似数学符号的方式来操作集合：
+- `:+ `: 在末尾追加元素
+- `+:` : 在开头插入元素
+- `++` : 连接两个列表
+- `::` : 在开头插入（不局限于 List）
+- `:::` : 连接两个列表
+```scala
+val list1 = List(1, 2, 3)
+val list2 = List(4, 5, 6)
+
+// 连接两个列表
+val combined = list1 ++ list2
+// 添加元素到列表开头
+val prepended = 0 :: list1
+// 添加元素到列表末尾
+val appended = list1 :+ 4
+```
+
+**运算符重载**
+
+其实在 Scala 中，并没有 `+`，`-` 等运算符，他们本质上都是方法。当你写 `a + b` 时，Scala 会把它翻译成 `a.+(b)`。
+
+```scala
+class Vector(val x: Int, val y: Int):
+  def +(that: Vector): Vector =
+    Vector(this.x + that.x, this.y + that.y)
+
+val v1 = Vector(1, 2)
+val v2 = Vector(3, 4)
+val v3 = v1 + v2 
+```
