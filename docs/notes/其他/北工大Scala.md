@@ -806,6 +806,10 @@ object Counter:
   def apply(): Counter = Counter(0)
 ```
 
+::: tip
+Scala 中并没有 `static` 关键字，不过伴生对象 `object` 可以一定程度替代 `static` 的生态位。
+:::
+
 ## 运算符
 
 **列表运算符**
@@ -946,6 +950,52 @@ val sum: Option[Int] =
   else
     None
 ```
+:::
+
+## 用函数式思想编写 Model
+
+在传统的 OOP 中会将数据类和操作逻辑写在一起，但在 FP 中更倾向于将逻辑和数据分离，数据类只储存不可变数据。例如：
+
+::: code-group
+
+```scala [FP.scala]
+// 1. 定义数据类
+case class Pizza(size: String, price: Double)
+
+// 2. 定义逻辑
+def calculatePrice(p: Pizza): Double =
+  p.price * 1.5
+```
+
+
+```csharp [OOP.cs]
+public class Pizza {
+    public string Size { get; set; }
+    public double Price => size * 1.5;
+}
+```
 
 :::
+
+至于逻辑代码具体写在哪里，这里提供四种方法：
+1. 伴生对象：把逻辑写在伴生对象里，好处是可以编写能访问 private 成员的纯函数。~~fw~~
+
+2. 模块化方法 Modular Approach：先使用 Trait 定义服务接口，再实现。~~典~~
+
+3. Functional Objects：逻辑还在对象里，但这些方法不会修改对象，而是返回一个新的对象。
+
+4. 扩展方法 Extension Methods：扩展方法是像 Scala 等比较新的语言中非常 pro 的一个特性，允许你在不修改原始代码而为一个类添加新方法。
+
+  ```scala
+  case class Pizza(size: Int)
+
+  // 扩展方法
+  extension (p: Pizza)
+    def isLarge(): Boolean = p.size >= 12
+
+  // 调用
+  val pizza = Pizza(14)
+  println(pizza.isLarge())  // true
+  ```
+
 
