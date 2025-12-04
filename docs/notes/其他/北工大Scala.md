@@ -662,6 +662,15 @@ yield result         // 结果表达式
   iL.foreach(println)
   ```
 
+- `flatMap`：先对集合中的每个元素应用一个函数，然后把结果扁平化成一个新的集合。
+
+  ```scala
+  val a = List(1, 2, 3)
+  val b = List(4, 5, 6)
+  // List(5, 6, 7, 6, 7, 8, 7, 8, 9)
+  val combinations = a.flatMap(x => b.map(y => x + y)) 
+  ```
+
 你可以使用类似的方式对集合进行排序：
 
 - `sorted`：按照自然顺序排列。
@@ -928,7 +937,7 @@ val maybeA: Option[Int] = Some(10)
 val maybeB: Option[Int] = Some(20)
 // val maybeB: Option[Int] = None
 
- // 如果 maybeA 或 maybeB 是 None，直接停止并返回 None
+// 如果 maybeA 或 maybeB 是 None，直接停止并返回 None
 val sum: Option[Int] = for {
   a <- maybeA
   b <- maybeB 
@@ -999,3 +1008,120 @@ public class Pizza {
   ```
 
 
+## Laziness, Monoids, and Monads
+
+### 惰性
+
+惰性意味值不会被立刻计算，而推迟到需要时才计算。
+
+语法：`lazy val`
+
+```scala
+lazy val text = {
+  println("Reading file...")
+  scala.io.Source.fromFile("data.txt").mkString
+}
+
+// ... 过了很久 ...
+// 此时才会打印 "Reading file..." 并读取文件
+println(text)
+```
+
+惰性列表的长度是按需计算的，而不是预先定义好的，这也意味着你可以定义一个无限长的列表。定义惰性列表需要用到 `#::` 操作符，类似于 `::`。
+
+```scala
+// 生成从 n 开始的无限自然数序列
+def from(n: Int): LazyList[Int] = n #:: from(n + 1)
+
+val nats = from(1) // 此时只计算了 1
+println(nats.take(3).force) // 强制取出前3个：List(1, 2, 3)
+```
+
+函数可以定义惰性参数，此类参数只有在函数体内被使用时才会被计算，此特性在英文里叫做 Call-by-Name Parameters。
+
+语法：`param: => Type`
+
+```scala
+// msg 本质上是一个没有参数的函数
+def logIfDebug(msg: => String): Unit =
+  val debug = true // 假设这是从配置文件读取的
+  if debug then
+    println(msg) // 只有在 debug 模式下才会计算 msg
+
+logIfDebug({
+  println("Computing log message...")
+  "This is a debug message."
+})
+```
+
+### Monoids
+
+这是一个数学概念，在编程中是一种通用的组合模式。
+
+一个数据类型如果满足以下三个条件，就可以称为 Monoid：
+1. 一个类型 `T`。
+2. 存在一个满足结合律的二元操作 op(a, b)，例如 `a + (b + c) = (a + b) + c`。
+3. 存在一个单位元 Identity `zero`。即 `op(a, zero) == a`。
+
+在 Scala 中，常见的 Monoid 实例有：
+- 整数加法：类型 `Int`，操作 `+`，单位元 `0`。
+- 字符串连接：类型 `String`，操作 `+`，单位元 `""`。
+- 列表连接：类型 `List[T]`，操作 `++`，单位元 `Nil`。
+
+满足 Monoid 条件的数据类型可以方便地进行聚合操作，例如使用 `fold` 来累积结果。
+
+```scala
+val numbers = List(1, 2, 3, 4, 5)
+val sum = numbers.fold(0)(_ + _)
+```
+
+### Functors & Monads
+
+#### Functors
+
+简单来说，Functor 就是一个可以被 `map` 的容器：它有一个 `map` 方法，接受一个函数 `A => B`，将容器里的 A 变成 B，但容器结构不变。
+
+`List`, `Option`, `Future` 都是 Functor。
+
+Functor 在代码中被如下定义：
+
+```scala
+trait Functor[F[_]]:
+  def map[A, B](fa: F[A])(f: A => B): F[B]
+```
+
+其中, `F[_]` 是一个高级类型 Higher-kinded Type，代表着 `F` 是一个类型构造器 Type Constructor，它接受一个类型 `A` 并生成一个新的类型 `F[A]`。简单来说，`F[_]` 代表一个容器。
+
+实现 Functor：
+
+```scala
+val listFunctor = new Functor[List] {
+  def map[A, B](fa: List[A])(f: A => B): List[B] = {
+    // 这里的 fa 就是一个 List，直接调用 Scala 原生的 map
+    fa.map(f) 
+  }
+}
+```
+
+#### Monads
+
+Monads 是 Functor 的加强版，其有两个核心操作：
+- `unit` (或 `pure`/`apply`): 把一个普通值放入容器中，如 `Some(1)`。
+- `flatMap`: 它接受一个返回容器的函数，`flatMap` 会把嵌套的容器拆箱拍平。
+
+使用 Monads 可以方便地进行链式操作，避免嵌套的容器结构。比如我们有一连串的步骤，但这些步骤中需要频繁进行 `null` 检查：
+
+```scala
+// 使用 flatMap 链式调用
+Option(name).flatMap(n => 
+  Option(phone).flatMap(p => 
+    Some(Customer(n, p))
+  )
+)
+
+// 或者更简单的 For-Comprehension:
+for {
+  n <- Option(name)
+  p <- Option(phone)
+} yield Customer(n, p)
+```
