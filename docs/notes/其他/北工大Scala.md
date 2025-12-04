@@ -303,7 +303,9 @@ finally
   // 关闭资源
 ```
 
-## 对象
+## 面对对象
+
+**class**
 
 Scala 的类定义非常简洁，你可以非常轻松地定义一个类的属性和构造函数。例如，下面定义了一个 `Person` 类，有两个属性 `name` 和 `age`：
 
@@ -364,6 +366,57 @@ val person = Person("Alice", 30)
 ```scala
 person.greet() 
 person.greet
+```
+
+**接口/特质**
+
+Scala 使用 `trait` 来定义接口/特质。
+
+```scala
+trait Animal:
+  def makeSound(): Unit
+  def sleep(): Unit =
+    println("Zzz...")
+```
+
+实现特质：
+
+```scala
+class Dog extends Animal, Guard:
+  def makeSound(): Unit =
+```
+
+**抽象类**
+
+使用 `abstract class` 来定义抽象类：
+
+```scala
+abstract class Shape:
+  def area(): Double
+```
+
+如果你要实现父类中的非抽象方法，必须使用 `override` 关键字。
+
+```scala
+
+实现抽象类：
+
+```scala
+class Circle(val radius: Double) extends Shape:
+  def area(): Double = Math.PI * radius * radius
+  override def toString: String = s"Circle(radius=$radius)"
+```
+
+**case class**
+
+case class 是专门专门用于存储数据的一种类，可以帮忙减少许多模板代码：
+- 自动实现 `toString`, `equals`, `hashCode` 等有用方法。
+- 构造参数默认是 public 且 immutable (val) 的。
+
+定义一个 case class：
+
+```scala
+case class Point(x: Int, y: Int)
 ```
 
 ## 泛型
@@ -487,7 +540,7 @@ def factorialTailRec(n: Int, accumulator: Int = 1): Int =
   else factorialTailRec(n - 1, n * accumulator)
 ```
 
-## 高阶函数
+**高阶函数**
 
 函数是头等公民 (First-Class Citizens)，这意味着函数不再只是代码，而是可以像数据一样被传递和操作的实体。函数可以作为参数传递给其他函数，也可以作为返回值返回。
 
@@ -512,8 +565,80 @@ Sclala 非常喜欢简化代码：
     val addTenSimplified = _ + 10
     ```
 
+**柯里化**
+
+柯里化（Currying）在数学上是将一个接受多个参数的函数，转换成一连串接受单个参数的函数的技术 。
+
+有三种方式可以实现柯里化：
+
+- 手动闭包
+
+    ```scala
+    // 普通函数
+    val sum = (a: Int, b: Int) => a + b
+    // 柯里化
+    val sumCurried = (a: Int) => (b: Int) => a + b
+    ```
+
+- `.curried` 方法
+
+    ```scala
+    val sumCurried = sum.curried
+    ```
+
+- 多参数列表语法糖
+
+    ```scala
+    def sumCurried(a: Int)(b: Int): Int = a + b
+    ```
+
+在 Scala 里使用柯里化可以突破可变参数的限制：
+
+```scala
+def foo(as: Int*)(bs: Int*) = as.sum / bs.sum
+```
+
+
 ## 集合操作
 
+For 推导式可以生成新的集合，本质上是集合操作函数的语法糖，其基本结构如下：
+
+```scala
+for 
+  item <- collection   // 生成器 (Generator)
+  if condition        // 守卫 (Guard/Filter)
+  if anotherCondition // 另一个守卫
+yield result         // 结果表达式
+```
+
+- 映射
+
+  ```scala
+  val nums = List(1, 2, 3)
+  // 返回一个新的 List(2, 4, 6)
+  val doubled = for (n <- nums) yield n * 2
+  ```
+
+- 过滤
+
+  ```scala
+  val nums = List(1, 2, 3, 4, 5, 6)
+  // 返回一个新的 List(2, 4, 6)
+  val evens = for (n <- nums if n % 2 == 0) yield n
+  ```
+- 多重迭代
+
+  ```scala
+  val numbers = List(1, 2)
+  val letters = List("a", "b", "c")
+  // 返回一个新的 List("1a", "1b", "1c", "2a", "2b", "2c")
+  val combinations = for
+    n <- numbers
+    l <- letters
+  yield s"$n$l"
+  ```
+
+此外 For 推导式还可以用于异常处理，不过这就是后话了，我们之后还会提到。
 
 
 集合操作函数 HOFs 可以让我们很方便地对集合进行各种操作，而不需要手动编写循环。
@@ -557,38 +682,7 @@ Sclala 非常喜欢简化代码：
   val newPersons = persons.sortWith((p1, p2) => p1.age < p2.age)
   ```
 
-## 柯里化
 
-柯里化（Currying）在数学上是将一个接受多个参数的函数，转换成一连串接受单个参数的函数的技术 。
-
-有三种方式可以实现柯里化：
-
-- 手动闭包
-
-    ```scala
-    // 普通函数
-    val sum = (a: Int, b: Int) => a + b
-    // 柯里化
-    val sumCurried = (a: Int) => (b: Int) => a + b
-    ```
-
-- `.curried` 方法
-
-    ```scala
-    val sumCurried = sum.curried
-    ```
-
-- 多参数列表语法糖
-
-    ```scala
-    def sumCurried(a: Int)(b: Int): Int = a + b
-    ```
-
-在 Scala 里使用柯里化可以突破可变参数的限制：
-
-```scala
-def foo(as: Int*)(bs: Int*) = as.sum / bs.sum
-```
 
 ## 函数组合
 
@@ -647,58 +741,7 @@ def foo(as: Int*)(bs: Int*) = as.sum / bs.sum
     // 结果是 List(0, 1, 3, 6, 10)
     ```
 
-## 面向对象
 
-**接口/特质**
-
-Scala 使用 `trait` 来定义接口/特质。
-
-```scala
-trait Animal:
-  def makeSound(): Unit
-  def sleep(): Unit =
-    println("Zzz...")
-```
-
-实现特质：
-
-```scala
-class Dog extends Animal, Guard:
-  def makeSound(): Unit =
-```
-
-**抽象类**
-
-使用 `abstract class` 来定义抽象类：
-
-```scala
-abstract class Shape:
-  def area(): Double
-```
-
-如果你要实现父类中的非抽象方法，必须使用 `override` 关键字。
-
-```scala
-
-实现抽象类：
-
-```scala
-class Circle(val radius: Double) extends Shape:
-  def area(): Double = Math.PI * radius * radius
-  override def toString: String = s"Circle(radius=$radius)"
-```
-
-**case class**
-
-case class 是专门专门用于存储数据的一种类，可以帮忙减少许多模板代码：
-- 自动实现 `toString`, `equals`, `hashCode` 等有用方法。
-- 构造参数默认是 public 且 immutable (val) 的。
-
-定义一个 case class：
-
-```scala
-case class Point(x: Int, y: Int)
-```
 
 ## `Object`
 
@@ -731,7 +774,7 @@ val square = MathUtils(5)
 
 **`unapply` 方法**
 
-`unapply` 方法用于模式匹配，允许你从对象中提取值。它通常与 `case class` 一起使用，但也可以在普通对象中定义。
+`unapply` 解构方法用于模式匹配，允许你从对象中提取值。它通常与 `case class` 一起使用，但也可以在普通对象中定义。
 
 ```scala
 class Email(val address: String)
@@ -798,3 +841,111 @@ val v1 = Vector(1, 2)
 val v2 = Vector(3, 4)
 val v3 = v1 + v2 
 ```
+
+## 异常处理
+
+**引用透明 Referential Transparency**
+
+如果一个表达式（比如一个函数调用）可以被它的运算结果（返回值）直接替换，而不会改变程序的行为，那么这个表达式就是引用透明的。
+
+For instance:
+
+```scala
+def add(x: Int, y: Int): Int = x + y
+
+val result = add(2, 3) + add(3, 2)
+// 可以替换为：
+val result = 5 + 5
+```
+
+引用透明的函数易于预测和理解，不会引起副作用 (Side Effects)，这使得代码更容易测试和重用。然而像 Java 那样抛出异常会破坏引用透明性，所以在 Scala 中我们最好另寻他法。
+
+**`Option` 类型**
+
+使用 `Option` 类型替换 null，表示一个可能存在也可能不存在的值。`Option` 有两个子类型：
+- `Some`：表示存在值
+-  `None`：表示不存在值
+
+```scala
+def safeDivide(x: Int, y: Int): Option[Int] =
+  if y == 0 then None
+  else Some(x / y)
+
+// 这里其实是调用了解构函数
+val result = safeDivide(10, 2) match
+  case Some(value) => s"Result: $value"
+  case None => "Cannot divide by zero."
+```
+
+**`Try` 类型**
+
+使用 `Try` 类型来替换 try-catch 块，它捕获异常并将其放入一个对象中，而不是中断程序。
+- `Success(value)`：代码执行成功
+- `Failure(exception)`： 代码抛出了异常，异常被包裹在这里 
+
+```scala
+import scala.util.{Try, Success, Failure}
+
+val result: Try[Int] = Try("123a".toInt)
+
+// 可以检查结果，或者提供默认值
+val finalResult = result.getOrElse(0)
+
+// 或者
+result match
+  case Success(value) => println(s"Parsed value: $value")
+  case Failure(exception) => println(s"Failed to parse integer: ${exception.getMessage}")
+```
+
+**`Either` 类型**
+
+`Either` 类型用于表示两种可能的结果，通常用于函数可能返回两种不同类型的值的情况。`Either` 有两个子类型：
+- `Left(value)`：通常表示错误或异常情况
+- `Right(value)`：通常表示成功情况
+
+```scala
+def divide(x: Int, y: Int): Either[String, Int] =
+  if y == 0 then Left("Cannot divide by zero.")
+  else Right(x / y)
+
+val result = divide(10, 0) match
+  case Left(errorMessage) => s"Error: $errorMessage"
+  case Right(value) => s"Result: $value"
+```
+
+**使用 For 推导式处理 `Option`, `Try`, `Either`**
+
+使用 For 推导式可以避免大量的 `if a != null do if b != null do ...` 嵌套检查。
+
+::: code-group
+
+```scala [使用 For]
+val maybeA: Option[Int] = Some(10)
+val maybeB: Option[Int] = Some(20)
+// val maybeB: Option[Int] = None
+
+ // 如果 maybeA 或 maybeB 是 None，直接停止并返回 None
+val sum: Option[Int] = for {
+  a <- maybeA
+  b <- maybeB 
+} yield a + b  // Some(30)
+```
+
+```scala [不使用 For]
+val maybeA: Option[Int] = Some(10)
+val maybeB: Option[Int] = Some(20)
+
+val sum: Option[Int] = 
+  if maybeA.isDefined then
+    val a = maybeA.get
+    if maybeB.isDefined then
+      val b = maybeB.get
+      Some(a + b)
+    else
+      None
+  else
+    None
+```
+
+:::
+
