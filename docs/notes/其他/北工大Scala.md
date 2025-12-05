@@ -72,10 +72,10 @@ else
 语法：`while .... do ...`
 
 ```scala
-var x = 0
-while (x < 10) do
-  println(x)
-  x += 1
+  var x = 0
+  while x < 10 do
+    println(x)
+    x += 1
 ```
 
 **for 循环**
@@ -83,7 +83,12 @@ while (x < 10) do
 语法：for (变量 <- 范围) do ...
 
 ```scala
-for i <- 1 to 10 do
+// until: <
+for i <- 1 until 10 do
+  println(i)
+
+// to: <=
+for i <- 1 to 10 by 2 do
   println(i)
 ```
 
@@ -93,6 +98,25 @@ for i <- 1 to 10 do
 val fruits = List("apple", "banana", "cherry")
 for fruit <- fruits do
   println(fruit)
+
+// 跳过第一个元素
+for fruit <- fruits.drop(1) do
+  println(fruit)
+
+// 遍历索引
+for i <- fruits.indices do
+  println(s"索引 $i 对应的水果是 ${fruits(i)}")
+```
+
+在列表中使用过滤：
+
+```scala
+val numbers = List(1, 2, 3, 4, 5, 6)
+for n <- numbers if n % 2 == 0 do
+  println(s"$n 是偶数")
+
+for 5 <- numbers do
+  println("找到了数字 5！")
 ```
 
 **简单的模式匹配**
@@ -105,7 +129,14 @@ x match
   case 1 => game.start()
   case 2 => game.stop()
   case _ => game.reset()
+
+val num = 42
+num match
+  case n if n % 2 == 0 => println(s"$n 是偶数")
+  case n if n % 2 != 0 => println(s"$n 是奇数")
 ```
+
+
 
 **函数**
 
@@ -419,6 +450,22 @@ case class 是专门专门用于存储数据的一种类，可以帮忙减少许
 case class Point(x: Int, y: Int)
 ```
 
+**`sealed`**
+
+`sealed` 关键词类四 java 里的 `final`，表示这个类或接口只能在当前文件中被继承或实现。这对于模式匹配非常有用，因为编译器可以确保你已经处理了所有可能的子类。
+
+```scala
+sealed trait Shape
+case class Circle(radius: Double) extends Shape
+case class Rectangle(width: Double, height: Double) extends Shape
+
+object ShapeAreaCalculator:
+  def area(shape: Shape): Double = shape match
+    case Circle(radius) => Math.PI * radius * radius
+    case Rectangle(width, height) => width * height
+```
+
+
 ## 泛型
 
 Scala 中使用 `<>` 来定义范性。例如：
@@ -489,6 +536,8 @@ Scala 的集合分为两大类：可变集合（mutable）和不可变集合（i
 - 只有不可变版本的集合：`List`
 - 只有可变版本的集合：`ListBuffer`, `ArrayBuffer`
 
+**数组**
+
 Scala 中的数组是可变的，使用 `Array` 类型，其长度固定内容可变，通过 `(index)` 来访问和修改元素：
 
 ```scala
@@ -496,6 +545,100 @@ val arr: Array[Int] = Array(1, 2, 3)
 arr(0) = 10 
 // 指定长度必须用到 new 关键字
 val names = new Array[String](10)
+```
+
+**元组**
+
+元组是一种常用且特别的数据结构，可以存储多个不同类型的值。元组使用小括号 `()` 定义，元素之间用逗号分隔。例如：
+
+```scala
+val person: (String, Int, Boolean) = ("Alice", 30, true)
+val pizza = ("Large", 19.99)
+```
+
+元组的元素可以通过类似 `_1`, `_2`, `_3` 的方式访问特定位置的元素，但注意索引是从 1 开始的：
+
+```scala
+val name = person._1  // "Alice"
+```
+
+之所以说元组特别，是因为它和我们平时使用的数据结构（ex: `List`）不一样，我们通常不会用其储存一些需要反复操作长久使用的数据，而是用来临时存储一些相关联的数据，例如函数的返回值。
+
+```scala
+// 函数返回多个值
+def getUserInfo(userId: Int): (String, Int) =
+  // 假设从数据库获取用户信息
+  ("Alice", 30)
+
+val (name, age) = getUserInfo(1)
+println(s"Name: $name, Age: $age")
+```
+
+元组在构建 `Map` 时非常有用：
+ 
+```scala
+val capitals: Map[String, String] = Map(
+  ("USA", "Washington D.C."),
+  ("France", "Paris"),
+  ("Japan", "Tokyo")
+)
+
+// 使用 -> 创建二元元组，更优雅
+val capitals: Map[String, String] = Map(
+  "USA" -> "Washington D.C.",
+  "France" -> "Paris",
+  "Japan" -> "Tokyo"
+)
+```
+
+
+
+::: tip
+此处 `->`  其实是一个方法，实现了隐式类型转换方法，但 for 循环里的 `<-` 确实是关键词，并且 for 循环也可以自动解构赋值给元组。
+:::
+
+**Map**
+
+```scala
+// 创建一个不可变 Map
+val scores = Map(
+  "Alice" -> 95,
+  "Bob" -> 88,
+  "Charlie" -> 72
+)
+
+// 获取值
+println(scores("Bob"))
+// 使用 get 返回 Option，防止崩溃，详细会在异常处理章节介绍
+scores.get("Charlie") match {
+  case Some(s) => println(s"分数是 $s")
+  case None    => println("没找到")
+}
+// 或者提供默认值
+println(scores.getOrElse("Charlie", 0))
+
+// 添加元素
+val updatedScores = scores + ("David" -> 85)
+// 删除元素
+val reducedScores = scores - "Alice"
+// 更新元素
+val newScores = scores + ("Alice" -> 100)
+
+// 遍历 Map
+for (name, score) <- scores do
+  println(s"$name: $score")
+```
+
+**Set**
+
+大部分方法和 `Map` 类似。
+
+```scala
+// 创建一个不可变 Set
+val fruits = Set("apple", "banana", "cherry")
+
+// 检查是否存在
+println(fruits.contains("banana"))
 ```
 
 ## 简单 FP
@@ -797,6 +940,7 @@ object Email:
     if parts.length == 2 then Some((parts(0), parts(1)))
     else None
 
+// case 可以自动调用 unapply 方法进行解构
 val email = "user@example.com" match
   case Email(user, domain) => s"User: $user, Domain: $domain"
   case _ => "Invalid email"
@@ -818,6 +962,28 @@ object Counter:
 ::: tip
 Scala 中并没有 `static` 关键字，不过伴生对象 `object` 可以一定程度替代 `static` 的生态位。
 :::
+
+**`case object`**
+
+`case object` 是 `case class` 的单例版本，此外，case class 还替代了枚举类的生态位：
+
+```scala
+// 定义一组状态
+sealed trait State
+case object Idle extends State
+case object Running extends State
+case object Finished extends State
+
+// 它们既是单例对象，又能直接用于 match case，还自带 toString
+val current: State = Idle
+
+current match
+  case Idle => println("System is idle.")
+  case Running => println("System is running.")
+  case Finished => println("System has finished.")
+```
+
+
 
 ## 运算符
 
@@ -888,6 +1054,13 @@ def safeDivide(x: Int, y: Int): Option[Int] =
 val result = safeDivide(10, 2) match
   case Some(value) => s"Result: $value"
   case None => "Cannot divide by zero."
+
+// 也可以用在 for 循环中
+val results: List[Option[Int]] = List(Some(10), None, Some(20), None)
+
+ for Some(value) <- results do
+  // None 的情况会自动匹配失败，然后被静默跳过
+  println(s"获取到数值: $value")
 ```
 
 **`Try` 类型**
@@ -1068,7 +1241,7 @@ logIfDebug({
 - 字符串连接：类型 `String`，操作 `+`，单位元 `""`。
 - 列表连接：类型 `List[T]`，操作 `++`，单位元 `Nil`。
 
-满足 Monoid 条件的数据类型可以方便地进行聚合操作，例如使用 `fold` 来累积结果。
+满足 Monoid 条件的数据类型可以方便地进行聚合操作和并行计算，例如使用 `fold` 来累积结果。
 
 ```scala
 val numbers = List(1, 2, 3, 4, 5)
@@ -1119,7 +1292,7 @@ Option(name).flatMap(n =>
   )
 )
 
-// 或者更简单的 For-Comprehension:
+// 或者更简单的 For-Comprehension (语法糖):
 for {
   n <- Option(name)
   p <- Option(phone)
