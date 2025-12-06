@@ -331,8 +331,12 @@ bw.close()
 和 Java 不同，Scala 不强迫去 try-catch 异常（如 `FileNotFoundException`） 。不过，这并不意味着你不需要处理异常，建议使用 `try-catch-finally` 块来捕获和处理可能的异常，确保资源正确关闭。例如：
 
 ```scala
+import java.io.{BufferedWriter, FileWriter}
+import scala.util.Using
+// ..
+
 try
-  val br = new BufferedReader(new FileReader("name.txt"))
+  val br = new BufferedWriter(new FileWriter("name.txt"))
   // ...
 catch
   case nf: FileNotFoundException =>
@@ -341,6 +345,13 @@ catch
     println("发生了 IO 异常。")
 finally
   // 关闭资源
+
+// 或者：
+// Using 会自动处理 close()
+Using(new BufferedWriter(new FileWriter("file.txt", true))) { bw =>
+  bw.write("Hello using Using!")
+  bw.newLine()
+}
 ```
 
 ::: detail Java 11+
