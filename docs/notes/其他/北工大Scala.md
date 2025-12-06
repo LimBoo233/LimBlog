@@ -1,3 +1,9 @@
+---
+title: 北工大Scala
+description: 北京工业大学 Scala 课程笔记，目标是用简单的语言与示例让读者快速上手 Scala 编程语言，涵盖基础语法、面向对象编程、函数式编程、文件操作等内容。
+---
+
+
 # 北工大Scala
 
 ## 速览
@@ -311,6 +317,9 @@ while lines.hasNext do
 import java.io.{BufferedWriter, FileWriter}
 
 val bw = new BufferedWriter(new FileWriter("file.txt"))
+// 如果你不想覆盖文件，在 FileWriter 里传入第二个参数 true 启动 append mode
+// val bw = new BufferedWriter(new FileWriter("file.txt", true))
+
 bw.write("Hello, World!")
 // 写入一个换行符
 bw.newLine() 
@@ -333,6 +342,24 @@ catch
 finally
   // 关闭资源
 ```
+
+::: detail Java 11+
+
+Java 11 引入的 `java.nio.file.Files` 其实已经把文件写入简化成一行代码了——无需创建 writer，无需 flush，无需 close。
+
+```scala
+import java.nio.file.{Files, Path, StandardOpenOption}
+
+// 写入
+val p = Path.of("output.txt") // 1. 定义路径
+Files.writeString(p, "Hello World\n") // 2. 直接写，自动创建、自动关闭
+
+// 追加写入
+// StandardOpenOption.APPEND 表示追加
+Files.writeString(p, "Next Line", StandardOpenOption.APPEND) 
+```
+
+:::
 
 ## 面对对象
 
@@ -1136,7 +1163,7 @@ val sum: Option[Int] =
 
 ## 用函数式思想编写 Model
 
-在传统的 OOP 中会将数据类和操作逻辑写在一起，但在 FP 中更倾向于将逻辑和数据分离，数据类只储存不可变数据。例如：
+在传统的 OOP 中会将数据类和操作逻辑写在一起，但在 FP 中更倾向于将逻辑和数据分离，数据类只储存不可变数据，这种做法也称作：Skinny Domain Models。例如：
 
 ::: code-group
 
