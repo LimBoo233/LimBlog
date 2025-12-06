@@ -354,7 +354,7 @@ Using(new BufferedWriter(new FileWriter("file.txt", true))) { bw =>
 }
 ```
 
-::: detail Java 11+
+::: details Java 11+
 
 Java 11 引入的 `java.nio.file.Files` 其实已经把文件写入简化成一行代码了——无需创建 writer，无需 flush，无需 close。
 
