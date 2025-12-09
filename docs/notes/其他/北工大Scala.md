@@ -1330,8 +1330,8 @@ Option(name).flatMap(n =>
 )
 
 // 或者更简单的 For-Comprehension (语法糖):
-for {
+for 
   n <- Option(name)
   p <- Option(phone)
-} yield Customer(n, p)
+yield Customer(n, p)
 ```
