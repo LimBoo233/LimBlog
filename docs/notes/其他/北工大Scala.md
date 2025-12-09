@@ -276,7 +276,7 @@ Scala 通过 `scala.io.StdIn` 对象来读取命令行输入，例如：
 import scala.io.StdIn.readLine
 
 @main def main(): Unit =
-  println("输入学生姓名：:")
+  println("输入学生姓名")
   // 读取一行输入
   val name = readLine() 
   println(s"早上好中午好下午好晚上好总之你好，$name ！")
@@ -477,7 +477,7 @@ class Circle(val radius: Double) extends Shape:
 
 **case class**
 
-case class 是专门专门用于存储数据的一种类，可以帮忙减少许多模板代码：
+case class 是专门用于存储数据的一种类，可以帮忙减少许多模板代码：
 - 自动实现 `toString`, `equals`, `hashCode` 等有用方法。
 - 构造参数默认是 public 且 immutable (val) 的。
 
@@ -489,7 +489,7 @@ case class Point(x: Int, y: Int)
 
 **`sealed`**
 
-`sealed` 关键词类四 java 里的 `final`，表示这个类或接口只能在当前文件中被继承或实现。这对于模式匹配非常有用，因为编译器可以确保你已经处理了所有可能的子类。
+`sealed` 关键词类似 java 里的 `final`，表示这个类或接口只能在当前文件中被继承或实现。这对于模式匹配非常有用，因为编译器可以确保你已经处理了所有可能的子类。
 
 ```scala
 sealed trait Shape
@@ -561,7 +561,7 @@ val dogPrinter: ContravariantPrinter[Dog] = animalPrinter
 ```
 
 ::: tip Limb 注
-你可能是第一次听说协变和逆变的概念，这其实是一个非常复杂的主题。如果你将来不去写一写非常解藕的框架代码，可能一辈子都不会去用到它们，所以这里我就额外解释了协变和逆变可以做到什么，但不会深入，你也可以先不去理解它们，记住有这么个东西就行。
+你可能是第一次听说协变和逆变的概念，这其实是一个非常复杂的主题。如果你将来不去写一写非常解耦的框架代码，可能一辈子都不会去用到它们，所以这里我就额外解释了协变和逆变可以做到什么，但不会深入，你也可以先不去理解它们，记住有这么个东西就行。
 :::
 
 
@@ -1030,8 +1030,8 @@ current match
 - `:+ `: 在末尾追加元素
 - `+:` : 在开头插入元素
 - `++` : 连接两个列表
-- `::` : 在开头插入（不局限于 List）
-- `:::` : 连接两个列表
+- `::` : 在 List 开头插入
+- `:::` : 连接两个 List
 ```scala
 val list1 = List(1, 2, 3)
 val list2 = List(4, 5, 6)
