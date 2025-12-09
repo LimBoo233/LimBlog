@@ -466,7 +466,6 @@ abstract class Shape:
 
 如果你要实现父类中的非抽象方法，必须使用 `override` 关键字。
 
-```scala
 
 实现抽象类：
 
