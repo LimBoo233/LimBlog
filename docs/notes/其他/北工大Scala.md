@@ -747,7 +747,7 @@ Sclala 非常喜欢简化代码：
 
 **柯里化**
 
-柯里化（Currying）在数学上是将一个接受多个参数的函数，转换成一连串接受单个参数的函数的技术 。
+柯里化（Currying）在数学上是将一个接受多个参数的函数，转换成一连串接受单个参数的函数的技术。
 
 有三种方式可以实现柯里化：
 
@@ -1199,23 +1199,32 @@ public class Pizza {
 至于逻辑代码具体写在哪里，这里提供四种方法：
 1. 伴生对象：把逻辑写在伴生对象里，好处是可以编写能访问 private 成员的纯函数。~~fw~~
 
-2. 模块化方法 Modular Approach：先使用 Trait 定义服务接口，再实现。~~典~~
+2. 模块化方法 Modular Approach：先使用 Trait 定义服务接口再实现。~~典，似乎是老师偏好~~
+
+    ```scala
+    case class Pizza(size: Int)
+
+    trait PizzaService:
+      def isLarge(p: Pizza): Boolean
+
+    class PizzaServiceImpl extends PizzaService:
+      def isLarge(p: Pizza): Boolean = p.size >= 12
+    ```
 
 3. Functional Objects：逻辑还在对象里，但这些方法不会修改对象，而是返回一个新的对象。
 
 4. 扩展方法 Extension Methods：扩展方法是像 Scala 等比较新的语言中非常 pro 的一个特性，允许你在不修改原始代码而为一个类添加新方法。
+    ```scala
+    case class Pizza(size: Int)
 
-  ```scala
-  case class Pizza(size: Int)
+    // 扩展方法
+    extension (p: Pizza)
+      def isLarge(): Boolean = p.size >= 12
 
-  // 扩展方法
-  extension (p: Pizza)
-    def isLarge(): Boolean = p.size >= 12
-
-  // 调用
-  val pizza = Pizza(14)
-  println(pizza.isLarge())  // true
-  ```
+    // 调用
+    val pizza = Pizza(14)
+    println(pizza.isLarge())  // true
+    ```
 
 
 ## Laziness, Monoids, and Monads
@@ -1237,7 +1246,7 @@ lazy val text = {
 println(text)
 ```
 
-惰性列表的长度是按需计算的，而不是预先定义好的，这也意味着你可以定义一个无限长的列表。定义惰性列表需要用到 `#::` 操作符，类似于 `::`。
+惰性列表的长度是按需计算的，而不是预先定义好的，这也意味着你可以定义一个无限长的列表。定义惰性列表需要用到 `#::` 操作符，类似于拼接符号 `::`，但 `#` 代表右侧 `::` 的拼接逻辑暂时不会被计算。例如：
 
 ```scala
 // 生成从 n 开始的无限自然数序列
@@ -1245,6 +1254,14 @@ def from(n: Int): LazyList[Int] = n #:: from(n + 1)
 
 val nats = from(1) // 此时只计算了 1
 println(nats.take(3).force) // 强制取出前3个：List(1, 2, 3)
+
+// 过滤出素数
+def isPrime(num: Int): Boolean =
+  if num < 2 then false
+  else !(2 until num).exists(num % _ == 0)
+
+val primes = nats.filter(isPrime)
+println(primes.take(5).force) // 强制取出前5个素数: List(2, 3, 5, 7, 11)
 ```
 
 函数可以定义惰性参数，此类参数只有在函数体内被使用时才会被计算，此特性在英文里叫做 Call-by-Name Parameters。
