@@ -970,7 +970,7 @@ class Email(val address: String)
 
 object Email:
   def apply(address: String): Email =
-    new Email(address)
+    Email(address)
 
   def unapply(email: String): Option[(String, String)] =
     val parts = email.split("@")
