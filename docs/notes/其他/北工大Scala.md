@@ -791,6 +791,8 @@ for
 yield result         // 结果表达式
 ```
 
+其中，生成器中第一个 `collection` 决定 `result` 的容器的类型（ex：`List`, `Option`），而 `yield` 决定了容器里包裹的类型（ex: `Int`, `String`）。
+
 - 映射
 
   ```scala
@@ -1148,10 +1150,10 @@ val maybeB: Option[Int] = Some(20)
 // val maybeB: Option[Int] = None
 
 // 如果 maybeA 或 maybeB 是 None，直接停止并返回 None
-val sum: Option[Int] = for {
+val sum: Option[Int] = for
   a <- maybeA
   b <- maybeB 
-} yield a + b  // Some(30)
+yield a + b  // Some(30)
 ```
 
 ```scala [不使用 For]
