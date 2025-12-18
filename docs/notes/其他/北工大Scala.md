@@ -54,6 +54,8 @@ description: 北京工业大学 Scala 课程笔记，目标是用简单的语言
 
 **if 语句**
 
+Scala 中的 if 语句是一个表达式，会返回一个值。
+
 if 语句有两种写法，一种使用 `()`，另一种使用 `then` 关键词，这两个是等价的：
 
 ```scala
@@ -505,7 +507,7 @@ object ShapeAreaCalculator:
 
 ## 泛型
 
-Scala 中使用 `<>` 来定义范性。例如：
+Scala 中使用 `[]` 来定义泛型。例如：
 
 ```scala
 class Box[T](var content: T):
@@ -516,7 +518,7 @@ val intBox = Box[Int](10)
 
 在编程语言中这种写法是不被允许的：
 
-```scala
+```scala 
 val animals: List[Animal] = List[Dog]()
 ```
 
