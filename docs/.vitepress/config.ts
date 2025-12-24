@@ -187,6 +187,7 @@ export default defineConfig({
                     { text: '北工大图形学', link: '/notes/其他/北工大图形学'},
                     { text: '北工大图形学-期中后', link: '/notes/其他/北工大图形学-期中后'},
                     { text: '北工大Scala', link: '/notes/其他/北工大Scala'},
+                    { text: '北工大分布式简略版', link: '/notes/其他/北工大分布式简略版'},
                     { text: `Markdown快速指南`, link: '/notes/其他/Markdown快速指南'},
                 ],
                 collapsed: true
