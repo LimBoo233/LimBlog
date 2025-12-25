@@ -4,6 +4,7 @@ import { h } from 'vue'
 
 import BackgroundToggle from './components/BackgroundToggle.vue'
 import ArticleMetadata from "./components/ArticleMetadata.vue"
+import ThemePaletteSwitch from './components/ThemePaletteSwitch.vue'
 
 // 插件
 import 'virtual:group-icons.css'
@@ -15,6 +16,8 @@ export default {
   ...DefaultTheme,
   Layout: () => {
     return h(DefaultTheme.Layout, null, {
+      // 在导航栏左侧内容区域添加调色板切换
+      'nav-bar-content-before': () => h(ThemePaletteSwitch),
       // 在导航栏右侧内容区域添加背景切换按钮
       'nav-bar-content-after': () => h(BackgroundToggle),
     })
@@ -23,6 +26,7 @@ export default {
     // 注册全局组件
     app.component('BackgroundToggle', BackgroundToggle),
     app.component('ArticleMetadata' , ArticleMetadata)
+    app.component('ThemePaletteSwitch', ThemePaletteSwitch)
   
   },
 

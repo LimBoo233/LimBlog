@@ -5,17 +5,17 @@
  * 确保导航栏有不透明的背景，不受 background.css 影响
  */
 .VPNav {
-  /* 使用不透明背景确保导航栏清晰可见 */
-  background-color: rgba(255, 255, 255, 0.95) !important;
+  /* 使用主题变量的玻璃背景，随调色板更新 */
+  background-color: var(--vp-nav-bg-color, rgba(255, 255, 255, 0.95)) !important;
   backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
-  border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+  border-bottom: 1px solid var(--vp-c-border, rgba(0, 0, 0, 0.1));
   z-index: 1000; /* 确保导航栏在最顶层 */
 }
 
 .dark .VPNav {
-  background-color: rgba(27, 27, 31, 0.95) !important;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  background-color: var(--vp-nav-bg-color, rgba(27, 27, 31, 0.95)) !important;
+  border-bottom: 1px solid var(--vp-c-border, rgba(255, 255, 255, 0.1));
 }
 
 /**
@@ -36,12 +36,12 @@
 
 /* --- 移动端菜单屏幕样式 --- */
 .VPNavScreen {
-  background: rgba(255, 255, 255, 0.95) !important;
+  background: var(--vp-nav-bg-color, rgba(255, 255, 255, 0.95)) !important;
   backdrop-filter: blur(8px);
   -webkit-backdrop-filter: blur(8px);
   z-index: 1001;
 }
 
 .dark .VPNavScreen {
-  background: rgba(27, 27, 27, 0.95) !important;
+  background: var(--vp-nav-bg-color, rgba(27, 27, 27, 0.95)) !important;
 }

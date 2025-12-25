@@ -1,0 +1,171 @@
+/* Palette-specific overrides layered on top of the built-in light/dark scheme.
+   Palette is chosen via data-palette on <html> and respects the .dark class. */
+
+:root[data-palette="nord"] {
+  /* Nord Light (Snow Storm as background, Polar Night for text) */
+  --vp-c-bg: #eceff4;
+  --vp-c-bg-alt: #e5e9f0;
+  --vp-c-bg-soft: #d8dee9;
+  --vp-c-surface-1: #e5e9f0;
+  --vp-c-surface-2: #d8dee9;
+  --vp-c-surface-3: #cfd6e3;
+  --vp-c-border: #d8dee9;
+  --vp-c-text-1: #2e3440;
+  --vp-c-text-2: #4c566a;
+  --vp-c-text-3: #616e88;
+
+  /* Navbar / sticky glass */
+  --vp-nav-bg-color: rgba(229, 233, 240, 0.85);
+  --vp-c-bg-el: #e5e9f0;
+
+  /* Hero image overlay (transparent -> Snow Storm) */
+  --vp-home-hero-image-background-image: linear-gradient(
+    180deg,
+    rgba(236, 239, 244, 0) 0%,
+    rgba(236, 239, 244, 0.85) 80%
+  );
+
+  /* Brand and accents (Frost + Aurora) */
+  --vp-c-brand: #88c0d0;
+  --vp-c-brand-1: #5e81ac;
+  --vp-c-brand-2: #81a1c1;
+  --vp-c-brand-3: #8fbcbb;
+  --vp-c-brand-soft: rgba(136, 192, 208, 0.14);
+  --vp-c-danger: #bf616a;
+  --vp-c-warning: #ebcb8b;
+  --vp-c-success: #a3be8c;
+
+  /* Code blocks + inline code */
+  --vp-code-block-bg: #e5e9f0; /* Nord5 */
+  .vp-doc :not(pre) > code {
+    background: #d8dee9; /* Nord4 */
+    color: #2e3440;      /* Nord0 */
+  }
+
+  /* Tables */
+  .vp-doc table {
+    border-color: #d8dee9; /* Nord4 */
+  }
+  .vp-doc th {
+    background: #d8dee9;   /* Nord4 */
+    border-color: #d8dee9;
+  }
+  .vp-doc td {
+    border-color: #d8dee9;
+  }
+  .vp-doc tr:nth-child(odd) td {
+    background: rgba(216, 222, 233, 0.35);
+  }
+
+  /* Strong emphasis */
+  .vp-doc strong {
+    color: #d08770; /* Nord12 Aurora Orange for readability on light */
+  }
+
+  /* Obsidian Nord heading hierarchy (light) */
+  .vp-doc h1 { color: #bf616a; }
+  .vp-doc h2 { color: #d08770; }
+  .vp-doc h3 { color: #ebcb8b; }
+  .vp-doc h4 { color: #a3be8c; }
+  .vp-doc h5 { color: #b48ead; }
+  .vp-doc h6 { color: #d08770; }
+
+  /* Links (light) */
+  .vp-doc a { color: #8fbcbb; }
+  .vp-doc a:hover { color: #81a1c1; }
+
+  /* Inline code (light) */
+  .vp-doc :not(pre) > code {
+    background: #eceff4;
+    color: #88c0d0;
+  }
+}
+
+:root[data-palette="nord"].dark {
+  /* Nord Dark (Polar Night as background, Snow Storm for text) */
+  --vp-c-bg: #2e3440;
+  --vp-c-bg-alt: #3b4252;
+  --vp-c-bg-soft: #434c5e;
+  --vp-c-surface-1: #3b4252;
+  --vp-c-surface-2: #434c5e;
+  --vp-c-surface-3: #4c566a;
+  --vp-c-border: #4c566a;
+  --vp-c-text-1: #eceff4;
+  --vp-c-text-2: #d8dee9;
+  --vp-c-text-3: #e5e9f0;
+
+  /* Navbar / sticky glass */
+  --vp-nav-bg-color: rgba(46, 52, 64, 0.82);
+  --vp-c-bg-el: #3b4252;
+
+  /* Hero image overlay (transparent -> Polar Night) */
+  --vp-home-hero-image-background-image: linear-gradient(
+    180deg,
+    rgba(46, 52, 64, 0) 0%,
+    rgba(46, 52, 64, 0.9) 80%
+  );
+
+  --vp-c-brand: #88c0d0;
+  --vp-c-brand-1: #5e81ac;
+  --vp-c-brand-2: #81a1c1;
+  --vp-c-brand-3: #8fbcbb;
+  --vp-c-brand-soft: rgba(136, 192, 208, 0.18);
+  --vp-c-danger: #bf616a;
+  --vp-c-warning: #d08770;
+  --vp-c-success: #a3be8c;
+
+  /* Code contrast */
+  --vp-code-block-bg: #1e222b; /* Darkest pass for high contrast */
+  --vp-c-bg-soft: #1e222b;     /* inline/soft bg aligned darker */
+  .vp-doc :not(pre) > code {
+    background: #1e222b; /* Darker background for stronger contrast */
+    color: #eceff4;      /* Nord6 */
+  }
+
+  /* Tables */
+  .vp-doc table {
+    border-color: #4c566a; /* Nord3 */
+  }
+  .vp-doc th {
+    background: #3b4252;   /* Nord1 */
+    border-color: #4c566a;
+  }
+  .vp-doc td {
+    border-color: #4c566a;
+  }
+  .vp-doc tr:nth-child(odd) td {
+    background: rgba(67, 76, 94, 0.35);
+  }
+
+  /* Strong emphasis */
+  .vp-doc strong {
+    color: #ebcb8b; /* Nord13 Aurora Yellow for dark */
+  }
+
+  /* Obsidian Nord heading hierarchy (dark) */
+  .vp-doc h1 { color: #bf616a; }
+  .vp-doc h2 { color: #d08770; }
+  .vp-doc h3 { color: #ebcb8b; }
+  .vp-doc h4 { color: #a3be8c; }
+  .vp-doc h5 { color: #b48ead; }
+  .vp-doc h6 { color: #d08770; }
+
+  /* Links (dark) */
+  .vp-doc a { color: #8fbcbb; }
+  .vp-doc a:hover { color: #81a1c1; }
+
+  /* Inline code (dark) */
+  .vp-doc :not(pre) > code {
+    background: #3b4252;
+    color: #88c0d0;
+  }
+
+  /* Tables (dark) */
+  .vp-doc th {
+    background: #22262e;
+    color: #8fbcbb;
+    border-color: #434c5e;
+  }
+  .vp-doc td { border-color: #434c5e; }
+  .vp-doc tr:nth-child(odd) td { background: #2b303b; }
+}

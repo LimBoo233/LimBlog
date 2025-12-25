@@ -14,4 +14,7 @@
 @import './styles/about.css';
 @import './styles/anim-badges.css';
 
+/* 5. 主题调色板扩展 */
+@import './styles/palette.css';
+
 
