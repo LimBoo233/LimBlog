@@ -62,6 +62,14 @@
     color: #d08770; /* Nord12 Aurora Orange for readability on light */
   }
 
+  /* Heading colors (Nord palette) */
+  .vp-doc h1 { color: #bf616a; } /* Nord Red */
+  .vp-doc h2 { color: #d08770; } /* Nord Orange */
+  .vp-doc h3 { color: #ebcb8b; } /* Nord Yellow */
+  .vp-doc h4 { color: #a3be8c; } /* Nord Green */
+  .vp-doc h5 { color: #b48ead; } /* Nord Purple */
+  .vp-doc h6 { color: #88c0d0; } /* Nord Blue */
+
   /* Obsidian Nord heading hierarchy (light) */
   .vp-doc h1 { color: #bf616a; }
   .vp-doc h2 { color: #d08770; }
@@ -142,13 +150,13 @@
     color: #ebcb8b; /* Nord13 Aurora Yellow for dark */
   }
 
-  /* Obsidian Nord heading hierarchy (dark) */
-  .vp-doc h1 { color: #bf616a; }
-  .vp-doc h2 { color: #d08770; }
-  .vp-doc h3 { color: #ebcb8b; }
-  .vp-doc h4 { color: #a3be8c; }
-  .vp-doc h5 { color: #b48ead; }
-  .vp-doc h6 { color: #d08770; }
+  /* Heading colors (Nord palette) */
+  .vp-doc h1 { color: #bf616a; } /* Nord Red */
+  .vp-doc h2 { color: #d08770; } /* Nord Orange */
+  .vp-doc h3 { color: #ebcb8b; } /* Nord Yellow */
+  .vp-doc h4 { color: #a3be8c; } /* Nord Green */
+  .vp-doc h5 { color: #b48ead; } /* Nord Purple */
+  .vp-doc h6 { color: #88c0d0; } /* Nord Blue */
 
   /* Links (dark) */
   .vp-doc a { color: #8fbcbb; }
