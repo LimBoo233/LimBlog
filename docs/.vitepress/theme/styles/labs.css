@@ -1,0 +1,400 @@
+/* Labs 专区样式 - 独立文件 */
+
+.labs-wrapper {
+  max-width: 1152px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+/* Hero Section */
+.labs-hero {
+  text-align: center;
+  padding: 60px 20px;
+  margin-bottom: 40px;
+}
+
+.labs-hero .gradient-text {
+  font-size: 3rem;
+  font-weight: 800;
+  background: -webkit-linear-gradient(315deg, #42d392 25%, #647eff);
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  margin-bottom: 10px;
+}
+
+.labs-hero .subtitle {
+  font-size: 1.5rem;
+  color: var(--vp-c-text-2);
+  margin-bottom: 10px;
+  font-weight: 600;
+}
+
+.labs-hero .description {
+  font-size: 1.1rem;
+  color: var(--vp-c-text-3);
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+/* Section Common */
+.labs-section {
+  margin-bottom: 60px;
+}
+
+.section-title {
+  font-size: 1.8rem;
+  font-weight: 700;
+  margin-bottom: 30px;
+  border-bottom: 1px solid var(--vp-c-divider);
+  padding-bottom: 10px;
+  text-align: center;
+}
+
+/* Labs Feature Sections */
+.lab-feature {
+  background-color: var(--vp-c-bg-soft);
+  border: 1px solid var(--vp-c-bg-soft);
+  border-radius: 12px;
+  padding: 32px;
+  margin-bottom: 24px;
+  transition: border-color 0.3s ease;
+}
+
+.lab-feature.no-border {
+  background-color: transparent;
+  border: none;
+  padding: 0;
+}
+
+.lab-feature:hover {
+  border-color: var(--vp-c-brand);
+}
+
+.lab-feature.no-border:hover {
+  border-color: transparent;
+}
+
+.feature-header {
+  margin-bottom: 24px;
+  text-align: center;
+}
+
+.feature-desc {
+  font-size: 1.1rem;
+  color: var(--vp-c-text-2);
+  margin-bottom: 16px;
+  line-height: 1.6;
+}
+
+.feature-control {
+  margin-bottom: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.feature-note {
+  font-size: 0.9rem;
+  color: var(--vp-c-text-3);
+}
+
+/* Split Layout for Lab Feature */
+.lab-feature-split {
+  display: flex;
+  align-items: center;
+  gap: 40px;
+}
+
+.lab-feature-split .feature-header {
+  margin-bottom: 0;
+}
+
+.feature-left {
+  flex: 1;
+  min-width: 0;
+}
+
+.feature-right {
+  flex: 1;
+  min-width: 0;
+}
+
+/* Theme Placeholder */
+.theme-placeholder {
+  background-color: var(--vp-c-bg);
+  border: 2px dashed var(--vp-c-divider);
+  border-radius: 12px;
+  height: 180px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  color: var(--vp-c-text-3);
+  transition: all 0.3s ease;
+}
+
+.theme-placeholder:hover {
+  border-color: var(--vp-c-brand);
+  background-color: var(--vp-c-bg-alt);
+}
+
+.theme-placeholder-icon {
+  font-size: 2rem;
+  margin-bottom: 12px;
+  opacity: 0.5;
+}
+
+@media (max-width: 768px) {
+  .lab-feature-split {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 24px;
+  }
+  
+  .theme-placeholder {
+    height: 140px;
+  }
+}
+
+/* Theme Preview Box */
+.theme-preview-box {
+  background-color: var(--vp-c-bg);
+  border: 1px solid var(--vp-c-divider);
+  border-radius: 8px;
+  padding: 24px;
+  margin-top: 0;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  font-size: 0.95rem;
+}
+
+.theme-preview-box h3 {
+  margin-top: 0;
+  margin-bottom: 12px;
+  font-size: 1.1rem;
+  font-weight: 600;
+  border-bottom: none;
+  padding-top: 0;
+}
+
+.theme-preview-box p {
+  margin: 0 0 12px;
+  line-height: 1.6;
+  color: var(--vp-c-text-1);
+}
+
+.theme-preview-box blockquote {
+  margin: 0 0 12px;
+  padding: 8px 16px;
+  background-color: var(--vp-c-bg-alt);
+  border-left: 4px solid var(--vp-c-brand);
+  border-radius: 4px;
+  color: var(--vp-c-text-2);
+}
+
+.theme-preview-box ul {
+  margin: 0 0 12px;
+  padding-left: 20px;
+}
+
+.theme-preview-box li {
+  margin-bottom: 4px;
+}
+
+.theme-preview-box pre {
+  margin: 0;
+  border-radius: 6px;
+  font-size: 0.85rem;
+}
+
+/* Album Grid (Masonry Layout) */
+.album-grid {
+  column-count: 3;
+  column-gap: 20px;
+}
+
+@media (max-width: 960px) {
+  .album-grid {
+    column-count: 2;
+  }
+}
+
+@media (max-width: 640px) {
+  .album-grid {
+    column-count: 1;
+  }
+}
+
+.album-item {
+  position: relative;
+  border-radius: 12px;
+  overflow: hidden;
+  margin-bottom: 20px;
+  break-inside: avoid; /* Prevent item from splitting across columns */
+  cursor: pointer;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  /* Remove aspect-ratio to allow natural height */
+}
+
+.album-item:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+}
+
+.album-item img {
+  width: 100%;
+  height: auto; /* Allow natural height */
+  display: block;
+  transition: transform 0.5s ease;
+}
+
+.album-item:hover img {
+  transform: scale(1.05);
+}
+
+.album-caption {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  padding: 24px 16px 16px;
+  background: linear-gradient(to top, rgba(0,0,0,0.8), transparent);
+  color: white;
+  font-size: 0.95rem;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  text-shadow: 0 1px 2px rgba(0,0,0,0.5);
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.album-item:hover .album-caption {
+  opacity: 1;
+}
+
+.album-author {
+  font-size: 0.75rem;
+  opacity: 0.8;
+  font-weight: 400;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+/* Album Placeholder */
+.album-placeholder {
+  background-color: var(--vp-c-bg);
+  border: 2px dashed var(--vp-c-divider);
+  border-radius: 12px;
+  padding: 60px;
+  text-align: center;
+  color: var(--vp-c-text-3);
+  transition: all 0.3s ease;
+}
+
+.album-placeholder:hover {
+  border-color: var(--vp-c-brand);
+  background-color: var(--vp-c-bg-alt);
+}
+
+.album-icon {
+  font-size: 4rem;
+  margin-bottom: 16px;
+  opacity: 0.7;
+}
+
+/* Responsive adjustments */
+@media (max-width: 640px) {
+  .lab-item {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+  }
+  
+  .lab-item .card-content {
+    width: 100%;
+  }
+}
+
+/* Friends Grid */
+.friends-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 20px;
+  justify-content: center;
+}
+
+.friend-card {
+  display: flex;
+  align-items: center;
+  background-color: var(--vp-c-bg-soft);
+  border: 1px solid transparent;
+  border-radius: 10px;
+  padding: 16px;
+  text-decoration: none !important;
+  transition: all 0.3s ease;
+}
+
+.friend-card:hover {
+  background-color: var(--vp-c-bg-mute);
+  border-color: var(--vp-c-brand);
+}
+
+.friend-avatar {
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  overflow: hidden;
+  margin-right: 16px;
+  flex-shrink: 0;
+  background-color: var(--vp-c-bg);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.5rem;
+  color: var(--vp-c-text-3);
+}
+
+.friend-avatar img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.friend-info {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.friend-name {
+  font-weight: 600;
+  font-size: 1.1rem;
+  color: var(--vp-c-text-1);
+  margin-bottom: 4px;
+}
+
+.friend-desc {
+  font-size: 0.85rem;
+  color: var(--vp-c-text-2);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.friend-card.placeholder {
+  opacity: 0.7;
+  cursor: default;
+}
+
+.friend-card.placeholder:hover {
+  border-color: transparent;
+  background-color: var(--vp-c-bg-soft);
+}
+
+/* Dark mode adjustments if needed */
+.dark .lab-card:hover {
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+}

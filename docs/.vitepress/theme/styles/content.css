@@ -101,7 +101,52 @@ html {
 }
 
 /* ============================================
-   5. 图片放大（medium-zoom）层级修正
+   5. 引用样式
+   ============================================ */
+.vp-doc blockquote {
+  margin: 1.5rem 0;
+  padding: 1rem 1.25rem 1rem 1.5rem;
+  border-left: 4px solid var(--vp-c-brand-1);
+  background: linear-gradient(135deg, rgba( var(--vp-c-brand-1-rgb, 101,117,255),0.08), rgba( var(--vp-c-brand-2-rgb, 134,183,255),0.05));
+  border-radius: 12px;
+  color: var(--vp-c-text-1);
+  position: relative;
+  overflow: hidden;
+}
+
+.vp-doc blockquote::before {
+  content: '“';
+  position: absolute;
+  top: 8px;
+  left: 12px;
+  font-size: 28px;
+  color: var(--vp-c-brand-2);
+  opacity: 0.25;
+}
+
+.vp-doc blockquote p {
+  margin: 0.25rem 0;
+}
+
+.vp-doc blockquote strong {
+  color: var(--vp-c-brand-1);
+}
+
+.vp-doc blockquote code {
+  background: rgba(0, 0, 0, 0.05);
+  padding: 0.1em 0.35em;
+  border-radius: 6px;
+}
+
+.dark .vp-doc blockquote {
+  background: linear-gradient(135deg, rgba( var(--vp-c-brand-1-rgb, 101,117,255),0.18), rgba( var(--vp-c-brand-2-rgb, 134,183,255),0.08));
+}
+
+/* ============================================
+   6. Labs 专区组件
+   ============================================ */
+/* ============================================
+   6. 图片放大（medium-zoom）层级修正
    ============================================ */
 .medium-zoom-overlay {
   z-index: 30;
@@ -112,8 +157,8 @@ html {
 }
 
 /* ============================================
-   7. 主题适配样式
-   ============================================ */
+  7. 主题适配样式
+  ============================================ */
 
 /* 使用 VitePress 默认深色模式代码块样式 */
 

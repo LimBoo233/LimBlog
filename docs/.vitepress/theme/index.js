@@ -1,5 +1,6 @@
 import DefaultTheme from 'vitepress/theme'
 import './style.css'
+import './styles/labs.css'
 import { h, onMounted, watch, nextTick } from 'vue'
 
 import BackgroundToggle from './components/BackgroundToggle.vue'
@@ -23,8 +24,6 @@ export default {
   ...DefaultTheme,
   Layout: () => {
     return h(DefaultTheme.Layout, null, {
-      // 在导航栏左侧内容区域添加调色板切换
-      'nav-bar-content-before': () => h(ThemePaletteSwitch),
       // 在导航栏右侧内容区域添加背景切换按钮
       'nav-bar-content-after': () => h(BackgroundToggle),
     })
@@ -46,7 +45,7 @@ export default {
     // 图片放大功能
     const initZoom = () => {
       // mediumZoom('[data-zoomable]', { background: 'var(--vp-c-bg)' }); // 默认
-      mediumZoom('.main img', { background: 'var(--vp-c-bg)' }); // 不显式添加{data-zoomable}的情况下为所有图像启用此功能
+      mediumZoom('.main img, .labs-wrapper img', { background: 'var(--vp-c-bg)' }); // 不显式添加{data-zoomable}的情况下为所有图像启用此功能
     };
     onMounted(() => {
       initZoom();

@@ -1,7 +1,7 @@
 import { defineConfig } from 'vitepress'
 import { groupIconMdPlugin, groupIconVitePlugin } from 'vitepress-plugin-group-icons'
 import { MermaidMarkdown, MermaidPlugin } from 'vitepress-plugin-mermaid';
-
+// 引入侧边栏生成器
 import { generateSidebar } from 'vitepress-sidebar';
 
 
@@ -45,11 +45,10 @@ export default defineConfig({
             light: 'catppuccin-latte' 
         },
 
-        // This is your existing plugin for code group icons
         config: (md) => {
         md.use(groupIconMdPlugin);
         md.use(MermaidMarkdown);
-
+   
 
         // 自动在 h1 标签后添加表头组件
         md.renderer.rules.heading_close = (tokens, idx, options, env, slf) => {
@@ -105,7 +104,7 @@ export default defineConfig({
         // 顶部导航栏
         nav: [
             { text: '首页', link: '/' },
-            { text: '引导', link: '/notes/introduction' } 
+            { text: 'Labs', link: '/Labs' }
         ],
 
         // markdown 右侧目录信息
@@ -128,8 +127,11 @@ export default defineConfig({
 
             sortFolderTo: 'top',
             manualSortFileNameByPriority: [
+                // 排序优先级
+                // 直接在此处注册顶层的文件夹即可自动生成侧边栏
                 'Unity',
                 'CSharp',
+                'AI结对编程',
                 '图形学',
                 `Unity主要内容`,
                 `Unity高级`,

@@ -7,13 +7,14 @@
     aria-label="切换背景图片"
   >
     <span class="toggle-icon">
-      {{ backgroundEnabled ? '🌅' : '🎨' }}
+      <Icon :icon="backgroundEnabled ? 'catppuccin:image' : 'catppuccin:unity'" />
     </span>
   </button>
 </template>
 
 <script setup>
 import { ref, onMounted, watch } from 'vue'
+import { Icon } from '@iconify/vue'
 
 // 背景图片开关状态
 const backgroundEnabled = ref(true)
@@ -77,12 +78,12 @@ onMounted(() => {
 }
 
 .background-toggle.bg-enabled {
-  background-color: var(--vp-c-brand-soft);
+  background-color: transparent;
   color: var(--vp-c-brand-1);
 }
 
 .background-toggle.bg-enabled:hover {
-  background-color: var(--vp-c-brand-soft);
+  background-color: var(--vp-c-bg-mute);
   color: var(--vp-c-brand-1);
 }
 

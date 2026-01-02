@@ -1,21 +1,26 @@
 <template>
-  <div class="palette-switch" role="group" aria-label="Color palette">
-    <button
-      type="button"
-      :class="['palette-chip', { active: palette === 'default' }]"
-      @click="setPalette('default')"
-      :aria-pressed="palette === 'default'"
-    >
-      Default
-    </button>
-    <button
-      type="button"
-      :class="['palette-chip', { active: palette === 'nord' }]"
-      @click="setPalette('nord')"
-      :aria-pressed="palette === 'nord'"
-    >
-      Nord
-    </button>
+  <div class="palette-wrapper">
+    <div class="palette-switch" role="group" aria-label="Color palette">
+      <button
+        type="button"
+        :class="['palette-chip', { active: palette === 'default' }]"
+        @click="setPalette('default')"
+        :aria-pressed="palette === 'default'"
+      >
+        Default
+      </button>
+      <button
+        type="button"
+        :class="['palette-chip', { active: palette === 'nord' }]"
+        @click="setPalette('nord')"
+        :aria-pressed="palette === 'nord'"
+      >
+        Nord
+      </button>
+    </div>
+    <p v-if="palette === 'nord'" class="palette-credit">
+      Nord theme designed by <a href="https://www.nordtheme.com/" target="_blank" rel="noopener">Arctic Ice Studio</a>.
+    </p>
   </div>
 </template>
 
@@ -50,11 +55,25 @@ onMounted(() => {
 </script>
 
 <style scoped>
+.palette-wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+}
+
 .palette-switch {
   display: inline-flex;
   gap: 6px;
   align-items: center;
   padding: 4px 8px;
+}
+
+.palette-credit {
+  font-size: 0.9rem;
+  color: var(--vp-c-text-3);
+  margin: 0;
+  text-align: center;
 }
 
 .palette-chip {

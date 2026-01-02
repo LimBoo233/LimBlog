@@ -13,6 +13,7 @@
 @import './styles/content.css';
 @import './styles/about.css';
 @import './styles/anim-badges.css';
+@import './styles/labs.css';
 
 /* 5. 主题调色板扩展 */
 @import './styles/palette.css';
