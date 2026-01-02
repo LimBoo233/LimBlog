@@ -8,6 +8,9 @@ import ThemePaletteSwitch from './components/ThemePaletteSwitch.vue'
 
 // 插件
 import 'virtual:group-icons.css'
+// 图片放大插件
+import mediumZoom from 'medium-zoom';
+import { onMounted, watch, nextTick } from 'vue';
 // 引入评论插件
 import giscusTalk from 'vitepress-plugin-comment-with-giscus';
 import { useData, useRoute } from 'vitepress';
@@ -34,6 +37,19 @@ export default {
     // Get frontmatter and route
     const { frontmatter } = useData();
     const route = useRoute();
+
+    // 图片放大功能
+    const initZoom = () => {
+      // mediumZoom('[data-zoomable]', { background: 'var(--vp-c-bg)' }); // 默认
+      mediumZoom('.main img', { background: 'var(--vp-c-bg)' }); // 不显式添加{data-zoomable}的情况下为所有图像启用此功能
+    };
+    onMounted(() => {
+      initZoom();
+    });
+    watch(
+      () => route.path,
+      () => nextTick(() => initZoom())
+    );
       
     // giscus配置
     // https://giscus.app/zh-CN
