@@ -26,7 +26,7 @@ hero:
   actions:
     - theme: brand
       text: 开始
-      link: /notes/introduction
+      link: /introduction
     - theme: alt
       text: 关于我
       link: /about
