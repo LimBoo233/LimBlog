@@ -1,6 +1,6 @@
 import DefaultTheme from 'vitepress/theme'
 import './style.css'
-import { h } from 'vue'
+import { h, onMounted, watch, nextTick } from 'vue'
 
 import BackgroundToggle from './components/BackgroundToggle.vue'
 import ArticleMetadata from "./components/ArticleMetadata.vue"
@@ -10,10 +10,14 @@ import ThemePaletteSwitch from './components/ThemePaletteSwitch.vue'
 import 'virtual:group-icons.css'
 // 图片放大插件
 import mediumZoom from 'medium-zoom';
-import { onMounted, watch, nextTick } from 'vue';
+// 切换页面的进度条
+import { NProgress } from 'nprogress-v2/dist/index.js' 
+import 'nprogress-v2/dist/index.css' // 进度条样式
 // 引入评论插件
 import giscusTalk from 'vitepress-plugin-comment-with-giscus';
-import { useData, useRoute } from 'vitepress';
+import { inBrowser, useData, useRoute, useRouter } from 'vitepress';
+
+
 
 export default {
   ...DefaultTheme,
@@ -37,6 +41,7 @@ export default {
     // Get frontmatter and route
     const { frontmatter } = useData();
     const route = useRoute();
+    const router = useRouter();
 
     // 图片放大功能
     const initZoom = () => {
@@ -50,6 +55,21 @@ export default {
       () => route.path,
       () => nextTick(() => initZoom())
     );
+
+    // 路由进度条与不蒜子统计
+    if (inBrowser) {
+      NProgress.configure({ showSpinner: false });
+      router.onBeforeRouteChange = () => {
+        NProgress.start();
+      };
+      router.onAfterRouteChanged = () => {
+        // 若页面已加载不蒜子统计，则刷新数据
+        if (window?.busuanzi?.fetch) {
+          window.busuanzi.fetch();
+        }
+        NProgress.done();
+      };
+    }
       
     // giscus配置
     // https://giscus.app/zh-CN
@@ -71,6 +91,5 @@ export default {
       true
     );
   },
-
-
 }
+
