@@ -30,7 +30,7 @@ sidebar: false
     <h2 class="section-title">主题调色</h2>
     <div class="lab-feature">
       <div class="feature-header">
-        <p class="feature-desc">在这里切换全站主题，预览不同配色方案下的阅读体验。</p>
+        <p class="feature-desc">在这里切换全站主题。</p>
         <div class="feature-control">
            <ThemePaletteSwitch />
         </div>
@@ -44,7 +44,7 @@ sidebar: false
     <div class="friends-grid">
       <a href="https://github.com/LimBoo233" target="_blank" class="friend-card">
         <div class="friend-avatar">
-          <img src="https://github.com/LimBoo233.png" alt="LimBoo233">
+          <img src="https://github.com/LimBoo233.png" @error="$event.target.src='/images/avater.png'" alt="LimBoo233">
         </div>
         <div class="friend-info">
           <span class="friend-name">LimBoo233</span>

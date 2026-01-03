@@ -71,7 +71,7 @@ export default defineConfig({
                 customIcon: {
                     cs: 'vscode-icons:file-type-csharp',
                     java: 'vscode-icons:file-type-java',
-                    powershell: `vscode-icons:file-type-powershell`,
+                    powershell: `catppuccin:powershell`,
                     json: `catppuccin:json`,
                     markdown: `catppuccin:markdown`,
                     py: `catppuccin:python`,
@@ -82,6 +82,8 @@ export default defineConfig({
                     xml: `catppuccin:xml`,
                     kotlin: `catppuccin:kotlin`,
                     scala: `catppuccin:scala`,
+                    macos: `catppuccin:macos`,
+                    pacman: `catppuccin:folder-linux`,
                     // https://icon-sets.iconify.design/
                     }
             }),
@@ -131,7 +133,7 @@ export default defineConfig({
                 // 直接在此处注册顶层的文件夹即可自动生成侧边栏
                 'Unity',
                 'CSharp',
-                'AI结对编程',
+                '工具',
                 '图形学',
                 `Unity主要内容`,
                 `Unity高级`,
