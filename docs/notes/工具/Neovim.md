@@ -134,6 +134,7 @@ vim.keymap.set("i", "<CapsLock>", "<Esc>")
 5. 缓冲区
     - `Shift + h/l`：切换到左边/右边的文件
     - `[` / `]` + `b`：上/下一个 Buffer
+    - `Space + b + d`：关闭当前 Buffer
 
 ## Flash.nvim
 
