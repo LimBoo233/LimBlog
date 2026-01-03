@@ -52,6 +52,8 @@ sudo pacman -S neovim
 ```lua
 require("lazy").setup({
 
+  concurrency = 1
+
   spec = {
     -- ...
   },
@@ -122,12 +124,16 @@ vim.keymap.set("i", "<CapsLock>", "<Esc>")
 
 4. 文件树操作
     - 打开/关闭文件树：`Space + e`
+    - 切换焦点：先按 `Ctrl + w`，再按 `hjkl` 切换焦点
     - 文件操作
         - 移动：用 `j` 和 `k` 上下移动
-        - 打开/展开：`l` 或 `Enter`
+        - 打开和展开：`l` 和 `Enter`
         - 收起：`h`
         - 新建文件/删除：`a` / `d`，对应 add 和 delete
-    - 切换焦点：先按 `Ctrl + w`，再按 `hjkl` 切换焦点
+        
+5. 缓冲区
+    - `Shift + h/l`：切换到左边/右边的文件
+    - `[` / `]` + `b`：上/下一个 Buffer
 
 ## Flash.nvim
 
@@ -144,3 +150,58 @@ Flash.nvim 的功能很像 Ace Jump，可以快速跳转到某个字符处。
 - 远程制导：`d + s`
 
     直接远程删掉一个单词。
+
+## 搜索
+
+- 当前文件
+	- 向下搜：`/`
+	- 向上搜：`?`
+	- 前进/后退：`n`/`N`
+- 找文件：`Space` + `f` + `f`
+- 基于整个项目寻找代码
+	- `Space` + `/` (LazyVim)
+	- `Space` + `s` + `g` (Standard)
+
+## 编辑
+
+基础操作：
+
+- 插入新行
+    - 下方：`o`
+    - 上方：`O`
+- 删除
+	- `x`：光标下的一个字符（类似 Delete 键）
+	- `dd`：整行（其实是剪切，可以用 `p` 粘贴）
+	- `dw`：一个单词
+	- `D`：从光标位置到行尾的所有内容
+- 复制粘贴
+    - `y`：复制选中的内容 (Yank)
+    - `yy`：复制当前行
+    - `p`：在当前行下方粘贴
+    - `P`：在当前行上方粘贴
+- 撤销
+	- `u`：撤销 (Undo)
+	- `Ctrl + r`：重做 (Redo)
+
+> 似乎 proooooo 哥一般是不用 `Enter` 和 `Backspace` 的。
+
+更 pro 操作：
+
+- 格式化：`Space + c + f`
+- 注释
+    - `gcc`：注释当前行
+    - `gc + j`：注释当前行和下面一行
+    - 选中几行按 `gc`：注释选中的代码块
+- 快速修改
+    - `ciw`：修改当前单词 (Change Inner Word)
+    - `ci"`：修改引号里的内容 (Change Inner Quotes)
+    - `ci`：修改括号里的内容 (Change Inner Parentheses)
+
+## Visual Mode
+
+可以在可视模式里选择一段文本，然后对其进行操作，比如复制、删除、注释等。
+
+进入可视模式 (Visual Mode)：
+- `v`：按字符选择（像鼠标拖动）
+- `V`：按行选择（最常用）
+- `Ctrl + v/q`：矩形选中
