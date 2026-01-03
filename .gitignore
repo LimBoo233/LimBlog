@@ -46,3 +46,8 @@ pnpm-debug.log*
 /build
 /dist
 
+# 本地环境配置文件
+/.vscode
+
+# Obsidian
+.obsidian
