@@ -143,5 +143,3 @@ You are a {{lang}} expert.
 Please refactor the following code to follow best practices for {{lang}}:
 
 ```
-
-:::
