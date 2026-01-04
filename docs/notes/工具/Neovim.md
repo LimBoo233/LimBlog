@@ -173,7 +173,10 @@ Flash.nvim 的功能很像 Ace Jump，可以快速跳转到某个字符处。
 	- 向下搜：`/`
 	- 向上搜：`?`
 	- 前进/后退：`n`/`N`
-- 找文件：`Space` + `f` + `f`
+- 找文件：
+	- `trl + Shift + N` (Windows) / `Cmd + Shift + O` (Mac)
+	- `Space` + `f` + `f` (LazyVim)
+- 最近用过的文件：`Ctrl + E`
 - 基于整个项目寻找代码
 	- `Space` + `/` (LazyVim)
 	- `Space` + `s` + `g` (Standard)
