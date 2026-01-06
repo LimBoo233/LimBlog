@@ -268,4 +268,27 @@ await UniTask.Yield(cancellationToken, cancelImmediately: true);
 ```
 
 >[!WARNING]
->比起默认行为，设置 `cancelImmediately` 为 `true` 并检测立即取消会有更多的性能开销。 这是因为它使用了`CancellationToken.Register`；这比在 PlayerLoop 中检查 CancellationToken 更重度。
+>比起默认行为，设置 `cancelImmediately` 为 `true` 并检测立即取消会有更多的性能开销。 这是因为它使用了`CancellationToken.Register`；这比在 PlayerLoop 中检查 CancellationToken 更重。
+
+## 超时机制
+
+超时是取消的一种变体。您可以通过`CancellationTokenSouce.CancelAfterSlim(TimeSpan)`设置超时并将 CancellationToken 传递给异步方法。例如：
+
+```cs
+// 创建cts
+var cts = new CancellationTokenSource();
+cts.CancelAfterSlim(TimeSpan.FromSeconds(5)); // 设置5s超时
+
+// 开启异步任务
+try
+{
+    await UnityWebRequest.Get("http://foo")
+	    .SendWebRequest()
+		.WithCancellation(cts.Token);
+}
+catch (OperationCanceledException ex)
+{
+    if (ex.CancellationToken == cts.Token)
+        Debug.Log("已超时...");
+}
+```

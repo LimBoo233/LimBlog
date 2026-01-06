@@ -81,6 +81,16 @@ html {
    ============================================ */
 
 /* 保持默认 */
+/* Default theme inline code: softer colors to reduce visual noise */
+:root:not([data-palette]) .vp-doc :not(pre) > code {
+  background: rgba(127, 127, 127, 0.12);
+  color: var(--vp-c-text-2);
+}
+
+:root:not([data-palette]).dark .vp-doc :not(pre) > code {
+  background: rgba(255, 255, 255, 0.1);
+  color: var(--vp-c-text-2);
+}
 
 
 /* ============================================
