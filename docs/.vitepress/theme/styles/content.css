@@ -83,13 +83,13 @@ html {
 /* 保持默认 */
 /* Default theme inline code: softer colors to reduce visual noise */
 :root:not([data-palette]) .vp-doc :not(pre) > code {
-  background: rgba(127, 127, 127, 0.12);
-  color: var(--vp-c-text-2);
+  background: rgba(210, 204, 194, 0.7);
+  color: rgba(var(--vp-c-brand-1-rgb, 62, 175, 124), 0.92);
 }
 
 :root:not([data-palette]).dark .vp-doc :not(pre) > code {
-  background: rgba(255, 255, 255, 0.1);
-  color: var(--vp-c-text-2);
+  background: rgba(244, 236, 224, 0.14);
+  color: rgba(var(--vp-c-brand-2-rgb, 66, 184, 131), 0.78);
 }
 
 
@@ -108,6 +108,60 @@ html {
   border-radius: var(--radius-sm);
   position: relative;
   overflow: visible;
+}
+
+/* ============================================
+   4.1 自定义警示框图标
+   ============================================ */
+.vp-doc .custom-block {
+  --vp-custom-block-icon: url("/icons/callouts/file-text.svg");
+  --vp-custom-block-icon-color: var(--vp-c-text-2);
+}
+
+.vp-doc .custom-block.tip,
+.vp-doc .custom-block.important {
+  --vp-custom-block-icon: url("/icons/callouts/lightbulb.svg");
+  --vp-custom-block-icon-color: var(--vp-c-brand-2);
+}
+
+.vp-doc .custom-block.note {
+  --vp-custom-block-icon: url("/icons/callouts/file-text.svg");
+  --vp-custom-block-icon-color: var(--vp-c-text-2);
+}
+
+.vp-doc .custom-block.info {
+  --vp-custom-block-icon: url("/icons/callouts/info.svg");
+  --vp-custom-block-icon-color: var(--vp-c-brand-1);
+}
+
+.vp-doc .custom-block.warning,
+.vp-doc .custom-block.caution {
+  --vp-custom-block-icon: url("/icons/callouts/alert-triangle.svg");
+  --vp-custom-block-icon-color: var(--vp-c-warning, #d97706);
+}
+
+.vp-doc .custom-block.danger {
+  --vp-custom-block-icon: url("/icons/callouts/zap.svg");
+  --vp-custom-block-icon-color: var(--vp-c-danger, #dc2626);
+}
+
+.vp-doc .custom-block-title {
+  position: relative;
+  padding-left: 24px;
+  font-weight: 600;
+}
+
+.vp-doc .custom-block-title::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0.12em;
+  width: 14px;
+  height: 14px;
+  background-color: var(--vp-custom-block-icon-color, currentColor);
+  -webkit-mask: var(--vp-custom-block-icon) no-repeat center / contain;
+  mask: var(--vp-custom-block-icon) no-repeat center / contain;
+  opacity: 0.9;
 }
 
 /* ============================================

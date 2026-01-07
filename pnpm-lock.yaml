@@ -18,6 +18,9 @@ importers:
       '@iconify/vue':
         specifier: ^5.0.0
         version: 5.0.0(vue@3.4.0)
+      lucide-static:
+        specifier: ^0.562.0
+        version: 0.562.0
       medium-zoom:
         specifier: ^1.1.0
         version: 1.1.0
@@ -1274,6 +1277,9 @@ packages:
   lru-cache@11.2.4:
     resolution: {integrity: sha512-B5Y16Jr9LB9dHVkh6ZevG+vAbOsNOYCX+sXvFWFu7B3Iz5mijW3zdbMyhsh8ANd2mSWBYdJgnqi+mL7/LrOPYg==}
     engines: {node: 20 || >=22}
+
+  lucide-static@0.562.0:
+    resolution: {integrity: sha512-TM2vNVOEsO3+ijmno7n/VmxUo0Shr9OXC/UqZc5n4xEVyXX4E4NVvXoRPAZiSsIsdvlQ7alGOcIC/QGtR+OgUQ==}
 
   magic-string@0.30.17:
     resolution: {integrity: sha512-sNPKHvyjVf7gyjwS4xGTaW/mCnF8wnjtifKBEhxfZ7E/S8tQ0rssrwGNn6q8JH/ohItJfSQp9mBtQYuTlH5QnA==}
@@ -3155,6 +3161,8 @@ snapshots:
   lodash-es@4.17.21: {}
 
   lru-cache@11.2.4: {}
+
+  lucide-static@0.562.0: {}
 
   magic-string@0.30.17:
     dependencies:
