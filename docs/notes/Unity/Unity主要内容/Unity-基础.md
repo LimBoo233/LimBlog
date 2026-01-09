@@ -527,6 +527,22 @@ IEnumerator MyCoroutine(int maxCount = 0)
 7. `yield break;`
     - 含义：终止当前协程。
 
+可以被 `yield return` 的对象主要分为五种：
+1. 简单的下一帧——ex: `yield return null`
+2. 时间控制类——继承自 `YieldInstruction`
+3. 生命周期钩子——ex: `WaitForFixedUpdate()`
+4. 异步操作类——继承自 `AsyncOperation`
+5. 另一个携程
+
+Unity 也允许你通过继承 `CustomYieldInstruction` 来编写自己的等待逻辑。只要你重写 `keepWaiting` 属性即可。
+
+ex:
+
+```cs
+// 等待直到某个布尔变量变为 true
+yield return new WaitUntil(() => player.isDead);
+```
+
 通过 `StartCoroutine()` 方法来启动协程：
 ```c#
 // 推荐方式：类型安全，可以直接传递参数
@@ -552,11 +568,10 @@ StopAllCoroutines();
 - 物体失活协程不执行。
 - 组件和物体销毁协程不再执行。
 
-::: tip
-返回类型为 `IEnumerator` 的方法（即迭代器块），在被调用时，里面的代码确实一行都不会执行。只有在调用 `MoveNext()` 方法时，才会开始执行代码。
-
-这种方法更像是在“预备”或“装配”一个状态机，而不是在“运行”它。这种“我只在你需要的时候才工作”的模式，就是延迟执行 (Lazy Execution) 的核心。
-:::
+> [!TIP]
+返回类型为 `IEnumerator` 的方法（即迭代器块），在被调用时，里面的代码确实一行都不会执行。2只有在调用 `MoveNext()` 方法时，才会开始执行代码。
+>
+> 这种方法更像是在“预备”或“装配”一个状态机，而不是在“运行”它。这种“我只在你需要的时候才工作”的模式，就是延迟执行 (Lazy Execution) 的核心。
 
 值得注意的是， Unity 的生命周期函数也有协程的重载版本，例如 `IEnumerator Start()`。
 

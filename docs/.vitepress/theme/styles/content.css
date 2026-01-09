@@ -226,6 +226,28 @@ html {
 
 /* 使用 VitePress 默认深色模式代码块样式 */
 
+/* Mermaid 图表（深色模式）：修复 rect 过亮问题 */
+.dark .vp-doc .mermaid svg rect.rect,
+.dark .vp-doc .mermaid svg rect.actor,
+.dark .vp-doc .mermaid svg rect.note {
+  fill: #2f3642 !important;
+  stroke: #5f6b7f !important;
+}
+
+.dark .vp-doc .mermaid svg rect.actor {
+  fill: #262a31 !important;
+  stroke: #3b424c !important;
+}
+
+.dark .vp-doc .mermaid svg rect.note {
+  fill: #3a312a !important;
+  stroke: #c28b06 !important;
+}
+
+.dark .vp-doc .mermaid svg text {
+  fill: #e5e7eb !important;
+}
+
 /* ============================================
    8. 响应式设计
    ============================================ */

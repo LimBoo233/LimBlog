@@ -5,6 +5,7 @@
 - 按下`F2`快速重命名。
 - 在 Inspector 中修改参数时，按`Tab`快速切换到下一个参数，`Shift + Tab`为上一个参数。
 - `Tab`也可用于移动焦点。
+- `Ctrl + 5` 聚焦 Project 窗口
 - Edit -> Shortcut 可以自定义快捷键。
 - `Ctrl + f`在 project 窗口搜索。
 - `Ctrl + k`打开全局搜索。

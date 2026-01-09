@@ -12,5 +12,7 @@
 - 重命名：`Shift + F6`
 - 复制上一行：`Ctrl + D`
 - 复制/删除/剪切当前行：`Ctrl + C/Y/X`
+- qurick doc：`Ctrl + Q`
+- 查看参数：`Ctrl + P`
 
 > 目前就想到这么多，将来再补充 >_<

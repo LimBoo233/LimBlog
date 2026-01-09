@@ -8,7 +8,7 @@
 UniTask 是一个高性能，零堆内存分配的 async/await 异步框架。
 
 - 基于值类型的`UniTask<T>`和自定义的 AsyncMethodBuilder 来实现零堆内存分配
-- 使所有 Unity 的 AsyncOperations 和 Coroutines 可等待
+- 使所有 Unity 原生的 `AsyncOperations` 和 `Coroutines` 可等待
 - 基于 PlayerLoop 的任务（`UniTask.Yield`，`UniTask.Delay`，`UniTask.DelayFrame`等..）可以替换所有协程操作
 - 对 MonoBehaviour 消息事件和 uGUI 事件进行可等待/异步枚举扩展
 - 完全在 Unity 的 PlayerLoop 上运行，因此不使用 Thread，并且同样能在 WebGL、wasm 等平台上运行。
