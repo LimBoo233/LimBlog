@@ -118,7 +118,8 @@ public class SimpleSerializerExample : MonoBehaviour
 通过 `JsonSerializerSettings` 对象，你可以不用每次序列化时都去手动调整 `JsonSerializer` 的各种参数，而是可以预先创建并配置好一个 `JsonSerializerSettings` 对象，把它当成一个“模板”。然后，在任何需要序列化或反序列化的地方，直接把这个“模板”交给 `JsonConvert` 使用。
 
 `JsonSerializerSettings` 包含了几十个属性，以下这些是最常用也最重要的：
-- `Formatting`: 控制输出的 JSON 是否需要格式化（换行和缩进）。
+- `Formatting`:  格式化 JSON（换行和缩进）。
+> 格式化对读取时影响极小，但写入时性能下降较明显，且对内存和网络带宽的影响不可忽视。
 - `NullValueHandling`: 控制如何处理值为 `null` 的成员（是忽略还是写入 `null`）。
 - `DefaultValueHandling`: 控制如何处理值为默认值的成员（例如 `int` 的 `0`，`bool` 的 `false`）。这在你想节省空间，不写入默认值时很有用。
 - `ReferenceLoopHandling`: 控制如何处理循环引用。例如 A 对象引用 B，B 对象又引用 A，如果不处理，序列化时会陷入死循环。这个设置可以帮你自动断开循环。

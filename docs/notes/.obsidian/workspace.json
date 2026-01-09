@@ -13,12 +13,12 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "Unity/Unity高级/AssetBundle.md",
+                "file": "Unity/Unity高级/ScriptableObject.md",
                 "mode": "source",
                 "source": false
               },
               "icon": "lucide-file",
-              "title": "AssetBundle"
+              "title": "ScriptableObject"
             }
           }
         ]
@@ -74,11 +74,13 @@
               "title": "书签"
             }
           }
-        ]
+        ],
+        "currentTab": 1
       }
     ],
     "direction": "horizontal",
-    "width": 300
+    "width": 300,
+    "collapsed": true
   },
   "right": {
     "id": "2e2a49268a0c6bc6",
@@ -186,8 +188,10 @@
   },
   "active": "956669a4bd1e1e5e",
   "lastOpenFiles": [
-    "Unity/Unity主要内容/Unity-基础.md",
+    "CSharp/Newtonsoft Json.md",
+    "Unity/Unity高级/ScriptableObject.md",
     "Unity/Unity高级/AssetBundle.md",
+    "Unity/Unity主要内容/Unity-基础.md",
     "Unity/Unity高级/UniTask.md",
     "工具/JetBrain系Ide.md",
     "未命名.base",
