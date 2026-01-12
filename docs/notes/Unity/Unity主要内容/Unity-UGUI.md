@@ -20,10 +20,12 @@ UGUI 源码位于编辑器根目录下的： `Data/Resources/PackageManager/Buil
 1. `Canvas` 组件用来干什么
     - `Canvas` 是 UGUI 中所有 UI 元素能够被显示的根本
     - 主要负责渲染自己的所有 UI 子对象
-2. 场景中可以有多个 `Canvas` 对象
+2. `CanvasRender` 是挂载在 UI 元素上将网格提交给 Canvas 进行最终渲染的桥梁
+	- 只负责把画好的东西交给渲染管线
+	- `Cull Transparent Mesh`：剔除透明网格（不会渲染透明物体），仅适合需要长时间保持透明的元素
+3. 场景中可以有多个 `Canvas` 对象
     - 可以分别管理不同画布的渲染方式，分辨率自适应方式等等参数
-    - 如果没有特殊需求，一般一个场景上一个 `Canvas` 对象即可
-    
+    - 当 UI 元素修改时，`CanvasRender` 会通知 `Canvas` 重新计算所有网格，如果一个 Canvas 下有成千上万个 `Canvas Renderer`，这会导致严重的掉帧。建议把经常动的 UI（如进度条）放在一个子 Canvas 里。
 ### `Canvas` 组件的三种渲染方式
 1. `Screen Space - Overlay`：屏幕空间，覆盖模式，UI 始终在前
     - `Pixel Perfect`：是否开启无锯齿精确渲染模式（性能换效果）

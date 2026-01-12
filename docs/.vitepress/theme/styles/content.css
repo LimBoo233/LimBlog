@@ -97,15 +97,16 @@ html {
    4. 分割线美化
    ============================================ */
 .vp-doc hr {
-  margin: 64px 0;
+  margin: 18px 0;
   border: none;
-  height: 3px;
-  background: linear-gradient(90deg, 
-    var(--vp-c-brand-1), 
-    var(--vp-c-brand-2), 
-    var(--vp-c-brand-3)
+  height: 1px;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(var(--vp-c-brand-1-rgb, 62, 175, 124), 0.38),
+    transparent
   );
-  border-radius: var(--radius-sm);
+  border-radius: 1px;
   position: relative;
   overflow: visible;
 }
@@ -272,8 +273,8 @@ html {
   }
   
   .vp-doc hr {
-    margin: 32px 0;
-    height: 2px;
+    margin: 12px 0;
+    height: 1px;
   }
 }
 
