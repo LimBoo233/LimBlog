@@ -377,7 +377,7 @@ SDF 的贴图上存储的是从 0 到 1 的渐变值，TMP 的 Shader 会设定�
 - Use Ratios：使用率
 - Cull Mode：裁剪模式
 
-### 工具类
+## 工具类
 
 ### TMP_TextEventHandler
 
