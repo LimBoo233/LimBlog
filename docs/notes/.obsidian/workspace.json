@@ -13,12 +13,12 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "Unity/Unity高级/AssetBundle.md",
+                "file": "Unity/Unity高级/Addressables 快速实战.md",
                 "mode": "source",
                 "source": false
               },
               "icon": "lucide-file",
-              "title": "AssetBundle"
+              "title": "Addressables 快速实战"
             }
           }
         ]
@@ -176,7 +176,7 @@
   },
   "left-ribbon": {
     "hiddenItems": {
-      "bases:新建数据库": false,
+      "bases:新建数据库": true,
       "switcher:打开快速切换": false,
       "graph:查看关系图谱": false,
       "canvas:新建白板": false,
@@ -187,18 +187,22 @@
   },
   "active": "74dd6a94ced78f67",
   "lastOpenFiles": [
-    "Unity/Unity高级/Addressable.md",
+    "CSharp/CSharp技巧.md",
     "Unity/Unity高级/二进制存储数据.md",
+    "Unity/Unity高级/Addressables 快速实战.md",
+    "未命名.base",
+    "未命名 4.base",
+    "未命名 1.base",
+    "未命名 2.base",
+    "未命名 3.base",
+    "Unity/Unity高级/AssetBundle.md",
     "Unity/Unity高级/TextMeshPro.md",
     "工具/JetBrain系Ide.md",
     "Unity/Unity主要内容/Unity-UGUI.md",
     "Unity/Unity高级/ScriptableObject.md",
     "CSharp/Newtonsoft Json.md",
-    "Unity/Unity高级/AssetBundle.md",
     "Unity/Unity主要内容/Unity-基础.md",
     "Unity/Unity高级/UniTask.md",
-    "未命名.base",
-    "未命名 1.base",
     "Unity/其他/Unity小技巧.md",
     "工具/Neovim.md",
     "CSharp/异步编程.md",
