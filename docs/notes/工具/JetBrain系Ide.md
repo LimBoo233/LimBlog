@@ -25,3 +25,11 @@
 - 注释中文字体：在 Editor -> Font 页面中，打开下方的版式设置，选择回滚字体（ex：Microsoft YaHei）
 - Ide 界面中文字体：在 Appearance 中打开无障碍功能，勾选使用自定义字体（推荐：Microsoft YaHei UI）
 - 抗锯齿：Appearance 最下方调正抗锯齿，灰度效果最佳
+
+## 方法快速补全
+
+idea 当方法输入一般的时候，会弹出码补全列表。除了利用`↑` / `↓`切换补全提示，更 pro 的方法是利用驼峰匹配快速定位，即输入每个单词的首字母。
+
+例如，当你想要补全`TryGetValue`时，你只需要输入：
+- `TGV`/`tgv`
+- `TryGV`/`trygv`
