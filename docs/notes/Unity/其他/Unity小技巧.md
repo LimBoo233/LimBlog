@@ -25,6 +25,84 @@
 - **`m:create`** -> 只搜菜单命令（menu）
 - **`p:physics`** -> 只搜设置项（preferences）
 
+## 大幅减少进入播放模式时的加载时间
+
+勾选 Project Setting -> Editor ->Enter Play Mode Options 以跳过（或减少）进入播放模式时的重新加载过程，从而大幅缩短等待时间。
+
+默认情况下，每次你按下 Play 键，Unity 为了保证一个“绝对干净”的运行环境，会执行两个非常耗时的操作：
+
+1. **Domain Reload (域重载)**：卸载并重新加载所有的 C# 程序集（DLLs）。这会重置所有的 `static` 变量，确保你的单例（Singleton）或静态数据回到初始状态。
+    
+2. **Scene Reload (场景重载)**：重新加载当前的场景文件，重置所有 GameObject 的初始状态。
+    
+当你开启`Enter Play Mode Options`后，你可以选择勾选以下两个选项：
+
+- **Reload Domain (不勾选 = 禁用重载)**： Unity 不再重启 C# 的虚拟机环境。点击 Play 时，脚本立刻开始运行。
+    
+    - **速度提升**：极其明显，几乎是秒开。
+        
+- **Reload Scene (不勾选 = 禁用重载)**： Unity 不再从硬盘重新加载场景。
+    
+    - **速度提升**：对于物体极其密集的场景，提升巨大。
+
+但是如果你**禁用了 Domain Reload**，由于 C# 域没有重启，**静态变量的值会保留上一次运行后的结果。** 所以如果有时候你的游戏刚才还运行得好好的，再运行突然出了 Bug，考虑一下是不是因为开启了这个选项。
+
+## 不受帧率影响的阻尼
+
+```cs
+Func<float, float> func = (float time) => 1 - Mathf.Exp(-time * Time.deltaTime);
+
+var t = func(10f)
+postion = Vector3.Lerp(position, target, t)
+```
+
+公式的原理可以类比物理中**半衰期**的概念。
+
+## `Instantiate<Component>`
+
+实例化一个游戏对象并且避免之后`GetComponet<T>`的开销：
+
+```cs
+Component c = UnityEngine.Object.Instantiate<Component>(prefab);
+```
+
+## 将无需移动旋转缩放的物体标记为`Static`
+
+当你勾选 Inspector 面板右上角的`Static`复选框时，你是在告诉 Unity 这个物体在游戏运行时**不会移动、旋转或缩放**。”这样 Unity 就可以预先计算一些复杂的物理、光照和渲染数据，从而减轻 CPU 和 GPU 的负担。
+
+性能优势
+
+- **降低 CPU 开销**：减少了每帧计算物体位置和剔除逻辑的压力
+    
+- **降低 GPU 开销**：通过静态合批减少渲染次数
+    
+- **更真实的画面**：可以使用烘焙光照实现高精度的软阴影和全局光照（GI）
+    
+
+注意事项
+
+- **内存消耗**：静态合批会创建新的合并网格，可能会增加内存占用
+    
+- **灵活性丧失**：一旦标记为 Static，你在脚本中尝试通过 `transform.position` 移动它通常是无效的（或者会导致巨大的重新计算开销）
+
+标记为`Static`后，记得在 Rendering -> Lighting 窗口烘培光照。
+
+## 警惕根运动动画间的过渡
+
+根运动动画间的过渡非常容易产生问题，例如从竖直爬墙的根运动动画可能会和跑步动画混合，导致在动画过渡期间角色向前上方爬取，容易造成角色卡入墙内然后直接被物理系统弹飞。因此，警惕根动画过渡期间可能运行的逻辑。
+
+```cs
+// 让动画播放到10%之后再进行动画匹配，给根运动动画些时间过渡
+_animator.MatchTarget(  
+   matchPosition,  
+   Quaternion.identity,  
+   AvatarTarget.RightHand,  
+   new MatchTargetWeightMask(new Vector3(0, 1, 0), 0),  
+   0.10f,  
+   0.25f  
+);  
+```
+
 ## 在Untiy3d中导入pmx类型的模型
 
 [参考视频](https://www.bilibili.com/video/BV1i14y1j7eF/?spm_id_from=333.1007.top_right_bar_window_history.content.click&vd_source=b3c97e3d2220b29b554866d21d02bd09)

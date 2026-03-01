@@ -114,11 +114,10 @@ if (Keyboard.current.anyKey.wasPressedThisFrame)
 
     此外还有一个 `Initial State Check`。默认情况下，如果在一个 Action 被启用时，它所绑定的某个按键已经处于被按下的状态，那么默认情况下 Action 对此一无所知。开启 `Initial State Check` 后，Action 会在启用时立即检查所有绑定的按键状态，并根据这些状态决定是否触发事件。
 
-::: info `InputAction` 的事件
-1. `Started`：按下时触发。
-2. `Performed`：满足条件时触发。
-3. `Canceled`：总是在用户松开按键等导致当前输入行为结束时触发。
-:::
+> [!NOTE] `InputAction` 的事件
+> 1. `Started`：按下时触发。
+>2. `Performed`：满足条件时触发。
+>3. `Canceled`：总是在用户松开按键等导致当前输入行为结束时触发。
 
 - `Processors`
 
@@ -165,11 +164,10 @@ if (Keyboard.current.anyKey.wasPressedThisFrame)
 
 4. 此外还有一些和 `Control Type` 关联的 Bindings，例如：`Add Up/Down/Left/Right Composite`
 
-::: tip
+ > [!TIP]
 Bindings 里也有 `Interactions` 和 `Processors`。默认情况下，`Processors` 是串联的：先执行绑定的，再执行 Action 的；而一个输入行为必须同时满足两者的 `Interactions` 条件才能触发 `Performed` 事件。
-
+>
 但绝大多数情况下（可以说95%以上），你应该将 `Interactions` 和 `Processors` 直接添加到具体的 Binding 上。
-:::
 
 ## 全局设置
 
@@ -335,7 +333,7 @@ private void OnDisable()
 
 现在，我们可以开始真正地对输入做出响应了。
 
-对于一次性动作（如跳跃、开火），推荐采用事件驱动模式。例如：
+**事件驱动模式**
 
 ```csharp
 // 在 OnEnable 中订阅事件
@@ -363,23 +361,34 @@ private void OnJump(InputAction.CallbackContext context)
 }
 ```
 
+**主动读值**
+
 对于持续性动作（如移动、观察），我们可以在 `Update()` 或 `FixedUpdate()` 中主动读取它的值。例如：
 
 ```csharp
-private Vector2 moveInput;
-
 private void Update()
 {
     // ReadValue<Vector2>() 会返回一个 Vector2，这是在编辑器里设置的
-    moveInput = playerControls.Player.Move.ReadValue<Vector2>();
+    // 默认情况，move 的值是一蹴而就的，可以通过配置 (Processors) 让它缓缓增减
+    var move = controls.Player.Move.ReadValue<Vector2>();
+    
+    // 此情况等同于 playerControls.Player.Jump.ReadValue<bool>()
+    var run = controls.Player.Run.IsPressed();
+    
+    // 此帧 Action 判断为触发成功，此帧为 true
+    var attack = controls.Player.Attack.triggered;
+    
+    // 此帧只要按下对应按键，此帧就为 true: .WasPressedThisFrame()
 }
 ```
 
+将输入变量每帧缓存一次再多次读取的性能只会略高与直接多次读取，但还是推荐这么做。
 ## `InputAction.CallbackContext`
 
 每当一个输入事件（`started`, `performed`, `canceled`）被触发时，输入系统就会把与该事件相关的所有上下文信息打包成一个 `CallbackContext` 对象，然后作为参数传递给你的回调方法。
 
 `CallbackContext` 是一个结构体，存储了许多有用的信息：
+
 | 属性/方法 | 描述 | 实用价值 |
 |---|---|---|
 | `phase` |  一个枚举（`InputActionPhase`），告诉你触发这次回调的是哪个阶段的事件。它的值会是 `Started`, `Performed`, `Canceled` 之一。 | 它允许你用一个方法注册一个 Action 的所有事件，然后用 `switch` 或 `if` 语句来区分处理。 |
@@ -391,7 +400,6 @@ private void Update()
 **代码示例**
 
 ::: code-group
-
 
 ```csharp [Ex1.cs]
 // --- 按下、等待、松开 ---

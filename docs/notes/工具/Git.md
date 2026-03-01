@@ -262,7 +262,7 @@ ex: `git cherry-pick C1 C2 C3 C4`
 ex: `git rebase -i HEAD~4`
 
 > [!CAUTION]
-> 就像之前说的，你需要明白 reabse 命令可能会造成的风险。提交的顺序不能随意地修改。
+> 就像之前说的，你需要明白 rebase 命令可能会造成的风险。提交的顺序不能随意地修改。
 
 ## 杂项
 

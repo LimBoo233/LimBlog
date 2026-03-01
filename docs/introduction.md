@@ -10,4 +10,9 @@ outline: false
 
 <img src="/images/avater.png" alt="我的头像" class="avatar">
 
-
+清单：
+- [ ] Playables
+- [ ] CinemaMachine
+- [ ] Shader Graph
+- [ ] 编辑器扩展
+- [ ] 网络
