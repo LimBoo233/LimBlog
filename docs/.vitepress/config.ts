@@ -1,9 +1,20 @@
 import { defineConfig } from 'vitepress'
 import { groupIconMdPlugin, groupIconVitePlugin } from 'vitepress-plugin-group-icons'
 import { MermaidMarkdown, MermaidPlugin } from 'vitepress-plugin-mermaid';
+import { RSSOptions, RssPlugin } from 'vitepress-plugin-rss';
 // 引入侧边栏生成器
 import { generateSidebar } from 'vitepress-sidebar';
 
+const baseUrl = 'https://limboo233.top';
+const RSS: RSSOptions = {
+    title: "LimBoo233的笔记空间",
+    description: "保留自己的智慧",
+    baseUrl,
+    copyright: 'Copyright (c) 2026, LimBoo233',
+    language: 'zh-CN',
+    ignoreHome: true,
+    filter: () => true,
+};
 
 // https://vitepress.vuejs.org/config/app-configs
 export default defineConfig({
@@ -14,6 +25,7 @@ export default defineConfig({
     
     head: [
         ['link', { rel: 'icon', href: '/images/favicon2.PNG' }],
+        ['link', { rel: 'alternate', type: 'application/rss+xml', title: 'RSS', href: '/feed.rss' }],
         
         // SEO 优化标签
         ['meta', { name: 'keywords', content: 'Unity, C#, 编程, 游戏开发, 笔记, 学习, LimBoo233' }],
@@ -88,6 +100,7 @@ export default defineConfig({
                     }
             }),
             MermaidPlugin(),
+            RssPlugin(RSS),
         ],
         optimizeDeps: { // include mermaid
             include: ['mermaid'],
