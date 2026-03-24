@@ -319,8 +319,12 @@ animator.Play("<State Name>", layerIndex, normalizedStartTime);
 
 // 平滑过渡，transitionDuration 是百分比，依赖当前状态
 animator.CrossFade("<State Name>", transitionDuration);
+// 默认：
+// layer = -1，代表所有层
+// timeoffsetNormal = float.NegativeInfinity，该值会让动画不重复播放，如需重复可设为0
+animator.CrossFade("<State Name>", transitionDuration, layer, timeoffsetNormal);
 
-// 难精确控制过渡时间
+// 精确控制过渡时间
 animator.CrossFadeInFixedTime("<State Name>", fixedTime)
 
 // --- 这些方法都有别的重载；除了使用 Animator 还有别的方法 ---

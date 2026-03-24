@@ -9,18 +9,7 @@
       >
         Default
       </button>
-      <button
-        type="button"
-        :class="['palette-chip', { active: palette === 'nord' }]"
-        @click="setPalette('nord')"
-        :aria-pressed="palette === 'nord'"
-      >
-        Nord
-      </button>
     </div>
-    <p v-if="palette === 'nord'" class="palette-credit">
-      Nord theme designed by <a href="https://www.nordtheme.com/" target="_blank" rel="noopener">Arctic Ice Studio</a>.
-    </p>
   </div>
 </template>
 
@@ -50,7 +39,7 @@ const setPalette = (value) => {
 
 onMounted(() => {
   const saved = localStorage.getItem(storageKey)
-  applyPalette(saved === 'nord' ? 'nord' : 'default')
+  applyPalette(saved === 'default' ? 'default' : 'default')
 })
 </script>
 

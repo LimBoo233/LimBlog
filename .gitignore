@@ -38,9 +38,10 @@ pnpm-debug.log*
 .DS_Store
 
 # VitePress 自动生成的文件
-/.vitepress/cache
-/docs/.vitepress/dist
-/docs/.vitepress/cache/deps
+docs/.vitepress/cache
+docs/.vitepress/dist
+docs/.vitepress/temp
+.vitepress/cache/deps
 
 # 构建输出
 /build
@@ -51,3 +52,5 @@ pnpm-debug.log*
 
 # Obsidian
 .obsidian
+
+

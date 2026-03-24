@@ -11,8 +11,19 @@ outline: false
 <img src="/images/avater.png" alt="我的头像" class="avatar">
 
 清单：
-- [ ] Playables
-- [ ] CinemaMachine
+- [ ] 动画
+    - [ ] Playables API
+    - [ ] Animacer
+- [X] CinemaMachine
 - [ ] Shader Graph
+- [ ] DoTween 动画插件
 - [ ] 编辑器扩展
+    - [ ] UI Toolkit
+    - [ ] Odin Inspector 
 - [ ] 网络
+    - [ ] Netcode for GameObjects
+    - [ ] .NET SOCKETS
+    - [ ] Mirror
+- [ ] 阅读 Celeste 技术博客
+- [ ] 地图随机生成
+- [ ] KCC

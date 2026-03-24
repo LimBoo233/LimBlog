@@ -103,6 +103,14 @@ _animator.MatchTarget(
 );  
 ```
 
+## Collider + Kinematic Rigidbody
+
+在 Unity 的物理引擎眼中，一个只有 Collider 没有 Rigidbody 的物体被称为 **静态碰撞体 (Static Collider)**。 物理引擎会理所当然地认为这是一个建筑物、一面墙或者一块永远不会动的石头。为了优化性能，引擎会在游戏加载时，把这些静态物体的信息“烘焙”成一个极其复杂的空间树结构（BVH）。
+
+如果你通过播放动画或者代码，强行改变了这个静态碰撞体的 Transform（比如挥舞巨剑），物理引擎就会因为发现“墙居然动了”而引发大地震——它**被迫在这一帧重新计算并重建整个场景的静态空间树**。如果你频繁挥剑，CPU 就会出现极大的开销，导致游戏严重卡顿。
+
+当你给巨剑加上 Rigidbody 时，你就等于向物理引擎声明：这是一个**动态物体 (Dynamic Object)**，它随时都会移动，把它放进动态物体的处理列表里。这样一来，物理引擎就不会因为它的移动而重新计算整个场景了，性能开销骤降。+
+
 ## 在Untiy3d中导入pmx类型的模型
 
 [参考视频](https://www.bilibili.com/video/BV1i14y1j7eF/?spm_id_from=333.1007.top_right_bar_window_history.content.click&vd_source=b3c97e3d2220b29b554866d21d02bd09)

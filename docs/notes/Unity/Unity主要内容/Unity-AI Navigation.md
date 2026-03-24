@@ -287,6 +287,52 @@ agent.SetDestination(target.position);
     agent.Warp(Vector3 newPosition);
     ```
 
+1. 接管移动
+	核心思路是，让 Agent 只负责计算路径，由你来决定如何移动物体。
+	```cs
+	// 核心设置：禁止 Agent 自动更新位置和旋转
+	agent.updatePosition = false;
+	agent.updateRotation = false;
+
+    void OnAnimatorMove()
+    {
+        // 1. 让动画成为唯一的位移来源
+        Vector3 newPosition = transform.position + animator.deltaPosition;
+
+        // 2. 强制同步高度（可选）
+        // 防止角色因为动画的起伏而脱离 NavMesh 地面
+        newPosition.y = agent.nextPosition.y; 
+
+        // 3. 应用实际位置
+        transform.position = newPosition;
+
+        // 4. 把 Agent 位置同步 
+        // 把角色的实际位置汇报给 Agent，防止 Agent 在后台自己跑远
+        agent.nextPosition = transform.position;
+    }
+	```
+    另一个示例：
+    ```cs
+    private void OnRootMotion(Vector3 deltaPosition, Quaternion deltaRotation)
+    {
+        var dir = _boss.NavMeshAgent.nextPosition - _boss.transform.position;
+        dir.y = 0;
+        if (dir.sqrMagnitude > 0.00000001f)
+        {
+            _boss.Model.transform.rotation = Quaternion.Slerp(_boss.Model.transform.rotation,
+                Quaternion.LookRotation(dir), _boss.RotationSpeed * Time.deltaTime);
+        }
+
+        _boss.CharacterController.Move(deltaPosition * _boss.MoveSpeed);
+        if (!_boss.CharacterController.isGrounded)
+        {
+            _boss.CharacterController.Move(Vector3.up * _boss.Gravity * Time.deltaTime);
+        }
+
+        _boss.NavMeshAgent.nextPosition = _boss.transform.position;
+    }
+    ```
+
 ## `NavMeshObstacle` 组件
 
 `NavMeshObstacle` 组件用于那些不是 Agent，但又需要阻挡 Agent 路径的动态物体。

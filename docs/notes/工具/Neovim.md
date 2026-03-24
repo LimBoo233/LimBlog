@@ -116,7 +116,7 @@ vim.keymap.set("i", "<CapsLock>", "<Esc>")
         - `$`：行尾
         - `^`：此行有内容的头部
         - `I`：此行内容的头部：同时进入 insert 模式
-        - `A`：行尾，同时进入 insert 模式
+        - `A`：行尾，同时进入 insert 模式（可以用于行尾插入`;`）
         - `f` / `F` + `[字母]`：同行找对应字母移动，`;` / `,`上/下
         - `g_`：跳转到行尾的最后一个非空字符。
     - 段落
@@ -150,7 +150,7 @@ vim.keymap.set("i", "<CapsLock>", "<Esc>")
         - 新建文件/删除：`a` / `d`，对应 add 和 delete
         
 5. 在多个文件间（缓冲区）切换
-    - `Shift + h/l`：在前后标签页切换（lazy vim）
+    - `Shift + h/l`：在前后标签页（buffer）切换（lazy vim）
     - `[` / `]` + `b`：上/下一个 Buffer（lazy vim）
     - `Space + b + d`：关闭当前 Buffer（lazy vim）
     - `gt` / `gT`：在前后标签页切换（传统 vim，不推荐，`gT`非常难按）
@@ -275,3 +275,19 @@ Flash.nvim 的功能很像 Ace Jump，可以快速跳转到某个字符处。
 - 加完光标后，按下 `c` (修改) 或者 `I` (在前面插入)，就能同时操作了，按 `Esc` 完美退出。
 
 
+## 多窗口
+
+窗口操作以`<leader>w`为前缀（比如`<leader>ww`切换窗口，`<leader>wd`关闭窗口）。
+
+- **`<leader>ww`**: 切换到下一个窗口 (Window switch)
+- **`<leader>wd`**: 关闭当前窗口 (Window delete)
+- **`<leader>w-`**: 水平分屏
+- **`<leader>w|`**: 垂直分屏
+
+LazyVim 窗口切换快捷键：
+- **`Ctrl + h`**：切换到 **左边** 的窗口
+- **`Ctrl + l`**：切换到 **右边** 的窗口
+- **`Ctrl + j`**：切换到 **下方** 的窗口
+- **`Ctrl + k`**：切换到 **上方** 的窗口
+
+命令`:only`可以一口气关掉所有其他窗口。

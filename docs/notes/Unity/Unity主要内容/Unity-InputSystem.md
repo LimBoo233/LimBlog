@@ -368,21 +368,26 @@ private void OnJump(InputAction.CallbackContext context)
 ```csharp
 private void Update()
 {
+	// 此帧 Action 判断为触发成功，此帧为 true
+	// 只有 triggered 属性和事件关心你在 Interactions 中的设置，关心 Action 是否真的完成
+    var attack = controls.Player.Attack.triggered;
+
     // ReadValue<Vector2>() 会返回一个 Vector2，这是在编辑器里设置的
     // 默认情况，move 的值是一蹴而就的，可以通过配置 (Processors) 让它缓缓增减
     var move = controls.Player.Move.ReadValue<Vector2>();
     
+	// IsPressed() 检测按键是否持续按压
     // 此情况等同于 playerControls.Player.Jump.ReadValue<bool>()
     var run = controls.Player.Run.IsPressed();
     
-    // 此帧 Action 判断为触发成功，此帧为 true
-    var attack = controls.Player.Attack.triggered;
-    
     // 此帧只要按下对应按键，此帧就为 true: .WasPressedThisFrame()
 }
+
+// 等同于 Move.ReadValue<Vector2>() != Vector2.zero
+public static bool HasMoveInput => InputActions.Player.Move.IsInProgress();
 ```
 
-将输入变量每帧缓存一次再多次读取的性能只会略高与直接多次读取，但还是推荐这么做。
+将输入变量每帧缓存一次再多次读取的性能虽只略高于多次直接读取，但还是推荐这么做。
 ## `InputAction.CallbackContext`
 
 每当一个输入事件（`started`, `performed`, `canceled`）被触发时，输入系统就会把与该事件相关的所有上下文信息打包成一个 `CallbackContext` 对象，然后作为参数传递给你的回调方法。

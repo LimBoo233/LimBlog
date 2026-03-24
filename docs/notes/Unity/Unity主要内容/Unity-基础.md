@@ -59,6 +59,8 @@ private void OnDrawGizmosSelected() {}
     - `Mathf,Rad2Deg`：弧度转角度
     - `Mathf.Approximately`：是否非常近似
 4. Mathf 中的常用方法 —— 一般需要多次计算
+	- `MoveTowards`
+		- 匀速过渡
     - `Mathf.Lerp`
         - 线性插值
         - `Mathf.Lerp(a, b, t)`：返回 a 和 b 之间的插值。t 为插值系数，范围在 0 到 1 之间。
@@ -577,8 +579,7 @@ IEnumerator MyCoroutine(int maxCount = 0)
 2. 时间控制类——继承自 `YieldInstruction`
 3. 生命周期钩子——ex: `WaitForFixedUpdate()`
 4. 异步操作类——继承自 `AsyncOperation`
-5. 另一个携程
-
+5. 另一个携程、
 Unity 也允许你通过继承 `CustomYieldInstruction` 来编写自己的等待逻辑。只要你重写 `keepWaiting` 属性即可。
 
 ex:
@@ -613,12 +614,24 @@ StopAllCoroutines();
 - 物体失活协程不执行。
 - 组件和物体销毁协程不再执行。
 
-> [!TIP]
-返回类型为 `IEnumerator` 的方法（即迭代器块），在被调用时，里面的代码确实一行都不会执行。2只有在调用 `MoveNext()` 方法时，才会开始执行代码。
->
-> 这种方法更像是在“预备”或“装配”一个状态机，而不是在“运行”它。这种“我只在你需要的时候才工作”的模式，就是延迟执行 (Lazy Execution) 的核心。
+如果你的携程代码里，`yield return` 语句存在完全不会执行的情况，`StartCoroutine(Routine())`变回返回空，此时`StopCoroutine(c)`变回报空应用异常，需要注意。
 
-值得注意的是， Unity 的生命周期函数也有协程的重载版本，例如 `IEnumerator Start()`。
+```csharp
+private IEnumerator Routine
+{
+	while(false)
+	{
+		yield return null;
+	}
+}
+	
+```
+
+> [!TIP]
+返回类型为 `IEnumerator` 的方法（即迭代器块），在被调用时，里面的代码确实一行都不会执行。只有在调用 `MoveNext()` 方法时，才会开始执行代码。
+这种方法更像是在“预备”或“装配”一个状态机，而不是在“运行”它。这种“我只在你需要的时候才工作”的模式，就是延迟执行 (Lazy Execution) 的核心。
+
+Unity 的生命周期函数也有协程的重载版本，例如 `IEnumerator Start()`。
 
 ## Resources 资源动态加载
 
