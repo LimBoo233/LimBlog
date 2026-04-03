@@ -25,6 +25,92 @@
 - **`m:create`** -> 只搜菜单命令（menu）
 - **`p:physics`** -> 只搜设置项（preferences）
 
+# 优先选中父物体
+
+在 Scene View（场景视图） 中点击物体时，Unity 默认会选中你鼠标点到的最上层（或最前）的物体（尤其是嵌套了很多子物体、模型零件、LOD、碰撞体等情况时，很容易点到子物体）。
+加上`[SelectionBase]`后：
+
+- 当你点击这个脚本所在的 GameObject 或它的任意子物体时，
+- Unity 会自动选中带有`[SelectionBase]`的这个父级 GameObject，而不是选中你实际点击的子物体。
+
+```cs
+[SelectionBase]
+public class MyObject : MonoBehaviour
+{
+}
+```
+
+## 专用于调式方法的注解
+
+`[Conditional]`可以让对某个方法的调用在编译时被自动移除，前提是指定的编译符号（Conditional Symbol）没有被定义。
+
+它是一种比`#if`更优雅的条件编译方式，专门用来控制是否编译方法的调用。
+
+Example:
+
+```cs
+using System.Diagnostics;
+
+public class Logger
+{
+    [Conditional("DEBUG")]          // ← 关键在这里
+    public static void Log(string message)
+    {
+        UnityEngine.Debug.Log(message);
+    }
+}
+```
+
+仅当项目定义了`DEBUG`符号时（Editor 和 Development Build 也有，Release Build 中无）：`Logger.Log("xxx")`这行调用会被正常编译并执行，否则会删除一切对该方法的调用（方法本身还是会被编译）。
+
+## `GetEntityId()`
+
+`GetEntityId()`是 Unity 6+ 中推荐用于获取对象唯一标识符的方法，它取代了旧的`GetInstanceID()`（后者已被标记为 Obsolete 并将在后续版本移除）。
+
+它返回`EntityId`类型（`struct`值类型），相当于 Unity 引擎为每个`UnityEngine.Object`（包括`GameObject`、`MonoBehaviour`、`ScriptableObject`等）在内存中分配的**唯一句柄**（handle）。
+
+**核心特点**
+
+- 在当前运行进程（Editor 或 Build）内**绝对唯一**，不同对象绝不会重复。
+- 始终有效，不会返回无效的`EntityId.None`。
+- **每次运行都会变化**（重启 Editor 或重新运行 Build 后 ID 会不同），因此不能用于存档或持久化场景。
+- `EntityId`在 Unity 6.5+ 中是 64-bit，更稳定。
+
+**与旧方法和 GetHashCode 的区别**
+
+- `GetInstanceID()`：旧版，返回`int`，已弃用，不推荐使用。
+- `GetEntityId()`：新版，返回`EntityId`，是官方推荐的替代方案。
+- `GetHashCode()`：C# 标准哈希方法，在 Editor 中数值常与旧`InstanceID`重合，但在 Build 中不保证一致，不适合作为唯一标识使用。
+
+**常见用途**
+
+- 作为`Dictionary<EntityId, T>`或`HashSet<EntityId>`的 Key，实现高效的对象查找、缓存和管理。
+- 快速判断两个对象是否为同一个实例（比直接用`==`更直接，尤其在大量动态对象时）。
+- 对象池、Manager 系统、调试工具中标识子弹、敌人、特效等运行时生成的对象。
+- 减少持有大量对象引用，降低 GC 压力。
+
+**示例代码**
+
+```cs
+using UnityEngine;
+
+public class GetEntityIdExample : MonoBehaviour
+{
+    private Dictionary<EntityId, string> dataDict = new();
+
+    void Start()
+    {
+        EntityId myId = this.GetEntityId();        // MonoBehaviour 上直接调用
+        EntityId goId = gameObject.GetEntityId();
+
+        dataDict[myId] = "我的数据";
+
+        // 如果需要 int 类型的哈希值（用于兼容旧代码）
+        int hash = myId.GetHashCode();
+    }
+}
+```
+
 ## 大幅减少进入播放模式时的加载时间
 
 勾选 Project Setting -> Editor ->Enter Play Mode Options 以跳过（或减少）进入播放模式时的重新加载过程，从而大幅缩短等待时间。
@@ -48,6 +134,9 @@
 但是如果你**禁用了 Domain Reload**，由于 C# 域没有重启，**静态变量的值会保留上一次运行后的结果。** 所以如果有时候你的游戏刚才还运行得好好的，再运行突然出了 Bug，考虑一下是不是因为开启了这个选项。
 
 ## 不受帧率影响的阻尼
+
+> [!TIP]
+> 感觉还是直接使用 DOTween 更好。
 
 ```cs
 Func<float, float> func = (float time) => 1 - Mathf.Exp(-time * Time.deltaTime);
