@@ -12,11 +12,11 @@ outline: false
 
 清单：
 - [ ] 动画
-    - [ ] Playables API
-    - [ ] Animacer
+    - [X] Animacer
+    - [ ] IK
 - [X] CinemaMachine
 - [ ] Shader Graph
-- [ ] DoTween 动画插件
+- [x] DoTween 动画插件
 - [ ] 编辑器扩展
     - [ ] UI Toolkit
     - [ ] Odin Inspector 

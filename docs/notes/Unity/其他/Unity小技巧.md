@@ -111,7 +111,41 @@ public class GetEntityIdExample : MonoBehaviour
 }
 ```
 
+## 对脚本中值的验证、赋值和预览-`OnValidate()`
+
+OnValidate 是一个 Editor-only 的钩子函数,Unity 会在以下情况自动调用它：
+
+- 脚本加载时（例如打开场景、加载 Prefab 时）
+- Inspector 面板中任何一个`public`/`[SerializeField]`的值被修改后
+- 进入 Play Mode 前、构建项目时等其他编辑器操作中
+
+**主要用来做什么？**
+
+- 实时验证和修正数据：比如限制某个数值不能小于0、自动计算某个字段、检查引用是否为空等。
+- 在编辑器中自动更新预览效果：调整面板参数后直接在 scene 中实时看到变化。
+- 自动初始化引用：很多开发者用它来自动`GetComponent`或查找子对象，避免手动拖拽。
+
+Ex:
+
+```cs
+public int health = 100;
+
+#if UNITY_EDITOR
+private void OnValidate()
+{
+    if (health < 0)
+    {
+        health = 0;
+        Debug.LogWarning("血量不可为负数，自动修改为0")
+    } 
+}
+#endif
+```
+
 ## 大幅减少进入播放模式时的加载时间
+
+> [!CAUTION]
+> 特定场景下会出现 bug，具体情形见下文。 
 
 勾选 Project Setting -> Editor ->Enter Play Mode Options 以跳过（或减少）进入播放模式时的重新加载过程，从而大幅缩短等待时间。
 
