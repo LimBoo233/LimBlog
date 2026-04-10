@@ -7,50 +7,47 @@ yarn-error.log*
 pnpm-debug.log*
 lerna-debug.log*
 
+# Dependencies
 node_modules
+pnpm-lock.yaml
+
+# Build outputs
 dist
 dist-ssr
-*.local
+build
+/dist
 
-# Editor directories and files
-.vscode/*
-!.vscode/extensions.json
-.idea
-.DS_Store
-*.suo
-*.ntvs*
-*.njsproj
-*.sln
-*.sw?
-
-# 依赖和本地包
-/node_modules
-*.local
-
-# 日志文件
-npm-debug.log*
-yarn-debug.log*
-yarn-error.log*
-pnpm-debug.log*
-
-# 编辑器和系统文件
-.idea
-.DS_Store
-
-# VitePress 自动生成的文件
+# VitePress
 docs/.vitepress/cache
 docs/.vitepress/dist
 docs/.vitepress/temp
 .vitepress/cache/deps
 
-# 构建输出
-/build
-/dist
+# Auto-generated sidebar config
+docs/.vitepress/sidebar-config.ts
 
-# 本地环境配置文件
-/.vscode
+# Editor and IDE
+.vscode/*
+!.vscode/extensions.json
+.idea
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+*.swp
+*.swo
+*~
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Local files
+*.local
+.env.local
+.env.*.local
 
 # Obsidian
 .obsidian
-
 

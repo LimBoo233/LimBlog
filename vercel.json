@@ -1,0 +1,5 @@
+{
+  "buildCommand": "pnpm gen-sidebar && pnpm build",
+  "outputDirectory": "docs/.vitepress/dist",
+  "installCommand": "pnpm install"
+}

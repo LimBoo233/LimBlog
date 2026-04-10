@@ -2,10 +2,13 @@
   "name": "vitepress-project",
   "private": true,
   "type": "module",
+  "packageManager": "pnpm@8.15.4",
   "scripts": {
     "dev": "vitepress dev docs",
     "build": "vitepress build docs",
-    "serve": "vitepress serve docs"
+    "serve": "vitepress serve docs",
+    "gen-sidebar": "node scripts/generate-sidebar.cjs",
+    "gen-sidebar:watch": "node scripts/generate-sidebar-watch.cjs"
   },
   "devDependencies": {
     "@iconify-json/catppuccin": "^1.2.13",
