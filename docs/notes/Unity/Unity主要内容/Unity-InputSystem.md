@@ -383,7 +383,8 @@ private void Update()
     // 此帧只要按下对应按键，此帧就为 true: .WasPressedThisFrame()
 }
 
-// 等同于 Move.ReadValue<Vector2>() != Vector2.zero
+// Input Action 当前正在进行中（Started -> Performed）
+// 此处等同于 Move.ReadValue<Vector2>() != Vector2.zero
 public static bool HasMoveInput => InputActions.Player.Move.IsInProgress();
 ```
 
@@ -509,13 +510,13 @@ graph LR
 
 `PlayerInput` 管理单个玩家的输入，而 `PlayerInputManager` 可以管理多个 PlayerInput 实例的生成和设备分配。
 
-::: tip
+> [!TIP]
 `PlayerInput` 可以单独完成绝大部分场景，但对于部分更复杂的场景，通常会利用 `PlayerInputManager` 同时结合手写代码。例如：
-
+>
 `PlayerInputManager` 的 `Player Prefab` 属性，设置的不是一个完整的、可玩的角色，而是一个非常轻量的、只包含基础逻辑的“玩家配置器（Player Configurator）”对象。这个“玩家配置器”对象的脚本，在 `Start()` 时会接管后续流程，比如激活角色选择 UI。当玩家在 UI 中完成所有选择后，“玩家配置器”脚本才会根据玩家的选择，去实例化真正的角色 Prefab，将输入设备交接过去，然后自我销毁。
-
+>
 当然你也可以完全自己手写本地联机功能。
-:::
+
 
 属性中最值得注意的是 Joinning 标签下的属性，它决定了新玩家如何加入游戏：
 - `Join Behavior`
@@ -671,8 +672,9 @@ InputSystem.actions.FindAction("Move");
 
 ## 重绑定
 
-最常用的方法：使用 `PerformInteractiveRebinding`
+常用的方法：使用 `PerformInteractiveRebinding`
 
+示例：
 
 ```csharp
 // 用于管理重新绑定过程的静态变量，确保同一时间只有一个按键在被修改

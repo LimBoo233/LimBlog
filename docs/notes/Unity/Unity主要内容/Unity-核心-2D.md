@@ -420,7 +420,7 @@ public class MyTest : MonoBehaviour
 
 可以通过 Sprite Creator 创建新的精灵。它是一个简单的工具，可以快速创建各种多边形精灵。它的主要作用是制作快速的 2D 游戏原型，用作美术资源的占位符。
 
-在 Project 面板中右键点击，选择 Create > 2D > Sprite，即可创建简单的多边形。
+在 Project 面板中右键，选择 Create > 2D > Sprite，即可创建简单的多边形。
 
 ## `Sprite Mask`
 
@@ -472,7 +472,7 @@ public class MyTest : MonoBehaviour
     1. 摩擦力（Friction）
     2. 弹性（Bounciness）
 
-    要使用 `Physics Material 2D`，你首先需要在项目（Project）窗口中创建一个 `Physics Material 2D` 资源。在 Project 窗口点击鼠标右键 -> Create -> 2D -> Physics Material 2D。
+    要使用 `Physics Material 2D`，你首先需要在项目（Project）窗口中创建一个 `Physics Material 2D` 资源。在 Project 窗口右键 -> Create -> 2D -> Physics Material 2D。
 
     创建并选中这个资源后，你会在 Inspector 窗口看到两个主要的滑块：
     1. `Friction` (摩擦力)
@@ -554,9 +554,58 @@ rb.velocity = new Vector2(5f, 0f);
 
 ## 碰撞器
 
-碰撞器是一个组件，它为游戏对象定义了一个用于物理碰撞的、不可见的形状。如同物体的“物理骨骼”或“力场边界”——它不负责移动，不负责受力，它只做一件事：定义物体的物理边界。
+碰撞器是一个组件，定义游戏物体用于物理碰撞的区域。它不负责移动与受力，只做一件事：定义物体的物理边界。
 
-因此刚体可以通过碰撞器获得的范围信息进行物理计算。
+刚体也可通过碰撞器获得范围信息以计算物理。
+
+物理碰撞回调：
+
+```csharp
+private void OnCollisionEnter2D(Collision2D collision)
+{
+    // 当有其他碰撞器与刚体发生碰撞时调用
+    Debug.Log("碰撞发生: " + collision.gameObject.name);
+}
+
+private void OnCollisionExit2D(Collision2D collision)
+{
+    // 当有其他碰撞器与刚体的碰撞结束时调用
+    Debug.Log("碰撞结束: " + collision.gameObject.name);
+}
+
+private void OnCollisionStay2D(Collision2D collision)
+{
+    // 当有其他碰撞器与刚体持续碰撞时调用
+    Debug.Log("持续碰撞: " + collision.gameObject.name);
+}
+```
+
+触发器检测回调：
+
+```csharp
+private void OnTriggerEnter2D(Collider2D collision)
+{
+    // 当有其他碰撞器进入触发器时调用
+    Debug.Log("触发器进入: " + collision.name);
+}
+
+private void OnTriggerExit2D(Collider2D collision)
+{
+    // 当有其他碰撞器离开触发器时调用
+    Debug.Log("触发器离开: " + collision.name);
+}
+
+private void OnTriggerStay2D(Collider2D collision)
+{
+    // 当有其他碰撞器持续在触发器内时调用
+    Debug.Log("触发器持续: " + collision.name);
+}
+```
+
+鼠标检测：
+
+- 虽然还有检测鼠标点击的回调（ex: `OnMouseDown()`），复杂情况中`Physics2D.Raycast()` 检测点击会更适合，更易控制点击逻辑。
+- 也可利用 `Physics 2D Raycaster` 组件和 `IPointerDownHandler` 等 UI 相关接口，它们处理点击拖动等逻辑时非常简单。
 
 #### `Sphere Collider 2D` 球形碰撞器
 参数说明：
@@ -595,52 +644,10 @@ rb.velocity = new Vector2(5f, 0f);
     - `Polygons`：实心多边形，类似于多边形碰撞器。
 - `Generation Type`：定义组合碰撞器的生成方式。
     - `Synchronous`：同步生成，实时更新碰撞器形状。
-    - `Manual`：手动生成——通过代码或点击下方 `Regenerate Geometry`。子物体位置改变时不会自动更新碰撞器形状。
+    - `Manual`：手动生成——通过代码或选择下方 `Regenerate Geometry`。子物体位置改变时不会自动更新碰撞器形状。
 - `Vertex Distance`：顶点距离，控制生成的多边形顶点之间的距离。值大时会忽略小的棱角，值越小则更准确贴合子碰撞器形状。
 - `Offset Distance`（不常用）：将所有合并后的最终碰撞体轮廓，向外或者向内整体偏移指定的距离。
 
-碰撞检测函数：
-```csharp
-private void OnCollisionEnter2D(Collision2D collision)
-{
-    // 当有其他碰撞器与刚体发生碰撞时调用
-    Debug.Log("碰撞发生: " + collision.gameObject.name);
-}
-
-private void OnCollisionExit2D(Collision2D collision)
-{
-    // 当有其他碰撞器与刚体的碰撞结束时调用
-    Debug.Log("碰撞结束: " + collision.gameObject.name);
-}
-
-private void OnCollisionStay2D(Collision2D collision)
-{
-    // 当有其他碰撞器与刚体持续碰撞时调用
-    Debug.Log("持续碰撞: " + collision.gameObject.name);
-}
-
-
-```
-触发器检测函数：
-```csharp
-private void OnTriggerEnter2D(Collider2D collision)
-{
-    // 当有其他碰撞器进入触发器时调用
-    Debug.Log("触发器进入: " + collision.name);
-}
-
-private void OnTriggerExit2D(Collider2D collision)
-{
-    // 当有其他碰撞器离开触发器时调用
-    Debug.Log("触发器离开: " + collision.name);
-}
-
-private void OnTriggerStay2D(Collider2D collision)
-{
-    // 当有其他碰撞器持续在触发器内时调用
-    Debug.Log("触发器持续: " + collision.name);
-}
-```
 
 ## 物理材质
 
@@ -650,7 +657,7 @@ private void OnTriggerStay2D(Collider2D collision)
 
 物理材质和物体看起来的样子（颜色、纹理）完全无关，只影响物理碰撞时的表现。
 
-在 Project 面板中右键点击，选择 Create > 2D > Physics Material 2D，即可创建一个新的物理材质资源。
+在 Project 面板中右键，选择 Create > 2D > Physics Material 2D，即可创建一个新的物理材质资源。
 
 ::: tip
 在 3D 中的物理材质 `Physics Material` 具有更多属性，可以单独设置滑动摩擦力（Dynamic Friction）和静态摩擦力（Static Friction）。此外，还可以通过 `Combine` 设置当两个带有不同物理材质的物体碰撞时，如何计算它们接触点最终的摩擦力和弹性。
@@ -747,16 +754,16 @@ Sprite Shape 系统主要由两部分构成：
 
 官方文档：[Sprite Shape](https://docs.unity3d.com/Packages/com.unity.2d.spriteshape@13.0/manual/index.html)
 
-::: tip Sprite Shape 精灵形状的图片导入设置
-
+> [!TIP] Sprite Shape 精灵形状的图片导入设置
+>
 导入用于 Sprite Shape 的图片时，请使用以下属性设置，以确保图片可以兼容 Sprite Shape：
-1. `Texture Type`：设置为 `Sprite (2D and UI)`。其他类型不支持 Sprite Shape。
-2. `Sprite Mode`：如果图片只包含一个精灵，设置为 `Single`。
-3. `Mesh Type`：必须设置为 `Full Rect`，否则无法用于 Sprite Shape。
-:::
+> 1. `Texture Type`：设置为 `Sprite (2D and UI)`。其他类型不支持 Sprite Shape。
+> 2. `Sprite Mode`：如果图片只包含一个精灵，设置为 `Single`。
+> 3. `Mesh Type`：必须设置为 `Full Rect`，否则无法用于 Sprite Shape。
 
 #### `Sprite Shape Profile` 精灵形状配置文件
-在 Project 面板中右键点击，选择 Create -> 2D -> Sprite Shape Profile 即可创建一个新的精灵形状配置文件。
+
+在 Project 面板中右键，选择 Create -> 2D -> Sprite Shape Profile 即可创建一个新的精灵形状配置文件。
 
 以下为 `Sprite Shape` Profile 主要属性说明：
 
@@ -775,18 +782,17 @@ Sprite Shape 系统主要由两部分构成：
 | `Corners`<br>拐角 | - |
 | `All Corner options`<br>所有拐角选项 | 为各个拐角分配特定精灵。|
 
-::: tip
+> [!TIP}
 现在`Sprite Shape Profile`资产已经不区分 Open Shape 和 Closed Shape 了。如果要创建一个封闭的形状，可以在 `Sprite Shape Controller` 组件中关闭 `Is Open Ended` 选项。
-:::
 
 #### `Sprite Shape Controller` 精灵形状控制器
+
 当将 `Sprite Shape Profile` 拖入场景时，`Sprite Shape Controller` 组件会自动附加到创建的 `GameObject` 上。可以通过 `Controller` 的设置编辑 `Sprite Shape` 轮廓的形状。
 
-::: info 
+> [!NOTE]
 该游戏对象上还有一个 `Sprite Shape Renderer` 组件，它负责渲染 `Sprite Shape` 的外观。参数比较简单易懂，不赘述。
-:::
 
-以下为 Sprite Shape Controller 主要属性说明：
+`Sprite Shape Controller` 主要属性：
 
 | 属性（Property） | 功能说明（Function） |
 |------------------|-------------------------------------------------------------|

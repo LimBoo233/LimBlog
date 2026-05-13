@@ -101,18 +101,9 @@ html {
    4. 分割线美化
    ============================================ */
 .vp-doc hr {
-  margin: 18px 0;
-  border: none;
-  height: 1px;
-  background: linear-gradient(
-    90deg,
-    transparent,
-    rgba(var(--vp-c-brand-1-rgb, 62, 175, 124), 0.38),
-    transparent
-  );
-  border-radius: 1px;
-  position: relative;
-  overflow: visible;
+  margin: var(--vp-divider-margin) 0;
+  border: 0;
+  border-top: 1px solid var(--vp-divider-color);
 }
 
 /* ============================================
@@ -212,6 +203,25 @@ html {
 }
 
 /* ============================================
+   6. 列表样式
+   ============================================ */
+.vp-doc ul,
+.vp-doc ol {
+  padding-left: var(--vp-list-indent);
+}
+
+.vp-doc ul ul,
+.vp-doc ul ol,
+.vp-doc ol ul,
+.vp-doc ol ol {
+  padding-left: var(--vp-list-nested-indent);
+}
+
+.vp-doc li::marker {
+  color: var(--vp-list-marker-color);
+}
+
+/* ============================================
    6. Labs 专区组件
    ============================================ */
 /* ============================================
@@ -268,6 +278,11 @@ html {
     width: var(--scrollbar-width-code-mobile);
     height: var(--scrollbar-width-code-mobile);
   }
+
+  .vp-doc ul,
+  .vp-doc ol {
+    padding-left: var(--vp-list-indent-mobile);
+  }
 }
 
 /* 8.2 移动端布局调整 */
@@ -277,8 +292,7 @@ html {
   }
   
   .vp-doc hr {
-    margin: 12px 0;
-    height: 1px;
+    margin: calc(var(--vp-divider-margin) * 0.72) 0;
   }
 }
 

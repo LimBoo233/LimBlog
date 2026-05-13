@@ -19,7 +19,7 @@ v22.16.0
 
 ::: code-group
 
-```npm
+```bash
 npm install -g @openai/codex
 ```
 
@@ -34,7 +34,7 @@ brew install --cask codex
 
 顺便一提，指令 `/quit` 退出。
 
-```shell
+```bash
 ╭──────────────────────────────────────────────────╮
 │ >_ OpenAI Codex (v0.77.0)                        │
 │                                                  │
@@ -50,6 +50,17 @@ brew install --cask codex
   100% context left
 ```
 
+## 查看账号状态/登出
+
+命令：
+
+```bash
+/status
+```
+
+```bash
+/log out
+```
 ## 选择模型
 
 **指令：`/model`**

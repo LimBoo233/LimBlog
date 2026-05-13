@@ -26,4 +26,4 @@ outline: false
     - [ ] Mirror
 - [ ] 阅读 Celeste 技术博客
 - [ ] 地图随机生成
-- [ ] KCC
+- [X] KCC

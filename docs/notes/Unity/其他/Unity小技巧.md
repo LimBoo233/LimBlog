@@ -142,6 +142,53 @@ private void OnValidate()
 #endif
 ```
 
+## 通过代码修改 shader
+
+- Renderer：把物体提交给渲染系
+- Material：保存具体参数
+- Shader：计算显示效果的规则
+
+修改材质：
+
+1. 获取 `Render` 组件
+2. 获取材质
+	- `render.material`：会给当前物体创建一份单独材质实例
+	- `render.sharedMaterial`：直接修改项目里的共享材质资源
+3. 修改 `material` 属性
+
+Ex:
+
+```cs
+private static readonly int BaseColor = Shader.PropertyToID("_BaseColor");
+
+[SerializeField] private Renderer targetRenderer;
+
+private Material _material;
+
+private void Awake()
+{
+	_material = targetRenderer.material;
+}
+
+private void Start()
+{
+	_material.SetColor(BaseColor, Color.red);
+}
+```
+
+如果多个物体公用一个材质，但只想改一个物体，可使用 `MaterialPropertyBlock` 在不复制材的情况下，单独修改某个 Renderer 的参数。
+
+
+
+
+有些 Shader 功能需要开关控制：
+
+```cs
+material.EnableKeyword("_EMISSION");
+material.DisableKeyword("_EMISSION");
+```
+
+
 ## 大幅减少进入播放模式时的加载时间
 
 > [!CAUTION]
@@ -170,7 +217,7 @@ private void OnValidate()
 ## 不受帧率影响的阻尼
 
 > [!TIP]
-> 感觉还是直接使用 DOTween 更好。
+> 动画相关还是直接使用 DOTween 更好。
 
 ```cs
 Func<float, float> func = (float time) => 1 - Mathf.Exp(-time * Time.deltaTime);
@@ -180,6 +227,8 @@ postion = Vector3.Lerp(position, target, t)
 ```
 
 公式的原理可以类比物理中**半衰期**的概念。
+
+更数学的理解是当连续形式近似 `dv/dt = -k v` 时，通常就是帧率无关。
 
 ## `Instantiate<Component>`
 
