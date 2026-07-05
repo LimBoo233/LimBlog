@@ -2,9 +2,11 @@
 ## Odin Inspector
 
 - `Title`: 标题
+- `TitleGroup`：可划分组的标题
 - `ReadOnly`：限制从 Inspector 中修改值，但仍可见
 - `LabelText`：替换在 Inspector 中显示的名称，可设置图标 [SdfIconType | API](https://odininspector.com/documentation/sirenix.odininspector.sdficontype)
 - `GUIColor`：修改颜色，参数可传入 RGB ，字符串和 `nameof(返回Color的方法)`
+- `ColorUsage(true, true)`：可在 Inspector 修改颜色的透明度和强度
 - `Required`：不可为 null，参数为警告信息和警告类型（ex: Error, Warning）
 - `AssetsOnly`：只可赋值 Assets 中的资源，不可用场景中的
 - `Searchable`：可在集合中搜索
@@ -25,7 +27,8 @@
 按钮（方法特性）：
 
 - `Button`：会在 Inspector 上生成按钮，很多重载 [ButtonAttribute | API](https://odininspector.com/documentation/sirenix.odininspector.buttonattribute)
-- `ButtonGroup`：排列按钮，可被 `FoldoutGroup` 包裹。会覆盖 Button 中的 `ButtonSize`
+- `ButtonGroup[]`：排列按钮，可被 `FoldoutGroup` 包裹。会覆盖 Button 中的 `ButtonSize`
+- `ResponsiveButtonGroup`：流式自动换行，`UniformLayout = true` 让所有按钮等宽对齐
 
 属性：
 

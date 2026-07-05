@@ -221,14 +221,14 @@ Vector3Int cellPosition = tilemap.WorldToCell(worldPosition);
 
 `Animated Tile` 核心属性：
 
-| 属性 (Property)	| 功能说明 (Function) |
-|------------------|---------------------|
-| `Number of Animated Sprites`	| 动画包含的总帧数，只读不用修改。 |
-| `Animated Sprites`	| 存放动画序列帧的列表。你需要按照播放顺序将 `Sprite` 拖拽到这里。 |
-| `Minimum Speed`	| 动画播放的最小速度，单位是“帧/秒”。 |
-| `Maximum Speed`	| 动画播放的最大速度，单位是“帧/秒”。每个瓦片的实际播放速度会是这个范围内的随机值。 |
-| `Animation Start Time`	| 动画开始播放的时间。`Sync` 表示所有瓦片同步播放，`Random` 表示每个瓦片随机一个起始时间。 |
-| `Collider Type`	| 该瓦片的碰撞器类型 (`None`, `Sprite`, `Grid`)。 |
+| 属性 (Property)                | 功能说明 (Function)                                      |
+| ---------------------------- | ---------------------------------------------------- |
+| `Number of Animated Sprites` | 动画包含的总帧数，只读不用修改。                                     |
+| `Animated Sprites`           | 存放动画序列帧的列表。你需要按照播放顺序将 `Sprite` 拖拽到这里。                |
+| `Minimum Speed`              | 动画播放的最小速度，单位是“帧/秒”。                                  |
+| `Maximum Speed`              | 动画播放的最大速度，单位是“帧/秒”。每个瓦片的实际播放速度会是这个范围内的随机值。           |
+| `Animation Start Time`       | 动画开始播放的时间。`Sync` 表示所有瓦片同步播放，`Random` 表示每个瓦片随机一个起始时间。 |
+| `Collider Type`              | 该瓦片的碰撞器类型 (`None`, `Sprite`, `Grid`)。                |
 
 
 #### `Rule Override Tile`

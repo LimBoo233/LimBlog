@@ -82,17 +82,10 @@ NES 需要手动开启。
 " 完整指令列表：https://jb.gg/h38q75
 " 更多配置示例：https://jb.gg/share-ideavimrc
 
-" .ideavimrc 是 ideavim 插件的配置文件，语法与原始 .vimrc 相同。
-" 完整指令列表：https://jb.gg/h38q75
-" 更多配置示例：https://jb.gg/share-ideavimrc
-
 " 使用系统剪贴板完成复制/剪切/粘贴。
 set clipboard=unnamedplus
 let mapleader = " "
 " set timeoutlen=300
-
-" space + w 保存文件
-noremap <leader>w :w<CR>
 
 " -- 推荐选项 --
 " 光标上下保留数行上下文，避免鼠标靠近窗口边缘时跳动。
@@ -105,9 +98,9 @@ map q gq
 " --- Enable IdeaVim plugins https://jb.gg/ideavim-plugins
 
 " 高亮最近复制的文本
-plug 'machakann/vim-highlightedyank'
+" plug 'machakann/vim-highlightedyank'
 " 注释插件， gc 和 gcc 等
-plug 'tpope/vim-commentary'
+set commentary
 " 开启 easymotion 扩展，已被 flash 插件替代，以下配置仅供参考。
 " plug 'easymotion/vim-easymotion'
 " <leader>w 触发单词跳转 (类似 flash 的基础跳转)
@@ -120,15 +113,19 @@ plug 'tpope/vim-commentary'
 
 " flash 插件是自动开启的，此处不再手动配置
 " set flash
-" nmap s <Action>(flash.search)
-" xmap s <Action>(flash.search)
+nmap s <Action>(flash.search)
+xmap s <Action>(flash.search)
 
 " 开启 whichkey 插件
 " set which-key
 
-" 开启 nerdtree 插件，可以在文件树通过 jk 移动，o (open) . p/p (parent/根目录) 以及 m (menu) 等快捷键操作。
+" 开启 nerdtree 插件，可以在文件树通过 jk 移动，o (open) . p/p (parent/根目录) 以及 m (menu), n/N 等快捷键操作。
 " 推荐修改 ide 的快捷键，将 ctrl + j 和 ctrl + k 映射给编辑器操作的上和下
 set nerdtree
+
+" 开启 argtextobj 扩展，提供文本对象 a: 和 i:，可以用来选取函数参数、逗号分隔的列表等
+" 例如：cia 可以删除当前光标所在的参数，并进入插入模式
+set argtextobj
 
 set showcmd
 " 启用增量搜索，实时高亮匹配。
@@ -169,22 +166,55 @@ nmap <leader>v <Action>(SelectInProjectView)
 " 快捷键映射
 sethandler <c-e> a:ide
 sethandler <c-s> a:ide
+sethandler <c-q> a:ide
 " vim 中跳转定义为 gd
 " sethandler <c-b> a:ide
 sethandler <c-k> a:ide
+
 " vim中功能：向下移动整页
 sethandler <c-f> a:ide
 " vim中功能：切换分屏/删除单词
 sethandler <c-w> a:ide
 
-" lazyvim 风格
+" 查看引用 (Find Usages)
+nmap gr <Action>(ShowUsages)
+
+
+" ---lazyvim 风格 ---
+" 使用 Leader 键 + q 关闭当前文件窗口
+nmap <leader>q :q<CR>
+
 nmap <leader><leader> <Action>(SearchEverywhere)
+
 " [b : 切换到上一个 buffer (前一个标签页)
 nmap [b <Action>(PreviousTab)
 " ]b : 切换到下一个 buffer (后一个标签页)
 nmap ]b <Action>(NextTab)
+
+" Shift + h 切换到左边的标签页 (上一个 Buffer)
+nmap H <Action>(PreviousTab)
+" Shift + l 切换到右边的标签页 (下一个 Buffer)
+nmap L <Action>(NextTab)
+
 " ctrl + h: 跳到左边窗口
 nnoremap <c-h> <c-w>h
 " ctrl + l: 跳到右边窗口
 nnoremap <c-l> <c-w>l
+" ctrl + j: 跳到下边窗口
+" nnoremap <c-j> <c-w>j
+" ctrl + k: 跳到上边窗口
+" nnoremap <c-k> <c-w>k
+
+" Code Rename (变量安全重命名，等同于 shift + F6)
+nnoremap <leader>cr :action RenameElement<CR>
+" <leader>sr : Search Replace (项目全局替换)
+nnoremap <leader>sr :action ReplaceInPath<CR>
+" <leader>sR : Search Replace in current buffer (当前文件替换)
+nnoremap <leader>sR :action Replace<CR>
+" <leader>wd 关闭当前整个分屏
+nnoremap <leader>wd :action Unsplit<CR>
+" <leader>wo 只保留当前分屏，关掉其他所有分屏
+nnoremap <leader>wo :action UnsplitAll<CR>
+" <leader>bo 只保留当前标签页，关闭同分屏下的其他所有标签页 (Buffer Only)
+nnoremap <leader>bo :action CloseAllEditorsButActive<CR
 ```

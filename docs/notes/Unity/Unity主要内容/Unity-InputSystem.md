@@ -322,6 +322,7 @@ private void OnEnable()
     // 启用 "Player" Action Map
     // 这里的 .Player 与你在编辑器里创建的 Action Map 名称完全对应
     playerControls.Player.Enable();
+    // Enable 全部：playerControls.Enable();
 }
 
 private void OnDisable()

@@ -338,3 +338,44 @@ _animator.MatchTarget(
 	- 在 MMD4Mecanim 组件中：
 	- 将 Physics Engine 改为 Bullet Physics（优化物理计算）。
 	- 勾选 Generate Colliders，使布料、头发等具有物理效果。
+
+## 获取鼠标点击位置
+
+旧输入系统：
+
+```cs
+Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);  
+  
+if (Physics.Raycast(ray, out RaycastHit hit))  
+{  
+	Debug.Log(hit.collider.name);  
+}
+```
+
+新输入系统：
+
+```cs
+// 直接从设备读取值
+Vector2 mousePos = Mouse.current.position.ReadValue();
+// Vector2 mousePos = _actions.Gameplay.Point.ReadValue<Vector2>();
+
+Ray ray = Camera.main.ScreenPointToRay(mousePos);
+
+if (Physics.Raycast(ray, out RaycastHit hit))
+{
+    // ..
+}
+```
+
+如果是在已知平面上检测，甚至可以不需要 `Collider`：
+
+```cs
+Plane plane = new Plane(Vector3.up, Vector3.zero);
+
+Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+
+if (plane.Raycast(ray, out float distance))
+{
+    Vector3 worldPos = ray.GetPoint(distance);
+}
+```
