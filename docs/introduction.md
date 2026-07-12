@@ -22,8 +22,14 @@ outline: false
     - [ ] Odin Inspector 
 - [ ] 网络
     - [ ] Netcode for GameObjects
+    - [ ] Unity WebSocket
     - [ ] .NET SOCKETS
     - [ ] Mirror
 - [ ] 阅读 Celeste 技术博客
 - [ ] 地图随机生成
 - [X] KCC
+- [ ] 热更新
+  - [ ] HybridCLR
+  - [ ] YooAsset
+  - [ ] Addressables
+- [ ] 自动化打包：Jenkins

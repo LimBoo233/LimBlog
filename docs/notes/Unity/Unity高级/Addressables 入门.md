@@ -1,11 +1,13 @@
 
-# Addressables 快速实战
+# Addressables 入门
 
 > 参考教程：[How to use Addressables FASTER Loading FREE Memory SMALL Download](https://www.youtube.com/watch?v=C6i_JiRoIfk)
 
 Addressables 提供了更多最资源加载的控制权，按需在后台加载，易获得加载时间。
 
 任何被脚本直接应用的对象，都会直接被加载到内存中。
+
+> 不包含热更部分。
 
 ## 安装
 
