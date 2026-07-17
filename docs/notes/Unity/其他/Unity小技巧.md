@@ -63,6 +63,45 @@ public class Logger
 
 仅当项目定义了`DEBUG`符号时（Editor 和 Development Build 也有，Release Build 中无）：`Logger.Log("xxx")`这行调用会被正常编译并执行，否则会删除一切对该方法的调用（方法本身还是会被编译）。
 
+##  线程安全，无 GC 的数组
+
+`NativeArray` 是 Unity 为高性能场景（特别是与 `Jobs System` 和 `Burst Compiler` 搭配）提供的一种特殊数组类型[](https://gamedev.stackexchange.com/questions/174953/when-to-use-nativearray-over-list-or-array?answertab=oldest)。它的核心是直接操作**非托管内存**（Native Memory），而不是 C# 的托管内存。
+
+它主要用于需要极高运行效率、避免GC（垃圾回收）和实现多线程安全的场景。
+
+| 特性            | `NativeArray`                                                                                                                       | 普通 C# 数组 (`T[]`)                         |
+| ------------- | ----------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------- |
+| **内存位置**      | **非托管内存** (Native Memory)                                                                                                           | **托管内存**  Managed Memory)                |
+| **GC影响**      | **无**。不会触发垃圾回收，性能更稳定                                                                                                                | **有**。会加重GC负担，可能导致卡顿                     |
+| **元素类型**      | 仅限 **非托管**(unmanaged) 的值类型，如 `int`, `float`, `struct`                                                                               | 可以是任何类型（包括引用类型）                          |
+| **与Native交互** | **零成本**。可直接与C++等本地代码共享数据，无需拷贝                                                                                                       | **有成本**。与本地代码交互时需要“编组”(Marshalling) 复制数据 |
+| **使用场景**      | 高性能计算、多线程、与本地插件交互[](https://gamedev.stackexchange.com/questions/174953/when-to-use-nativearray-over-list-or-array?answertab=oldest) | 通用场景                                     |
+| **安全性**       | 有安全检查，防止数据竞争[](https://docs.unity3d.com/6000.2/Documentation/Manual/job-system-native-container.html#safety-system)                 | 非线程安全，需自行处理同步                            |
+
+> [!WARNING]
+> `NativeArraty` 的高效体现在操作大数据集上，小数据集还是普通数组更快。
+
+```cs
+using Unity.Collections;
+
+// 1. 创建
+// Allocator.Temp: 最快，用于单帧或更短的生命周期[reference:20]
+// Allocator.TempJob: 较快，用于生命周期在4帧内的线程安全分配[reference:21]
+// Allocator.Persistent: 最慢，可长期存在，用于整个应用生命周期[reference:22]
+NativeArray<float> results = new NativeArray<float>(10, Allocator.TempJob);
+
+// 2. 使用 (用法和普通数组类似)
+for (int i = 0; i < results.Length; i++)
+{
+    results[i] = i * 1.0f;
+}
+
+// 3. 释放 (必须手动释放!)
+results.Dispose();
+```
+
+## Unity Job System
+
 ## `GetEntityId()`
 
 `GetEntityId()`是 Unity 6+ 中推荐用于获取对象唯一标识符的方法，它取代了旧的`GetInstanceID()`（后者已被标记为 Obsolete 并将在后续版本移除）。
@@ -281,7 +320,7 @@ _animator.MatchTarget(
 
 如果你通过播放动画或者代码，强行改变了这个静态碰撞体的 Transform（比如挥舞巨剑），物理引擎就会因为发现“墙居然动了”而引发大地震——它**被迫在这一帧重新计算并重建整个场景的静态空间树**。如果你频繁挥剑，CPU 就会出现极大的开销，导致游戏严重卡顿。
 
-当你给巨剑加上 Rigidbody 时，你就等于向物理引擎声明：这是一个**动态物体 (Dynamic Object)**，它随时都会移动，把它放进动态物体的处理列表里。这样一来，物理引擎就不会因为它的移动而重新计算整个场景了，性能开销骤降。+
+当你给巨剑加上 Rigidbody 时，你就等于向物理引擎声明：这是一个**动态物体 (Dynamic Object)**，它随时都会移动，把它放进动态物体的处理列表里。这样一来，物理引擎就不会因为它的移动而重新计算整个场景了，性能开销骤降。
 
 ## 在Untiy3d中导入pmx类型的模型
 

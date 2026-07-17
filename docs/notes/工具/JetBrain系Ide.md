@@ -216,5 +216,5 @@ nnoremap <leader>wd :action Unsplit<CR>
 " <leader>wo 只保留当前分屏，关掉其他所有分屏
 nnoremap <leader>wo :action UnsplitAll<CR>
 " <leader>bo 只保留当前标签页，关闭同分屏下的其他所有标签页 (Buffer Only)
-nnoremap <leader>bo :action CloseAllEditorsButActive<CR
+nnoremap <leader>bo :action CloseAllEditorsButActive<CR>
 ```
