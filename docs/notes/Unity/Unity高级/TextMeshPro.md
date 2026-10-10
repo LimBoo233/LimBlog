@@ -121,13 +121,11 @@ void LateUpdate() {
 
 我们可以将一个字体文件（ex: `.ttf`）转化为 TMP 所需的字体资源文件（本质 Scriptable Object）。
 
-简单点的方法，你直接右键字体资源文件，Create -> TextMeshPro -> Create Font Asset，即可创建对应 Scriptable Object。
+简单点的方法，你直接右键字体资源文件，Create -> TextMeshPro -> Create Font Asset，即可创建对应 Scriptable Object。**但该方法创建的中文汉字数量极其稀少，实际没法用。**
 
 更细致，定制化字体资源：打开创建器，点击顶部菜单栏：Window -> TextMeshPro -> Font Asset Creator。
 
 ### 字体 SO 参数
-
-一般情况下，你都不需要手动去修改这些设置。
 
 **Face Info**
 - Update Atlas Texture：更新纹理图集
@@ -174,6 +172,8 @@ void LateUpdate() {
 > 你可以创建一个资源变体 (Create -> TMP -> Font Asset Variant) 并修改 Source Font File 来快速创建一个与先前字体配置相同的回滚字体。
 ### Font Asset Creator
 
+> 一年后的补充：实际上 Atlas Resolution 既会影响收录的汉字数量，也会影响字体的分辨率。如果字体集数量很少（例如英文字符），那 1024 x 1024 的 Atlas Resolution 完全够用，而且还能保证很清晰。但如果是中文字体，用 1024 x 1024 不仅汉字收录很少，字也很模糊。**所以手动设置一个常用汉字集很重要**，能保证  Atlas Resolution  在不是很大的情况下字体清晰且够用。顺便一提，**网上下载的汉字集通常不包含标点符号**。
+
 有时用其创建字体图集，有时用其更新字体纹理图集。
 
 - Sampling Point Size：采样点大小，auto sizeiing 会尝试尽可能填满
@@ -182,8 +182,6 @@ void LateUpdate() {
 	- Fast：打包速度优先，测试考虑使用
 	- Optimum：最佳布局优先，确定使用改字体时使用
 - Atlas Resolution：图集分辨率
-	- ACSII 字符：512 x 512 即可
-	- 中文字体：1024 x 1024 或更高，用于移动设备时最好不要超过 2024
 - Charater Set： 字符集
 	- 前几个字符集主要包括英文+字符+数字
 	- Custom Range：输入数字（十进制）指定包含的 Unicode 范围（ex: `20-34, 2340`）

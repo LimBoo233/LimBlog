@@ -440,11 +440,12 @@ public async UniTaskVoid FireAndForgetMethod()
 
 public void Caller()
 {
+	// 其实 Forget() 可以接受一个回调函数用于捕获异常（e => {...}）
     FireAndForgetMethod().Forget();
 }
 ```
 
-UniTask 也有`Forget`方法，与`UniTaskVoid`类似且效果相同。如果您完全不需要使用`await`，那么使用`UniTaskVoid`会更高效。
+UniTask 也有`Forget`方法，与`UniTaskVoid`类似且效果相同。如果完全不需要 `await`，那么使用`UniTaskVoid`会更高效。
 
 要使用注册到事件的异步 lambda，请不要使用`async void`。您可以使用`UniTask.Action` 或 `UniTask.UnityAction`来代替，这两者都通过`async UniTaskVoid` lambda 来创建委托。
 

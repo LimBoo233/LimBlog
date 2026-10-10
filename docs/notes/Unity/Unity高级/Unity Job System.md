@@ -18,7 +18,7 @@ Unity 的作业系统允许您创建多线程代码，从而让应用程序使�
 仅主线程可以调度并完成作业。
 
 - [IJob](https://docs.unity3d.com/cn/current/ScriptReference/Unity.Jobs.IJob.html)：在作业线程上运行单个任务。
-- [IJobParallelFor](https://docs.unity3d.com/cn/current/ScriptReference/Unity.Jobs.IJobParallelFor.html)：并行运行单个任务。并行运行的每个工作线程都有一个排他性的索引，用于安全访问工作线程之间共享的数据。
+- [IJobParallelFor](https://docs.unity3d.com/cn/current/ScriptReference/Unity.Jobs.IJobParallelFor.html)：自动将任务拆分给多个 worker，多线程并行执行。运行的每个工作线程都有一个排他性的索引，用于安全访问作业线程之间共享的数据。
 - [IJobParallelForTransform](https://docs.unity3d.com/cn/current/ScriptReference/Jobs.IJobParallelForTransform.html)：并行运行单个任务。并行运行的每个工作线程都有一个来自变换层级的排他性变换可供操作。
 - [IJobFor](https://docs.unity3d.com/cn/current/ScriptReference/Unity.Jobs.IJobFor.html)：与 `IJobParallelFor` 相同，但可以让您调度作业以避免并行运行。
 
@@ -54,3 +54,130 @@ Unity 运行时，作业系统会创建被调度作业数据的副本，从而�
 > 可以使用[性能分析器](https://docs.unity3d.com/cn/current/Manual/Profiler.html)查看 Unity 等待作业完成的位置。主线程上的标记 `WaitForJobGroupID` 表示了位置。此标记意味着您可能在某处引入了应处理的数据依赖项。请查找 `JobHandle.Complete` 来搜查让主线程强制等待的数据依赖项的位置。
 
 作业启动后，该作业的工作线程就会致力于完成该作业，之后才会运行其他作业。所以如果有长作业一直占据一个线程，就困难延后后续主要任务的执行。因此，最好将长时间运行的作业拆分为[相互依赖](https://docs.unity3d.com/cn/current/Manual/job-system-job-dependencies.html)的小型作业。
+
+**场景1**：每帧对 50,000 个敌人/粒子做简单位置更新 + 距离计算。
+
+::: code-group
+
+```csharp
+using Unity.Jobs;
+using Unity.Collections;
+using Unity.Burst;
+using Unity.Mathematics;   // 推荐用 math 代替 Vector3
+
+[BurstCompile]
+public struct MoveJob : IJobParallelFor
+{
+    public NativeArray<float3> positions;   // 输入输出
+    public NativeArray<float> speeds;
+
+    public float deltaTime;
+
+    public void Execute(int index)
+    {
+        // 简单移动逻辑（可以写很复杂的计算）
+        positions[index] += new float3(0, 0, 1) * speeds[index] * deltaTime;
+
+        // 示例：边界检查
+        if (positions[index].z > 100f)
+            positions[index] = new float3(positions[index].x, positions[index].y, 0);
+    }
+}
+```
+
+```csharp
+public class JobTest : MonoBehaviour
+{
+    private NativeArray<float3> positions;
+    private NativeArray<float> speeds;
+    private JobHandle currentHandle;
+
+    void Start()
+    {
+        int count = 50000;
+
+        positions = new NativeArray<float3>(count, Allocator.Persistent);
+        speeds = new NativeArray<float>(count, Allocator.Persistent);
+
+        // 初始化数据
+        for (int i = 0; i < count; i++)
+        {
+            positions[i] = new float3(i % 100, 0, i / 100);
+            speeds[i] = 5f + (i % 10);
+        }
+    }
+
+    void Update()
+    {
+        // 1. 确保上一个 Job 完成
+        currentHandle.Complete();
+
+        // 2. 创建 Job
+        var job = new MoveJob
+        {
+            positions = positions,
+            speeds = speeds,
+            deltaTime = Time.deltaTime
+        };
+
+        // 3. Schedule 并行执行
+        currentHandle = job.Schedule(positions.Length, 64);  // 64 是 batchSize，调 32~128 通常最佳
+    }
+
+    void LateUpdate()
+    {
+        // 推荐在 LateUpdate Complete，保证渲染前数据是最新的
+        currentHandle.Complete();
+
+        // 这里可以把 positions 数据写回 Transform 或其他（但要小心性能）
+    }
+
+    void OnDestroy()
+    {
+        currentHandle.Complete();        // 防止内存泄漏
+        positions.Dispose();
+        speeds.Dispose();
+    }
+}
+```
+
+:::
+
+**场景2**：如你有两个 Job，先计算速度，再移动位置。
+
+多个依赖可以用 `JobHandle.CombineDependencies` 合并。
+
+```csharp
+public struct CalculateSpeedJob : IJobParallelFor { ... }
+
+public struct MoveJob : IJobParallelFor { ... }
+
+void Update()
+{
+    currentHandle.Complete();
+
+    var speedJob = new CalculateSpeedJob { ... };
+    JobHandle speedHandle = speedJob.Schedule(count, 64);
+
+    var moveJob = new MoveJob
+    {
+        positions = positions,
+        speeds = speeds,
+        deltaTime = Time.deltaTime
+    };
+
+    // 建立依赖：moveJob 要等 speedJob 完成
+    currentHandle = moveJob.Schedule(speedHandle, count, 64);
+}
+```
+
+## 其他
+
+- `Allocator`：用 `Persistent`（跨帧），`TempJob`（单帧内用完）。
+- `batchSize`：32~128 通常最好，根据数据量调。
+- 不要在 Job 里访问：`GameObject`、`Transform`、静态变量、`List`/`Dictionary` 等。
+- 数据准备：主线程把数据拷到 `NativeArray`，Job 里算完再拷回来（或直接用 Native）。
+- 性能查看：Deep Profile + Job System 模块看 Worker Threads。
+- 常见模式：
+    - 每帧 `Schedule` + `LateUpdate Complete`。
+    - 长时间 Job 用 `Schedule` 后 `CompleteAsync()`（配合 UniTask/Awaitable）。

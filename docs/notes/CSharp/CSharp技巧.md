@@ -399,6 +399,10 @@ List<string> keysToLoad = new()
 - 使用结构体
 - DOD（面向数据设计） 与 SoA
 
+## `ArrayPool<T>`
+
+**coming soon....**
+
 ## 少用继承
 
 **coming soon....**
