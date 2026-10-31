@@ -45,3 +45,43 @@
 .dark .VPNavScreen {
   background: var(--vp-nav-bg-color, rgba(27, 27, 27, 0.95)) !important;
 }
+
+/* Use the same frosted glass treatment as the desktop sidebar. */
+@media (min-width: 960px) {
+  /* Reading pages use the same header geometry as the home page. */
+  .VPNav .VPNavBar.has-sidebar .wrapper {
+    padding: 0 32px;
+  }
+
+  .VPNav .VPNavBar.has-sidebar .container {
+    max-width: calc(var(--vp-layout-max-width) - 64px);
+  }
+
+  .VPNav .VPNavBar.has-sidebar .container > .title {
+    position: static;
+    width: auto;
+    height: calc(var(--vp-nav-height) - 1px);
+    padding: 0;
+  }
+
+  .VPNav .VPNavBar.has-sidebar .container > .content {
+    padding: 0;
+  }
+
+  .VPNav .VPNavBar.has-sidebar .divider {
+    padding-left: 0;
+  }
+
+  .VPNav,
+  .dark .VPNav {
+    background-color: color-mix(in srgb, var(--vp-c-bg) 80%, transparent) !important;
+    -webkit-backdrop-filter: blur(24px) saturate(150%);
+    backdrop-filter: blur(24px) saturate(150%);
+    border-bottom-color: color-mix(in srgb, var(--vp-c-text-1) 10%, transparent);
+  }
+
+  /* Keep the default theme's inner background from hiding the glass. */
+  .VPNavBar .content-body {
+    background-color: transparent !important;
+  }
+}

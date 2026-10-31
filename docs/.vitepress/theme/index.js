@@ -6,6 +6,7 @@ import { h, onMounted, watch, nextTick } from 'vue'
 import BackgroundToggle from './components/BackgroundToggle.vue'
 import ArticleMetadata from "./components/ArticleMetadata.vue"
 import ThemePaletteSwitch from './components/ThemePaletteSwitch.vue'
+import SidebarToggle from './components/SidebarToggle.vue'
 
 // 插件
 import 'virtual:group-icons.css'
@@ -24,6 +25,7 @@ export default {
   ...DefaultTheme,
   Layout: () => {
     return h(DefaultTheme.Layout, null, {
+      'layout-bottom': () => h(SidebarToggle),
       // 在导航栏右侧内容区域添加背景切换按钮
       'nav-bar-content-after': () => h(BackgroundToggle),
     })

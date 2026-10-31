@@ -3,6 +3,13 @@
    ============================================ */
 
 :root {
+  /* Shared translucent surfaces for profile and Labs cards. */
+  --vp-card-bg: color-mix(in srgb, var(--vp-c-bg-soft) 80%, transparent);
+  --vp-card-bg-hover: color-mix(in srgb, var(--vp-c-bg-soft) 20%, transparent);
+
+  /* Serif headings with Chinese system-font fallbacks. */
+  --vp-font-family-heading: Georgia, 'Noto Serif SC', 'Source Han Serif SC', 'Songti SC', 'STSong', 'SimSun', serif;
+
   /* 代码字体 */
   --vp-font-family-mono: 'JetBrains Mono', 'Fira Code','Consolas', 'Monaco', 'Courier New', monospace;
 

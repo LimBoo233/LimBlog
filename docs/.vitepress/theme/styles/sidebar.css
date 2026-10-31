@@ -1,0 +1,14 @@
+/* Match the default theme's persistent desktop sidebar breakpoint. */
+@media (min-width: 960px) {
+  .VPSidebar {
+    --vp-sidebar-bg-color: color-mix(in srgb, var(--vp-c-bg-alt) 60%, transparent);
+    -webkit-backdrop-filter: blur(24px) saturate(150%);
+    backdrop-filter: blur(24px) saturate(150%);
+    border-right: 1px solid color-mix(in srgb, var(--vp-c-text-1) 10%, transparent);
+  }
+
+  /* Avoid layering a second background over the sidebar below the navbar. */
+  .VPSidebar .curtain {
+    background-color: transparent;
+  }
+}

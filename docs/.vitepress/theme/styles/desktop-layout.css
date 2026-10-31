@@ -1,0 +1,82 @@
+.desktop-sidebar-rail {
+  display: none;
+}
+
+/* Keep the reading layout anchored to the viewport on wide screens. */
+@media (min-width: 960px) {
+  :root {
+    --vp-sidebar-width: 280px;
+    --vp-sidebar-rail-width: 40px;
+    --vp-reading-sidebar-width: calc(var(--vp-sidebar-width) + var(--vp-sidebar-rail-width));
+  }
+
+  /* Override the default theme's expanding gutter above 1440px. */
+  .VPSidebar.VPSidebar {
+    left: var(--vp-sidebar-rail-width);
+    width: var(--vp-sidebar-width);
+    padding-left: 48px;
+    padding-right: 24px;
+  }
+
+  .VPSidebar .curtain {
+    margin-left: -48px;
+    margin-right: -24px;
+  }
+
+  .VPContent.VPContent.has-sidebar {
+    /* Keep the reading position stable when the directory is toggled. */
+    padding-left: var(--vp-reading-sidebar-width);
+    padding-right: 0;
+  }
+
+  .VPDoc.VPDoc.has-sidebar {
+    padding-left: 24px;
+    padding-right: 24px;
+  }
+
+  .VPDoc.has-sidebar .content {
+    padding-left: 16px;
+    padding-right: 16px;
+  }
+
+  /* Also override the scoped max-width on the default theme's has-aside rule. */
+  .VPDoc.VPDoc.has-sidebar .content-container {
+    max-width: 960px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  .Layout:has(.VPSidebar) .desktop-sidebar-rail {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    position: fixed;
+    top: calc(var(--vp-nav-height) + var(--vp-layout-top-height, 0px));
+    bottom: 0;
+    left: 0;
+    width: var(--vp-sidebar-rail-width);
+    padding: 0;
+    z-index: calc(var(--vp-z-index-sidebar) + 1);
+    border-right: 1px solid var(--vp-c-divider);
+    background: var(--vp-c-bg-alt);
+    color: var(--vp-c-text-2);
+    cursor: pointer;
+  }
+
+  .Layout:has(.VPSidebar) .desktop-sidebar-rail:hover {
+    color: var(--vp-c-brand-1);
+    background: var(--vp-c-default-soft);
+  }
+
+  .desktop-sidebar-rail:focus-visible {
+    outline: 2px solid var(--vp-c-brand-1);
+    outline-offset: -3px;
+  }
+
+  .desktop-sidebar-collapsed .VPSidebar.VPSidebar {
+    transform: translateX(calc(-100% - var(--vp-sidebar-rail-width)));
+    visibility: hidden;
+    pointer-events: none;
+  }
+}

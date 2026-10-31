@@ -9,6 +9,8 @@
 
 /* 4. 引入组件样式 */
 @import './styles/navbar.css';
+@import './styles/sidebar.css';
+@import './styles/desktop-layout.css';
 @import './styles/headings.css';
 @import './styles/content.css';
 @import './styles/about.css';
