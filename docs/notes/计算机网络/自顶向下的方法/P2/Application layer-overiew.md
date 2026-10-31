@@ -1,4 +1,5 @@
-# client-server model
+## Application Layer Overview
+## client-server model
 1.  server
     -   always on host
     -   permanent IP address
@@ -12,7 +13,7 @@
 
 3. example: HTTP, IMAP, FTP
 
-# Peer-to-peer model
+## Peer-to-peer model
 1. no always-on server
 2. arbitrary end systems directly communicate
 3. peers are intermittently connected and change IP addresses
@@ -20,21 +21,21 @@
     - self scalability 
     - new peers bring new service capacity, as well as new service demands
 
-# sockets
+## sockets
 process sends/receives messages to/from its socket
     - socket: door between application layer and transport layer
 
-## addressing processes
+### addressing processes
 to receive messages, process must have identifier
 identifier includes both IP address and port number(端口号) associated with process on host 
 
-# open protocols:
+## open protocols:
 公共的
 
-# proprietary protocols:
+## proprietary protocols:
 部分公司专有的协议，他们的运作方式是不被公开的
 
-# what transport service does an app need?
+## what transport service does an app need?
 1. date interaction
     - 需要可靠的传输: file transfer, email
     - 能容忍不可靠传输: audio, video
@@ -45,7 +46,7 @@ identifier includes both IP address and port number(端口号) associated with p
 4. security
     - 需要安全的传输
 
-# TCP service:
+## TCP service:
 1. 保证在发送和接收之间的可靠传输
 2. flow control: 
     - sender不会发送超过接收者处理能力的数据
@@ -55,11 +56,11 @@ identifier includes both IP address and port number(端口号) associated with p
     - 先建立连接，然后再传输数据
 5. 不提供任何时间保证和安全服务
 
-# UDP service:
+## UDP service:
 不保证可靠的传输
 - UDP使用的原因：可以在应用层上实现可靠的传输
 
-# TCP secure
+## TCP secure
 
 - 原始的 TCP & UDP 套接字:
 

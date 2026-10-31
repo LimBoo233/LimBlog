@@ -1,4 +1,5 @@
-# 1. SDN control plane
+## Network Layer Control Plane: SDN, ICMP, and Management
+## 1. SDN control plane
 传统方式：每个路由器独立控制 (Per-router control plane)
 - 路由算法（如我们学过的LS或DV的原理）在每个路由器上独立运行。
 - 路由器之间相互交换路由信息来共同计算转发表。
@@ -10,14 +11,14 @@ SDN方式：逻辑上集中的控制 (Software-Defined Networking (SDN) control 
 
 LimBoo注：路由表是转发表的来源。流表在交换机的数据平面上起到了转发表的作用，指导数据包的转发。
 
-## 1.1 为什么需要逻辑上集中的控制平面 (SDN)
+### 1.1 为什么需要逻辑上集中的控制平面 (SDN)
 - 更易于网络管理：可以避免因单个路由器配置错误导致的问题，并且对流量的控制更加灵活。
 - 可编程的路由器：基于流表的转发（如OpenFlow API）使得路由器可以被“编程”。
     - 集中式编程更容易：在中央控制器上计算转发表然后分发，比在每个路由器上独立运行分布式算法来计算要简单直接。
 - 开放的控制平面实现：不再依赖于特定厂商的专有系统，促进标准化和互操作性。
 - 促进创新：开放的架构使得更多第三方可以开发新的网络控制应用和服务。
 
-## 1.2 传统路由在流量工程上的局限性
+### 1.2 传统路由在流量工程上的局限性
 想改变特定流量路径：如果网络管理员希望u到z的流量走uvwz而不是默认计算出的uxyz，在传统路由中，唯一的控制“旋钮”就是修改链路权重，然后让路由算法重新计算。这种控制粒度很粗，不够灵活。
 
 想实现流量分担：如果想让u到z的流量同时走uvwz和uxyz两条路径以实现负载均衡，传统的基于目标地址的路由算法通常做不到。
@@ -26,7 +27,7 @@ LimBoo注：路由表是转发表的来源。流表在交换机的数据平面�
 
 ![传统路由的局限性](../图片/传统路由的局限性.png)
 
-## 1.3 软件定义网络 (SDN) 详解
+### 1.3 软件定义网络 (SDN) 详解
 1. 基于流的通用化转发 (Generalized “flow-based” forwarding)：例如OpenFlow协议定义的。交换机根据流表进行匹配和行动，而不是仅仅基于目标IP地址。
 
 2. 控制平面与数据平面分离 (Control, data plane separation)：这是SDN最核心的理念。数据平面（交换机硬件）负责快速转发，控制平面（网络操作系统/控制器）负责集中的智能决策。
@@ -35,7 +36,7 @@ LimBoo注：路由表是转发表的来源。流表在交换机的数据平面�
 
 4. 可编程的控制应用 (Programmable control applications)：允许开发者编写网络应用程序，通过控制器提供的API来定义和管理网络行为（例如路由、访问控制、负载均衡等）。
 
-## 1.4 SDN的组件
+### 1.4 SDN的组件
 
 数据平面交换机 (Data-plane switches)
 - 这些通常是快速、简单、商品化的交换机，负责在硬件中实现通用的数据平面转发
@@ -55,7 +56,7 @@ SDN控制器 (SDN Controller / 网络操作系统)
 
 ![SDN的组件](../图片/SDN组件.png)
 
-### 1.4.1 SDN控制器的组件细化
+#### 1.4.1 SDN控制器的组件细化
 
 - 与受控设备的通信层：使用如OpenFlow、SNMP等协议与交换机通信。
 
@@ -65,7 +66,7 @@ SDN控制器 (SDN Controller / 网络操作系统)
 
 ![SDN控制器的组件](../图片/SDN%20controller组件.png)
 
-### 1.4.2 OpenFlow协议
+#### 1.4.2 OpenFlow协议
 作用：OpenFlow协议在SDN控制器和受其控制的交换机之间运作，用于交换控制信息。
 
 通信方式：
@@ -74,7 +75,7 @@ SDN控制器 (SDN Controller / 网络操作系统)
 
 与OpenFlow API的区别：PPT强调，OpenFlow协议不同于OpenFlow API。API是用来指定通用化转发动作的接口规范，而协议是控制器和交换机之间实际通信的规则。
 
-### 1.4.3 OpenFlow消息的三个类别：
+#### 1.4.3 OpenFlow消息的三个类别：
 1. 控制器到交换机 (Controller-to-switch)：控制器向交换机发送指令或查询信息。
 2. 异步消息 (Asynchronous - switch to controller)：交换机主动向控制器报告事件或状态变化。
 3. 对称消息 (Symmetric - misc.)：用于一些杂项功能，如Hello消息或错误报告。
@@ -98,14 +99,14 @@ SDN控制器 (SDN Controller / 网络操作系统)
 控制器集中处理信息，运行控制逻辑（通过网络应用程序）。
 控制器再将新的转发策略下发给交换机执行。
 
-### 1.5 SDN面临的挑战
+#### 1.5 SDN面临的挑战
 - 强化控制平面 (Hardening the control plane)：需要确保控制器这个“大脑”是可靠的、高性能的、可扩展的，并且是安全的分布式系统。
 - 健壮性与可靠性：需要借鉴可靠分布式系统的理论来保证控制平面的健壮性，以应对各种故障。
 - 满足特定需求的网络和协议：例如，如何支持实时性、超高可靠性、超高安全性的特定任务需求。
 - 互联网规模的扩展性：如何将SDN的理念扩展到单个自治系统（AS）之外的、整个互联网的规模。
 - 在5G网络中的关键作用：SDN在5G蜂窝网络的架构中扮演着关键角色。
 
-# 2. 互联网控制报文协议 (ICMP - Internet Control Message Protocol)
+## 2. 互联网控制报文协议 (ICMP - Internet Control Message Protocol)
 作用：ICMP被主机和路由器用来交流网络层面的信息 (network-level information)。它不是用来在用户应用之间传输数据的，而是网络基础设施自身进行通信的一种方式。
 
 主要功能：
@@ -116,13 +117,13 @@ ICMP的封装：ICMP报文被封装在IP数据报中进行传输。从IP层的�
 
 ICMP报文结构：一个ICMP报文包含类型 (Type)、代码 (Code) 字段，以及导致该ICMP报文生成（通常是某个出错的IP数据报）的IP数据报的首部和前8个字节的数据。通过包含这部分原始数据报的信息，源主机可以知道是哪个数据报在传输过程中出了问题。
 
-# 3. 网络管理与配置 (Network Management and Configuration)
+## 3. 网络管理与配置 (Network Management and Configuration)
 
 什么是网络管理？
 - 复杂性：现代网络是包含数千个硬件和软件组件的复杂交互系统，需要有效的监控、配置和控制。
 - 定义：网络管理包括部署(deployment)、集成(integration)和协调硬件、软件及人力资源，以监控、测试、轮询、配置、分析、评估和控制网络及网元资源，从而以合理的成本满足实时操作性能和服务质量 (QoS) 的要求。
 
-## 3.1 网络管理的组件
+### 3.1 网络管理的组件
 一个典型的网络管理架构包含以下组件：
 - 管理服务器/控制器 (Managing server/controller)：这是一个应用程序，通常有人类网络管理员参与其中，负责监控和控制网络。
 - 被管设备 (Managed device)：网络中的设备（如路由器、交换机、主机），它们拥有可被管理的、可配置的硬件和软件组件。
@@ -132,7 +133,7 @@ ICMP报文结构：一个ICMP报文包含类型 (Type)、代码 (Code) 字段，
 
 ![网络运营商管理方法](../图片/网络运营商管理方法.png)
 
-## 3.2 网络运营商的管理方法
+### 3.2 网络运营商的管理方法
 
 网络操作员主要通过以下几种方式进行网络管理：
 
@@ -142,13 +143,13 @@ ICMP报文结构：一个ICMP报文包含类型 (Type)、代码 (Code) 字段，
     - YANG：一种数据建模语言，用于定义网络管理数据的结构、语法和语义。
     - NETCONF：一个协议，用于在管理服务器和被管设备之间（或远程设备之间）传送与YANG兼容的动作和数据。
 
-### 3.2.1 SNMP (Simple Network Management Protocol)
+#### 3.2.1 SNMP (Simple Network Management Protocol)
 
-#### SNMP传递MIB信息和命令的两种方式：
+##### SNMP传递MIB信息和命令的两种方式：
 1. 请求/响应模式 (Request/Response mode)：管理服务器向代理发送请求（比如查询某个数据），代理回复响应。
 2. 陷阱模式 (Trap mode)：代理在发生某些异常事件（例如，接口故障、设备重启）时，可以主动向管理服务器发送一个“陷阱 (trap)”消息来报告事件。
 
-#### SNMP协议：消息类型 
+##### SNMP协议：消息类型 
 
 | 消息类型 (Message type) | 方向 (Direction) | 功能 (Function) |
 |---|---|---|
@@ -163,7 +164,7 @@ SNMP协议：消息格式:
 
 ![PDU](../图片/PDU.png) 
 
-#### SNMP：管理信息库 (MIB - Management Information Base)
+##### SNMP：管理信息库 (MIB - Management Information Base)
 MIB的本质：被管设备的操作数据（以及部分配置数据）被收集并组织到设备的MIB模块中。MIB定义了所有可以通过SNMP进行管理的数据对象的集合。
 
 SMI (Structure of Management Information)：是一种数据定义语言，用于规定MIB中对象的类型、结构和命名方式。
@@ -176,9 +177,9 @@ SMI (Structure of Management Information)：是一种数据定义语言，用于
 
 SNMP通过定义一套标准的消息类型和数据对象结构 (MIB)，使得不同厂商的网络设备可以用一种统一的方式被监控和管理。
 
-### 3.2.2 NETCONF 和 YANG
+#### 3.2.2 NETCONF 和 YANG
 
-#### NETCONF
+##### NETCONF
 目标：NETCONF协议旨在提供一种更强大、更标准化的方式来主动管理和配置网络设备，实现网络范围内的设备配置。
 actively manage/configure devices network-wide.
 
@@ -201,10 +202,10 @@ actively manage/configure devices network-wide.
 
 传输协议：通常通过安全、可靠的传输协议（如TLS - Transport Layer Security，通常承载在TCP之上）进行交换。
 
-#### NETCONF 初始化、交换与关闭 (NETCONF initialization, exchange, close)
+##### NETCONF 初始化、交换与关闭 (NETCONF initialization, exchange, close)
 ![NETCONF ex](../图片/NETCONF%20ex.png)
 
-#### YANG 数据建模语言
+##### YANG 数据建模语言
 定义：YANG是一种数据建模语言，用于指定NETCONF网络管理数据的结构、语法和语义。它定义了配置数据、状态数据、RPC操作和通知的格式。
 
 特性：

@@ -1,4 +1,5 @@
-# Transport-layer services
+## Transport Layer Services
+## Transport-layer services
 逻辑通信 (Logical communication): 传输层协议在不同的主机上运行的应用程序进程之间提供逻辑通信 。
 
 - “逻辑通信”意味着，从应用程序的角度来看，它就好像是直接和另一台主机上的应用程序在通信，而无需关心底下的网络有多复杂（比如经过了多少个路由器，走了哪条路）。传输层隐藏了这些细节。
@@ -12,18 +13,18 @@
 网络层协议 (Network-layer protocol) = 邮政服务。它的任务是把信件从一栋房子送到另一栋房子，但它不关心具体是哪个孩子写的或要给哪个孩子。
 传输层协议 (Transport protocol) = 家里的长辈 (Ann和Bill)。当邮递员把一大堆信送到Bill家时，Bill负责查看每封信的收信人，然后把信分发给正确的孩子。这个“分发”的动作就是多路分用 (demultiplexing)。反之，当Ann家的孩子们写完信后，Ann负责收集所有信件然后交给邮政服务，这个“收集”的动作就是多路复用 (multiplexing)。
 
-# 多路复用与多路分用 (Multiplexing and Demultiplexing)
+## 多路复用与多路分用 (Multiplexing and Demultiplexing)
 这个概念回答了一个核心问题：“当一台主机（比如你的电脑）同时运行着浏览器、微信和游戏时，操作系统如何知道收到的网络数据包应该交给哪个程序？”
 
 简单来说，端口号 (Port Number) 就像公寓楼里每个房间的门牌号。IP地址能帮你找到正确的大楼（主机），而端口号能帮你找到大楼里正确的房间（应用程序进程）。多路复用就是把不同房间的信件统一拿到楼下邮箱发出去，多路分用就是把收到的信件按门牌号分发到各个房间。
 
-## 多路分用 (Demultiplexing) - 在接收方:
+### 多路分用 (Demultiplexing) - 在接收方:
 接收主机的传输层检查收到的数据段 (segment) 的头部信息（主要是端口号），然后利用这些信息将数据段准确地递交给绑定了对应端口号的那个Socket，从而送达正确的应用程序进程。
 
-## 多路复用 (Multiplexing) - 在发送方:
+### 多路复用 (Multiplexing) - 在发送方:
 发送方的传输层从多个不同的Socket（对应不同的应用程序）收集数据，为每个数据块添加上头部信息（包含了源端口和目标端口等），然后将这些封装好的数据段传递给网络层。
 
-## 无连接分用 (Connectionless demultiplexing)
+### 无连接分用 (Connectionless demultiplexing)
 当你在使用UDP时，情况比较简单：
 - UDP Socket由“目标端口号”标识：当一个UDP数据段到达主机时，主机的传输层只检查数据段头部的目标端口号 (destination port #)。
 - 分发到对应Socket：然后，它会把这个UDP数据段直接发送给本机上绑定了这个目标端口号的那个Socket。
@@ -31,7 +32,7 @@
 
 ![UDP分用](../图片/TCP&UDP段格式.png)
 
-## 面向连接分用 (Connection-oriented demultiplexing)
+### 面向连接分用 (Connection-oriented demultiplexing)
 TCP的分用过程要更精细一些，因为它需要支持多个并发的、独立的连接。
 
 TCP Socket由“四元组”标识：一个TCP连接（以及它对应的专用Socket）是由一个包含四个值的元组唯一标识的：
@@ -44,7 +45,7 @@ TCP Socket由“四元组”标识：一个TCP连接（以及它对应的专用S
 
 支持并发连接：正因为如此，一个TCP服务器可以同时与多个客户端保持连接。即使所有客户端都连接到服务器的同一个端口（比如Web服务器的80端口），但因为每个客户端的源IP地址或源端口号不同，所以它们各自对应的四元组也不同，服务器能够为每个连接创建一个独立的专用Socket，并将数据准确地分发给它们。
 
-## UDP: User Datagram Protocol
+### UDP: User Datagram Protocol
 
 1. 为什么要有UDP？
 - “极简”的协议 ("no frills," "bare bones") ：UDP几乎没有增加任何多余的功能。它提供的“尽力而为”服务 (best effort)，意味着UDP数据段可能会丢失 ，也可能不按顺序到达 。

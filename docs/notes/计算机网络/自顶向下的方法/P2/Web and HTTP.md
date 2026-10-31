@@ -1,12 +1,12 @@
-# Web and HTTP
+## Web and HTTP
 
 网页由一个基础的 HTML 文件构成，这个文件包含了若干被引用的对象，每个对象都可以通过一个 URL 来寻址。
 
-## HTTP overview
+### HTTP overview
 HTTP: hypertext transfer protocol
 ![HTTP示例](../图片/HTTP请求示例.png)
 
-## HTTP connections: two types
+### HTTP connections: two types
 1. Non-persistent HTTP
     - TCP 连接已打开
     - 通过此 TCP 连接最多发送一个对象
@@ -18,7 +18,7 @@ HTTP: hypertext transfer protocol
     - 客户端和该服务器之间可以通过同一个 TCP 连接发送多个对象
     - TCP 连接已关闭
 
-## Persistent HTTP
+### Persistent HTTP
 与 Non-persistent HTTP 为每个资源请求都建立一个新的 TCP 连接不同，Persistent HTTP 允许客户端和服务器在同一个 TCP 连接上进行多次 HTTP 请求和响应。这意味着在最初建立一次 TCP 连接后，可以用于传输多个相关的资源（例如 HTML 文件、图片、CSS 文件、JavaScript 文件等），而无需为每个资源都重新建立连接。
 
 Persistent HTTP 的优点：
@@ -26,7 +26,7 @@ Persistent HTTP 的优点：
 - 更少的资源消耗： 减少了服务器和客户端维护多个连接的开销。
 - 减少网络拥塞： 由于连接的建立和关闭次数减少，有助于减轻网络拥塞
 
-## HTTP message
+### HTTP message
 1. HTTP request message
     - 请求行
         - 请求方法：GET、POST、PUT、DELETE等
@@ -49,7 +49,7 @@ Persistent HTTP 的优点：
     - 响应体（可选）
         - 包含要返回给客户端的数据
 
-## HTTP status codes
+### HTTP status codes
 - 200 OK
 request succeeded, requested object later in this message
 - 301 Moved Permanently
@@ -60,7 +60,7 @@ request msg not understood by server
 requested document not found on this server
 - 505 HTTP Version Not Supported
 
-## Maintaining user/server state: cookies
+### Maintaining user/server state: cookies
 HTTP 协议本身是无状态的 (stateless)。这意味着每次客户端发送请求到服务器时，服务器都会将该请求视为一个全新的请求，不会记住之前客户端做过什么。但在很多应用场景下，我们需要记住用户的状态，例如：
 - 用户登录状态
 - 购物车内容
@@ -82,7 +82,7 @@ Cookie: sessionid=12345; username=john
 ```
 这样，服务器就能通过接收到的 Cookie 知道这个用户是谁，或者他之前做过什么。
 
-## Web caches
+### Web caches
 Goal: satisfy client requests without involving origin server
 
 Web 缓存是一种在客户端或服务器端存储 Web 资源（如 HTML 页面、图片、CSS 文件、JavaScript 文件等）副本的技术。当客户端再次请求相同的资源时，缓存可以直接提供副本，而无需向原始服务器发送请求。这可以显著提高 Web 性能，减少网络流量，并降低服务器负载。
@@ -121,7 +121,7 @@ If-Modified-Since: <date>
 HTTP/1.0 304 Not Modified
 ```
 
-## HTTP/2
+### HTTP/2
 Key goal: decreased delay in multi-object HTTP requests
 
 1. HTTP/1.1 的一个问题: 服务器按照请求的顺序 (in-order, FCFS: first-come-first-served scheduling) 响应 GET 请求。
@@ -136,7 +136,7 @@ HTTP/2: [RFC 7540, 2015] 增加了服务器在向客户端发送对象时的灵�
 - 推送未经请求的对象到客户端
 - 将对象分割成帧，调度这些帧以缓解队头阻塞 (HOL blocking)
 
-## HTTP/3
+### HTTP/3
 HTTP/2 基于单个 TCP 连接意味着：丢包恢复仍然会阻塞所有对象的传输
 
 - 就像在 HTTP/1.1 中一样，浏览器有动机打开多个并行的 TCP 连接来减少阻塞，提高整体吞吐量
