@@ -7,6 +7,8 @@ import BackgroundToggle from './components/BackgroundToggle.vue'
 import ArticleMetadata from "./components/ArticleMetadata.vue"
 import ThemePaletteSwitch from './components/ThemePaletteSwitch.vue'
 import SidebarToggle from './components/SidebarToggle.vue'
+import FontSettings from './components/FontSettings.vue'
+import { loadFonts } from './utils/fonts'
 
 // 插件
 import 'virtual:group-icons.css'
@@ -35,6 +37,7 @@ export default {
     app.component('BackgroundToggle', BackgroundToggle),
     app.component('ArticleMetadata' , ArticleMetadata)
     app.component('ThemePaletteSwitch', ThemePaletteSwitch)
+    app.component('FontSettings', FontSettings)
   
   },
 
@@ -50,6 +53,7 @@ export default {
       mediumZoom('.main img, .labs-wrapper img', { background: 'var(--vp-c-bg)' }); // 不显式添加{data-zoomable}的情况下为所有图像启用此功能
     };
     onMounted(() => {
+      loadFonts();
       initZoom();
     });
     watch(

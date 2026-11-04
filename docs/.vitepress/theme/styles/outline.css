@@ -1,0 +1,33 @@
+/* Keep complete heading names readable in the article outline. */
+.VPDocAsideOutline .outline-link {
+  white-space: normal;
+  overflow-wrap: anywhere;
+  overflow: visible;
+  text-overflow: clip;
+  line-height: 1.65;
+  padding-top: 5px;
+  padding-bottom: 5px;
+}
+
+.VPDocAsideOutline .VPDocOutlineItem.nested {
+  padding-left: 12px;
+  padding-right: 0;
+}
+
+/* Grow the outline only when the viewport has room for a wider article too. */
+@media (min-width: 1600px) {
+  .VPDoc {
+    --reading-outline-width: clamp(224px, 18vw, 304px);
+  }
+
+  .VPDoc .aside:not(.left-aside) {
+    width: calc(var(--reading-outline-width) + 32px);
+    max-width: calc(var(--reading-outline-width) + 32px);
+    flex: 0 0 calc(var(--reading-outline-width) + 32px);
+  }
+
+  .VPDoc .aside:not(.left-aside) .aside-container,
+  .VPDoc .aside:not(.left-aside) .aside-curtain {
+    width: var(--reading-outline-width);
+  }
+}

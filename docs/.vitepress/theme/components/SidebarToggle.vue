@@ -1,5 +1,5 @@
 <script setup>
-import { onBeforeUnmount, ref } from 'vue'
+import { onBeforeUnmount, onMounted, ref } from 'vue'
 
 const collapsed = ref(false)
 
@@ -8,7 +8,22 @@ function toggleSidebar() {
   document.documentElement.classList.toggle('desktop-sidebar-collapsed', collapsed.value)
 }
 
+function handleShortcut(event) {
+  if (!(event.ctrlKey || event.metaKey) || event.altKey || event.shiftKey || event.repeat || event.key.toLowerCase() !== 'b') return
+  if (event.isComposing || !window.matchMedia('(min-width: 960px)').matches) return
+  if (!document.querySelector('.VPSidebar')) return
+
+  const target = event.target
+  if (target instanceof HTMLElement && target.closest('input, textarea, select, [contenteditable="true"]')) return
+
+  event.preventDefault()
+  toggleSidebar()
+}
+
+onMounted(() => window.addEventListener('keydown', handleShortcut))
+
 onBeforeUnmount(() => {
+  window.removeEventListener('keydown', handleShortcut)
   document.documentElement.classList.remove('desktop-sidebar-collapsed')
 })
 </script>

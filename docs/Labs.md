@@ -20,27 +20,32 @@ sidebar: false
 <div class="labs-wrapper">
   <div class="labs-hero">
     <div class="hero-content">
+      <p class="labs-eyebrow">LAB / PERSONAL SPACE</p>
       <h1 class="gradient-text">LimBoo's Laboratory</h1>
-      <p class="subtitle">探索 · 折腾 · 记录</p>
-      <p class="description">这里存放着一些有趣的代码实验、生活碎片和奇思妙想。</p>
+      <p class="description">探索、调整，找到舒服的阅读方式。也收藏一点生活，和有趣的人。</p>
     </div>
   </div>
+  <nav class="labs-jump-links" aria-label="Lab 页面导航">
+    <a href="#reading">外观与阅读 <span aria-hidden="true">↗</span></a>
+    <a href="#friends">友情链接 <span aria-hidden="true">↗</span></a>
+    <a href="#album">相册 <span aria-hidden="true">↗</span></a>
+  </nav>
 
-  <div class="labs-section">
-    <h2 class="section-title">主题调色</h2>
+  <section class="labs-section" id="reading" aria-labelledby="reading-title">
+    <div class="labs-section-heading">
+      <div><p class="labs-eyebrow">01 / MAKE IT YOURS</p><h2 class="section-title" id="reading-title">外观与阅读</h2></div>
+      <p>边调整，边感受文字的变化。</p>
+    </div>
     <div class="lab-feature">
-      <div class="feature-header">
-        <p class="feature-desc">在这里切换全站主题。</p>
-        <div class="feature-control">
-           <ThemePaletteSwitch />
-        </div>
-      </div>
+      <FontSettings><template #appearance><ThemePaletteSwitch /></template></FontSettings>
     </div>
-  </div>
+  </section>
 
-
-  <div class="labs-section">
-    <h2 class="section-title">友情链接</h2>
+  <section class="labs-section" id="friends" aria-labelledby="friends-title">
+    <div class="labs-section-heading">
+      <div><p class="labs-eyebrow">02 / GOOD COMPANY</p><h2 class="section-title" id="friends-title">友情链接</h2></div>
+      <p>一些值得停留的地方，也欢迎互换友链。</p>
+    </div>
     <div class="friends-grid">
       <a href="https://github.com/LimBoo233" target="_blank" class="friend-card">
         <div class="friend-avatar">
@@ -89,10 +94,13 @@ sidebar: false
         </div>
       </div>
     </div>
-  </div>
+  </section>
 
-  <div class="labs-section">
-    <h2 class="section-title">相册</h2>
+  <section class="labs-section" id="album" aria-labelledby="album-title">
+    <div class="labs-section-heading">
+      <div><p class="labs-eyebrow">03 / LITTLE MOMENTS</p><h2 class="section-title" id="album-title">相册</h2></div>
+      <p>把路过的风景，留在这里。</p>
+    </div>
     <div class="lab-feature no-border">
       <div class="feature-header">
         <p class="feature-desc">许多年之后，面对██时，LimBoo 将会回想起，███和他一起██████的那个遥远的██...... </p>
@@ -135,5 +143,5 @@ sidebar: false
         </div>
       </div>
     </div>
-  </div>
+  </section>
 </div>

@@ -7,7 +7,7 @@
         @click="setPalette('default')"
         :aria-pressed="palette === 'default'"
       >
-        Default
+        <span class="palette-swatch" aria-hidden="true"></span> 默认 · 翠绿
       </button>
     </div>
   </div>
@@ -66,6 +66,10 @@ onMounted(() => {
 }
 
 .palette-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 40px;
   border: 1px solid var(--vp-c-border, #d8dee9);
   background: transparent;
   color: inherit;
@@ -77,6 +81,8 @@ onMounted(() => {
     color var(--transition-base, 0.2s),
     border-color var(--transition-base, 0.2s);
 }
+
+.palette-swatch { width: 12px; height: 12px; border-radius: 50%; background: var(--vp-c-brand-1); }
 
 .palette-chip:hover {
   background-color: var(--vp-c-bg-soft, rgba(0, 0, 0, 0.04));
