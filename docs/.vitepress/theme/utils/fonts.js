@@ -1,9 +1,17 @@
 import { reactive } from 'vue'
 
 export const defaultCodeFonts = 'JetBrains Mono, Fira Code, Consolas, Monaco, Courier New, monospace'
-const defaults = () => ({ families: { serif: '', sans: '' }, targets: { body: 'sans', heading: 'serif' }, codeFamily: defaultCodeFonts })
+const defaults = () => ({
+  families: { serif: '', sans: '' },
+  targets: { body: 'sans', heading: 'serif' },
+  codeFamily: defaultCodeFonts
+})
 export const fontSettings = reactive(defaults())
-export const fontCategories = [{ id: 'serif', label: '衬线字体' }, { id: 'sans', label: '非衬线字体' }, { id: 'system', label: '系统字体' }]
+export const fontCategories = [
+  { id: 'serif', label: '衬线字体' },
+  { id: 'sans', label: '非衬线字体' },
+  { id: 'system', label: '系统字体' }
+]
 export const customFontCategories = fontCategories.filter(category => category.id !== 'system')
 const fallbacks = {
   serif: 'Georgia, "Noto Serif SC", "Songti SC", SimSun, serif',
@@ -11,17 +19,22 @@ const fallbacks = {
   system: 'system-ui, -apple-system, "Segoe UI", sans-serif'
 }
 const key = 'limblog-font-settings'
+const genericFonts = new Set(['serif', 'sans-serif', 'system-ui', 'ui-monospace', 'monospace'])
 
 export function fontList(category) {
   return fontSettings.families[category] || fallbacks[category]
 }
 
 function customFontList(value) {
-  const generic = new Set(['serif', 'sans-serif', 'system-ui', 'ui-monospace', 'monospace'])
-  return value.split(/[,，]/).map(part => part.trim().replace(/^["']|["']$/g, '')).filter(Boolean).map(part => generic.has(part) ? part : JSON.stringify(part)).join(', ')
+  return value
+    .split(/[,，]/)
+    .map(part => part.trim().replace(/^["']|["']$/g, ''))
+    .filter(Boolean)
+    .map(part => genericFonts.has(part) ? part : JSON.stringify(part))
+    .join(', ')
 }
 
-export function applyFonts() {
+function applyFonts() {
   for (const [target, category] of Object.entries(fontSettings.targets)) {
     const name = customFontList(fontSettings.families[category] || '')
     const fallback = fallbacks[category]
@@ -33,20 +46,30 @@ export function applyFonts() {
 
 export function saveFonts() {
   applyFonts()
-  try { localStorage.setItem(key, JSON.stringify(fontSettings)) } catch { /* Settings still apply for this visit. */ }
+  try {
+    localStorage.setItem(key, JSON.stringify(fontSettings))
+  } catch {
+    // Settings still apply for this visit.
+  }
 }
 
 export function loadFonts() {
   try {
     const saved = JSON.parse(localStorage.getItem(key))
-    if (typeof saved?.codeFamily === 'string' && saved.codeFamily.trim()) fontSettings.codeFamily = saved.codeFamily.slice(0, 150)
+    if (typeof saved?.codeFamily === 'string' && saved.codeFamily.trim()) {
+      fontSettings.codeFamily = saved.codeFamily.slice(0, 150)
+    }
     for (const category of customFontCategories) {
-      if (typeof saved?.families?.[category.id] === 'string') fontSettings.families[category.id] = saved.families[category.id].slice(0, 150)
+      const family = saved?.families?.[category.id]
+      if (typeof family === 'string') fontSettings.families[category.id] = family.slice(0, 150)
     }
-    for (const target of ['body', 'heading']) {
-      if (fontCategories.some(c => c.id === saved?.targets?.[target])) fontSettings.targets[target] = saved.targets[target]
+    for (const target of Object.keys(fontSettings.targets)) {
+      const category = saved?.targets?.[target]
+      if (fontCategories.some(option => option.id === category)) fontSettings.targets[target] = category
     }
-  } catch { /* Use defaults if storage is unavailable or invalid. */ }
+  } catch {
+    // Use defaults if storage is unavailable or invalid.
+  }
   applyFonts()
 }
 

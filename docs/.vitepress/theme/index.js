@@ -1,6 +1,5 @@
 import DefaultTheme from 'vitepress/theme'
 import './style.css'
-import './styles/labs.css'
 import { h, onMounted, watch, nextTick } from 'vue'
 
 import BackgroundToggle from './components/BackgroundToggle.vue'
