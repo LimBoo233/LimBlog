@@ -81,6 +81,9 @@ export default defineConfig({
       md.use(groupIconMdPlugin);
       md.use(MermaidMarkdown);
 
+      md.renderer.rules.table_open = () => '<div class="markdown-table-scroll"><table>\n';
+      md.renderer.rules.table_close = () => '</table></div>\n';
+
       // 自动在 h1 标签后添加表头组件
       md.renderer.rules.heading_close = (tokens, idx, options, env, slf) => {
         // First, get the default rendered HTML (e.g., "</h1>")

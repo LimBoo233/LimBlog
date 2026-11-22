@@ -115,6 +115,63 @@ html {
   border-top: 1px solid var(--vp-divider-color);
 }
 
+.vp-doc table {
+  width: fit-content;
+  max-width: 100%;
+  border: 1px solid var(--vp-c-divider);
+  border-radius: 8px;
+  border-collapse: separate;
+  border-spacing: 0;
+}
+
+.vp-doc .markdown-table-scroll {
+  margin: 20px 0;
+  overflow-x: auto;
+  border: 1px solid var(--vp-c-divider);
+  border-radius: 8px;
+}
+
+.vp-doc .markdown-table-scroll > table {
+  display: table;
+  width: 100%;
+  margin: 0;
+  border: 0;
+  border-radius: 0;
+}
+
+.vp-doc table tr {
+  border: 0;
+  background-color: color-mix(in srgb, var(--vp-c-bg) 80%, transparent);
+}
+
+.vp-doc table tr:nth-child(2n) {
+  background-color: color-mix(in srgb, var(--vp-c-bg-soft) 80%, transparent);
+}
+
+.vp-doc table thead tr {
+  background-color: transparent;
+}
+
+.vp-doc table :is(th, td) {
+  border: 0;
+  padding: 10px 14px;
+  vertical-align: top;
+}
+
+.vp-doc table :is(th, td) + :is(th, td) {
+  border-inline-start: 1px solid var(--vp-c-divider);
+}
+
+.vp-doc table th {
+  background-color: color-mix(in srgb, color-mix(in srgb, var(--vp-c-brand-1) 14%, var(--vp-c-bg)) 90%, transparent);
+  color: var(--vp-c-text-1);
+}
+
+.vp-doc table thead + tbody > tr:first-child > td,
+.vp-doc table tbody > tr + tr > td {
+  border-top: 1px solid var(--vp-c-divider);
+}
+
 /* ============================================
    4.1 自定义警示框图标
    ============================================ */
@@ -150,16 +207,19 @@ html {
   --vp-custom-block-icon-color: var(--vp-c-danger, #dc2626);
 }
 
+.vp-doc .custom-block:has(> .custom-block-title) {
+  padding-left: 40px;
+}
+
 .vp-doc .custom-block-title {
   position: relative;
-  padding-left: 24px;
   font-weight: 600;
 }
 
 .vp-doc .custom-block-title::before {
   content: "";
   position: absolute;
-  left: 0;
+  left: -24px;
   top: 0.12em;
   width: 14px;
   height: 14px;

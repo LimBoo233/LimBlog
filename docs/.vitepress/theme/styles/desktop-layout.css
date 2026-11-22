@@ -80,3 +80,9 @@
     pointer-events: none;
   }
 }
+
+@media (960px <= width < 1440px) {
+  .desktop-sidebar-collapsed .VPContent.VPContent.has-sidebar {
+    padding-left: var(--vp-sidebar-rail-width);
+  }
+}
